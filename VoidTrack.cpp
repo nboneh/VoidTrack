@@ -1,19 +1,17 @@
 #include "VoidTrack.h"
 #include "GameObjects/background.h"
+#include "GameObjects/spaceship.h"
 
 double dim=5.0;
 int th=0;         //  Azimuth of view angle
-int ph=0;         //  Elevation of view angle
+int ph=20;         //  Elevation of view angle
 double prevT = 0;
-double count =1;
-
-float x;
-float y;
-float z;
+float counter = 0;
 
 unsigned int BACKGROUND;
 
 Background* background;
+SpaceShip * spaceShip;
 
 
 void idle()
@@ -22,15 +20,13 @@ void idle()
    double currentT = glutGet(GLUT_ELAPSED_TIME)/1000.0;
    double t = currentT - prevT;
 
-   count += t;
-   if(count >= 1){
-      x = (float)rand()/(float)(RAND_MAX);
-      y = (float)rand()/(float)(RAND_MAX);
-      z = (float)rand()/(float)(RAND_MAX);
-      count -=1;
-    }
-   background->update(t);
+   counter += t;
 
+   if(counter >= 1.0){
+      spaceShip->go();
+   }
+
+   spaceShip->update(t);
    prevT = currentT;
    glutPostRedisplay();
 }
@@ -47,16 +43,21 @@ void display()
  // glEnable(GL_LIGHTING);
   //glEnable(GL_NORMALIZE);
 
+   //Setting camera around spaceship
    glLoadIdentity();
-   double Ex = (-2*dim*Sin(th)*Cos(ph));
-   double Ey = (+2*dim        *Sin(ph));
-   double Ez = (+2*dim*Cos(th)*Cos(ph));
-   gluLookAt(Ex,Ey,Ez , 0,0,0 , 0,Cos(ph),0);
 
-    glColor3f(x,y,z);
+   float tempTh = th;  //- spaceShip->getYaw();
+   //float tempPh = ph -
+   double Ex = (-2*dim*Sin(tempTh)*Cos(ph));
+   double Ey = (+2*dim        *Sin(ph));
+   double Ez = (+2*dim*Cos(tempTh)*Cos(ph));
+   gluLookAt(Ex +spaceShip->getX() ,Ey+spaceShip->getY(),Ez+ spaceShip->getZ() 
+    , spaceShip->getX(),spaceShip->getY(),spaceShip->getZ() 
+    , 0,Cos(ph),0);
+
    background->draw();
-   glColor3f(1,1,1);
-   drawCube();
+   spaceShip->draw();
+
 
    //  Make scene visible
    glFlush();
@@ -131,6 +132,7 @@ int main(int argc,char* argv[])
    glEnable(GL_DEPTH_TEST);
 
    background = new Background();
+   spaceShip = new SpaceShip();
 
    //  Pass control to GLUT for events
    glutMainLoop();

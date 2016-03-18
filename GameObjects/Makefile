@@ -22,8 +22,9 @@ endif
 
 # Dependencies
 background.o: background.cpp 
+spaceship.o: spaceship.cpp 
 
-GameObjects.a: background.o
+GameObjects.a: background.o spaceship.o
 	ar -rcs $@ $^
 
 
