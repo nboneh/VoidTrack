@@ -4,20 +4,21 @@
 class SpaceShip{
 
 	float terminalVelocity, accelerationRate,velocity, floatingMotionCounter;
-	bool accelerating;
-	float x,y,z,roll, pitch, yaw, height, width, length;
+	bool accelerating, falling;
+	float x,y,z,roll, pitch, yaw;
+	float centerX, centerY, centerZ;
 	Flame * flame;
 
-	//For shifting
-	int rollRate;
+	//For turning
+	int rollRate, maxAddRoll;
 	float addRoll;
-	int maxAddRoll;
 
 	//1 for right, 0 for no, -1 for left
 	int turn;
 
-	float driftTime;
-
+	//For falling
+	int pitchRate, maxAddPitch;
+	float addPitch, fallingRate;
 
 	public: 
 		SpaceShip();
@@ -48,6 +49,8 @@ class SpaceShip{
 		
 		float getYaw();
 		float getPitch();
+
+		void setFalling();
 
 	private:
 		void floatingMotion(double t);

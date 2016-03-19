@@ -2,9 +2,17 @@
 
 SpaceShip::SpaceShip(){
 	accelerationRate = 20;
-	maxAddRoll = 35;
-	rollRate = 70;
-	
+
+	maxAddRoll = 40;
+	rollRate = 50;
+
+	maxAddPitch = 70;
+	pitchRate = 50;
+
+	centerX = .5;
+	centerY = 0;
+	centerZ = -.33; 
+
  	flame = new Flame();
 	reset();
 }
@@ -20,11 +28,11 @@ void SpaceShip::reset(){
 	floatingMotionCounter = 0;
 	terminalVelocity = 20;
 	velocity = 0;
-	yaw = 90;
-	pitch = 0;
-	height = 1;
 	addRoll = 0;
 	turn = 0;
+	falling = false;
+	addPitch = 0;
+	fallingRate = 0;
 }
 
 void SpaceShip::go(){
@@ -46,28 +54,38 @@ void SpaceShip::update(double t){
       	y +=  velocity*(Sin(pitch)) *t;
      	z -=  velocity*(Cos(pitch)*Cos(yaw)) *t;
 		
-     	if(turn != 0){
-			
+     	if(turn != 0){	
 			yaw +=  t * addRoll;
 			if(fabs(addRoll) < maxAddRoll){
 				addRoll +=  turn * t * rollRate;
 				 if(fabs(addRoll) >= maxAddRoll){
 					addRoll = maxAddRoll * turn;
-			}	
+				}	
 			}			
      	} else if(turn == 0 && addRoll != 0) {
-     		yaw +=  t * addRoll;
+     		yaw +=  t * addRoll ;
      		if(addRoll < 0){
-     			addRoll +=  t * rollRate;
+     			addRoll +=  t * rollRate * 3;
      			if(addRoll >= 0)
      				addRoll = 0;
      		} else {
-     			addRoll -=  t * rollRate;
+     			addRoll -=  t * rollRate * 3;
      			if(addRoll <= 0)
      				addRoll = 0;
      		}
      	}
-	}
+
+     	if(falling){
+			if(addPitch < maxAddPitch){
+				addPitch +=   t * pitchRate;
+				 if(addPitch >= maxAddPitch){
+					addPitch = maxAddPitch;
+				}	
+			}
+			fallingRate += t*60;
+			y -= t*fallingRate;
+		}
+	} 
 }
 
 void SpaceShip::floatingMotion(double t){
@@ -83,20 +101,22 @@ void SpaceShip::draw(){
 	glTranslatef(x,y,z);
 
  
-    glTranslatef(.5,0,-.3);
-    glRotatef(pitch, 1,0,0);
-    glRotatef(yaw, 0,1,0);
-	glRotatef(roll+addRoll, 0,0,1);
-	glTranslatef(-.5,0,.3);
+    glTranslatef(centerX,centerY,centerZ);
+    glRotatef(yaw+ addRoll/3 , 0,1,0);
+    glRotatef(pitch - addPitch, 1,0,0);
+    glRotatef(roll+addRoll, 0,0,1);
+	glTranslatef(-centerX,-centerY,-centerZ);
 
 	if(accelerating){
 		glPushMatrix();
+		glTranslatef(centerX,0,0);
 		glRotatef(90,1,0,0);
-		glTranslatef(.5,0,0);
 		glScalef(1.5,1,1.5);
   		flame->draw();
    		glPopMatrix();
     }
+    
+
 
 	glColor3f(0,1,1);
 	glBegin(GL_POLYGON);
@@ -111,7 +131,6 @@ void SpaceShip::draw(){
     glVertex3f(.5,.01, -1);
     glVertex3f(.66,.01, -.7);
     glEnd();
-
 
 
 	glPopMatrix();
@@ -152,7 +171,7 @@ void SpaceShip::setPitch(float _pitch){
 
 
 float SpaceShip::getX(){
-	return x;
+	return x + centerX;
 }
 
 float SpaceShip::getY(){
@@ -160,15 +179,19 @@ float SpaceShip::getY(){
 }
 
 float SpaceShip::getZ(){
-	return z;
+	return z + centerZ;
 }
 
 float SpaceShip::getYaw(){
-	return yaw;
+	return yaw ;
 }
 
 float SpaceShip::getPitch(){
 	return pitch;
+}
+
+void SpaceShip::setFalling(){
+	falling = true;
 }
 
 

@@ -12,6 +12,7 @@ unsigned int BACKGROUND;
 
 Background* background;
 SpaceShip * spaceShip;
+bool setGo = false;
 
 
 
@@ -24,8 +25,13 @@ void idle()
    if(counter >= 0)
       counter += t;
 
-   if(counter >= 2.0){
+   if(!setGo && counter >= 2.0){
       spaceShip->go();
+      setGo = true;
+   }
+
+   if(counter >= 4.0){
+       spaceShip->setFalling();
       counter = -1;
    }
 
@@ -50,12 +56,12 @@ void display()
    glLoadIdentity();
 
    float shipTh = th - spaceShip->getYaw();
-   float shipPh = ph - spaceShip->getPitch();
+   float shipPh = ph+ spaceShip->getPitch();
    double Ex = (-2*dim*Sin(shipTh)*Cos(shipPh));
    double Ey = (+2*dim        *Sin(shipPh));
    double Ez = (+2*dim*Cos(shipTh)*Cos(shipPh));
-   gluLookAt(Ex +spaceShip->getX()+.5 ,Ey+spaceShip->getY(),Ez+ spaceShip->getZ() 
-    , spaceShip->getX()+.5,spaceShip->getY(),spaceShip->getZ() 
+   gluLookAt(Ex +spaceShip->getX() ,Ey+spaceShip->getY(),Ez+ spaceShip->getZ() 
+    , spaceShip->getX(),spaceShip->getY(),spaceShip->getZ() 
     , 0,Cos(shipPh),0);
 
    background->draw();

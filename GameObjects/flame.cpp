@@ -17,7 +17,7 @@ Flame::Flame(){
 
 void Flame::reset(){
   counter= 0;
-  highR = 1;
+  highR = .9;
   lowR = .5;
 
   highG = .4;
@@ -37,7 +37,7 @@ void Flame::init(){
    //  Loop over NxN patch
    for (int i=0;i<numOfParticles;i++){
     //  Location x,y,z
-    float radius = frand(0.1, 0.0);
+    float radius = frand(0.05, 0.0);
     float angle =  frand(M_PI*2,0.0 );
     *vert++ = radius * cos(angle);
     *vert++ = 0;
@@ -47,9 +47,9 @@ void Flame::init(){
     *color++ = frand(highG,lowG);
     *color++ = frand(highB,lowB);
     //  Velocity
-    *vel++ = (radius * cos(angle)) * frand(2.0, 0.0);
+    *vel++ = (radius * cos(angle)) * frand(20.0, 14.0);
     *vel++ = frand(2.0, 0.0);
-    *vel++ = (radius * sin(angle)) * frand(2.0, 0.0);
+    *vel++ = (radius * sin(angle)) * frand(20.0, 14.0);
     //  Launch time
     *durationTime++ = frand(0.05,0.005);
   }
@@ -57,8 +57,8 @@ void Flame::init(){
 
 void Flame::update(float t, float velocity){
   if(lastVelocity <= velocity){
-     for (int i=0;i<numOfParticles;i++){
-      Vel[i*3 +1] += (velocity -lastVelocity);
+     for (int i=1;i<numOfParticles;i+=3){
+      Vel[i] += (velocity -lastVelocity)*.7;
      }
     lastVelocity = velocity;
   }
@@ -72,7 +72,7 @@ void Flame::update(float t, float velocity){
 
 void Flame::draw(){
 	 glUseProgram(shader);
-	glPointSize(2.5);
+	glPointSize(2);
 	 //  Set particle size
    //  Point vertex location to local array Vert
    glVertexPointer(3,GL_FLOAT,0,Vert);
@@ -92,13 +92,10 @@ void Flame::draw(){
     glTexEnvi(GL_POINT_SPRITE,GL_COORD_REPLACE,GL_TRUE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-    glDepthMask(0);
-
     glDrawArrays(GL_POINTS,0,numOfParticles);
 
     glDisable(GL_POINT_SPRITE);
     glDisable(GL_BLEND);
-     glDepthMask(1);
         //  Disable arrays
    glDisableClientState(GL_VERTEX_ARRAY);
    glDisableClientState(GL_COLOR_ARRAY);
