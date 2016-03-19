@@ -4,6 +4,7 @@ Background::Background(){
 	r = 1;
 	g = 1;
 	b = 1;
+	texture = LoadTexBMP("textures/background.bmp");
 }
 void Background::update(double t){
 
@@ -16,7 +17,7 @@ void Background::draw(){
  	glColor3f(r,g,b);
  	glEnable(GL_TEXTURE_2D);
   	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-  	glBindTexture(GL_TEXTURE_2D,BACKGROUND);
+  	glBindTexture(GL_TEXTURE_2D,texture);
 	drawBall();
     glDisable(GL_TEXTURE_2D);
 	glPopMatrix();

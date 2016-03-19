@@ -39,6 +39,13 @@ unsigned int  LoadTexBMP(const char* file);
 void Project(double fov,double asp,double dim);
 void ErrCheck(const char* where);
 void PlaySound(const char* soundname);
+float frand(float rng,float off);
+char* ReadText(const char *file);
+void PrintShaderLog(int obj,const char* file);
+void PrintProgramLog(int obj);
+void CreateShader(int prog,const GLenum type,const char* file);
+int CreateShaderProg(const char* VertFile,const char* FragFile);
+int CreateShaderProgParticle(const char* VertFile,const char* FragFile, char ** arrayAttributes);
 
 void drawBall();
 void drawCube();

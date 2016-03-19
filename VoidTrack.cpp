@@ -14,16 +14,19 @@ Background* background;
 SpaceShip * spaceShip;
 
 
+
 void idle()
 {
     //  Elapsed time in seconds
    double currentT = glutGet(GLUT_ELAPSED_TIME)/1000.0;
    double t = currentT - prevT;
 
-   counter += t;
+   if(counter >= 0)
+      counter += t;
 
-   if(counter >= 1.0){
+   if(counter >= 2.0){
       spaceShip->go();
+      counter = -1;
    }
 
    spaceShip->update(t);
@@ -46,14 +49,14 @@ void display()
    //Setting camera around spaceship
    glLoadIdentity();
 
-   float tempTh = th;  //- spaceShip->getYaw();
-   //float tempPh = ph -
-   double Ex = (-2*dim*Sin(tempTh)*Cos(ph));
-   double Ey = (+2*dim        *Sin(ph));
-   double Ez = (+2*dim*Cos(tempTh)*Cos(ph));
-   gluLookAt(Ex +spaceShip->getX() ,Ey+spaceShip->getY(),Ez+ spaceShip->getZ() 
-    , spaceShip->getX(),spaceShip->getY(),spaceShip->getZ() 
-    , 0,Cos(ph),0);
+   float shipTh = th - spaceShip->getYaw();
+   float shipPh = ph - spaceShip->getPitch();
+   double Ex = (-2*dim*Sin(shipTh)*Cos(shipPh));
+   double Ey = (+2*dim        *Sin(shipPh));
+   double Ez = (+2*dim*Cos(shipTh)*Cos(shipPh));
+   gluLookAt(Ex +spaceShip->getX()+.5 ,Ey+spaceShip->getY(),Ez+ spaceShip->getZ() 
+    , spaceShip->getX()+.5,spaceShip->getY(),spaceShip->getZ() 
+    , 0,Cos(shipPh),0);
 
    background->draw();
    spaceShip->draw();
@@ -65,7 +68,7 @@ void display()
    glutPostRedisplay();
 }
 
-void special(int key,int x,int y)
+void special_press(int key,int x,int y)
 {
      //  Right arrow - increase rotation by 5 degree
    if (key == GLUT_KEY_RIGHT)
@@ -81,19 +84,32 @@ void special(int key,int x,int y)
    else if (key == GLUT_KEY_DOWN)
      ph += 5;
 
-   glutPostRedisplay();
 
 }
 
-void key(unsigned char ch,int x,int y)
+void key_press(unsigned char ch,int x,int y)
 {
    //  Exit on ESC
    if (ch == 27)
       exit(0);
-   //  Tell GLUT it is necessary to redisplay the scene
-   glutPostRedisplay();
+
+    if(ch == 'a' || ch == 'A'){
+      spaceShip->turnRight();
+    } else if(ch == 'd' || ch == 'D'){
+      spaceShip->turnLeft();
+    } 
 }
 
+
+
+void key_up(unsigned char ch, int x, int y){
+
+    if(ch == 'a' || ch == 'A'){
+      spaceShip->stopTurnRight();
+    } else if(ch == 'd' || ch == 'D'){
+      spaceShip->stopTurnLeft();
+    }
+}
 
 
 void reshape(int width,int height)
@@ -121,13 +137,14 @@ int main(int argc,char* argv[])
    //  Create window
    glutCreateWindow("VoidTrack");
 
-    BACKGROUND = LoadTexBMP("textures/background.bmp");
    glutFullScreen();  
    //  Register display, reshape, and key callbacks
    glutDisplayFunc(display);
    glutReshapeFunc(reshape);
-   glutSpecialFunc(special);
-   glutKeyboardFunc(key);
+   glutSpecialFunc(special_press);
+   glutSpecialUpFunc(special_press);
+   glutKeyboardFunc(key_press);
+   glutKeyboardUpFunc(key_up);
    glutIdleFunc(idle);
    glEnable(GL_DEPTH_TEST);
 

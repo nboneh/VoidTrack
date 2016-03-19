@@ -35,9 +35,10 @@ project.o: project.c
 errcheck.o: errcheck.c
 drawshapes.o: drawshapes.c 
 sound.o: sound.c
+shader.o: shader.c
 
 #  Create archive
-VoidTrack.a: fatal.o loadtexbmp.o print.o project.o errcheck.o drawshapes.o sound.o
+VoidTrack.a: fatal.o loadtexbmp.o print.o project.o errcheck.o drawshapes.o sound.o shader.o
 	ar -rcs $@ $^
 
 # Compile rules
