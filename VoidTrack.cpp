@@ -1,6 +1,7 @@
 #include "VoidTrack.h"
 #include "GameObjects/background.h"
 #include "GameObjects/spaceship.h"
+#include "GameObjects/track.h"
 
 double dim=5.0;
 int th=0;         //  Azimuth of view angle
@@ -12,6 +13,7 @@ unsigned int BACKGROUND;
 
 Background* background;
 SpaceShip * spaceShip;
+Track * track;
 bool setGo = false;
 
 
@@ -26,12 +28,12 @@ void idle()
       counter += t;
 
    if(!setGo && counter >= 2.0){
-      spaceShip->go();
+     //spaceShip->go();
       setGo = true;
    }
 
    if(counter >= 4.0){
-       spaceShip->setFalling();
+      //spaceShip->setFalling();
       counter = -1;
    }
 
@@ -56,7 +58,7 @@ void display()
    glLoadIdentity();
 
    float shipTh = th - spaceShip->getYaw();
-   float shipPh = ph+ spaceShip->getPitch();
+   float shipPh = ph-spaceShip->getPitch();
    double Ex = (-2*dim*Sin(shipTh)*Cos(shipPh));
    double Ey = (+2*dim        *Sin(shipPh));
    double Ez = (+2*dim*Cos(shipTh)*Cos(shipPh));
@@ -66,6 +68,7 @@ void display()
 
    background->draw();
    spaceShip->draw();
+  track->draw();
 
 
    //  Make scene visible
@@ -156,6 +159,7 @@ int main(int argc,char* argv[])
 
    background = new Background();
    spaceShip = new SpaceShip();
+   track = new Track();
 
    //  Pass control to GLUT for events
    glutMainLoop();

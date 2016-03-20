@@ -24,8 +24,10 @@ endif
 background.o: background.cpp 
 spaceship.o: spaceship.cpp 
 flame.o: flame.cpp
+track.o: track.cpp
+trackpiece.o: trackpiece.cpp
 
-GameObjects.a: background.o spaceship.o flame.o
+GameObjects.a: background.o spaceship.o flame.o track.o trackpiece.o
 	ar -rcs $@ $^
 
 

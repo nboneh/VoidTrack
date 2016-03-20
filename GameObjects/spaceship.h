@@ -1,11 +1,15 @@
 #include "../VoidTrack.h"
 #include "flame.h"
 
+#ifndef SPACESHIP_H
+#define SPACESHIP_H
+#endif
+
 class SpaceShip{
 
 	float terminalVelocity, accelerationRate,velocity, floatingMotionCounter;
 	bool accelerating, falling;
-	float x,y,z,roll, pitch, yaw;
+	float x,y,z,roll, pitch, yaw, floatingHeight;
 	float centerX, centerY, centerZ;
 	Flame * flame;
 

@@ -6,9 +6,7 @@ Background::Background(){
 	b = 1;
 	texture = LoadTexBMP("textures/background.bmp");
 }
-void Background::update(double t){
 
-}
 
 void Background::draw(){
  	glPushMatrix();

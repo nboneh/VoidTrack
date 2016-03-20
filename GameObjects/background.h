@@ -5,7 +5,6 @@ class Background{
 	unsigned int texture;
 	public: 
 		Background();
-		void update(double t);
 		void draw();
 		void setColor(float _r,float _g,float _b);
 

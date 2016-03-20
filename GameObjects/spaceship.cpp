@@ -13,6 +13,8 @@ SpaceShip::SpaceShip(){
 	centerY = 0;
 	centerZ = -.33; 
 
+	floatingHeight = .4;
+
  	flame = new Flame();
 	reset();
 }
@@ -91,16 +93,15 @@ void SpaceShip::update(double t){
 void SpaceShip::floatingMotion(double t){
 	//For when the ships isn't moving
 	floatingMotionCounter += t*3;
-	y = sin(floatingMotionCounter)*1.25;
+	y = sin(floatingMotionCounter*2)*.05;
 	roll = sin(floatingMotionCounter)*5;
 }
 
 void SpaceShip::draw(){
 	glPushMatrix();
 	
-	glTranslatef(x,y,z);
+	glTranslatef(x,y + floatingHeight,z);
 
- 
     glTranslatef(centerX,centerY,centerZ);
     glRotatef(yaw+ addRoll/3 , 0,1,0);
     glRotatef(pitch - addPitch, 1,0,0);

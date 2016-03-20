@@ -1,6 +1,5 @@
 #include "../VoidTrack.h"
 
-
 class Flame{
 	int numOfParticles;
 	int shader;
