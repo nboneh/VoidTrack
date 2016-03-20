@@ -28,7 +28,7 @@ void idle()
       counter += t;
 
    if(!setGo && counter >= 2.0){
-     //spaceShip->go();
+     spaceShip->go();
       setGo = true;
    }
 

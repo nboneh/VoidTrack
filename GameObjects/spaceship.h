@@ -17,6 +17,8 @@ class SpaceShip{
 	int rollRate, maxAddRoll;
 	float addRoll;
 
+	float addY;
+
 	//1 for right, 0 for no, -1 for left
 	int turn;
 

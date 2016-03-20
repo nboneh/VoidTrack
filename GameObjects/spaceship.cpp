@@ -35,11 +35,12 @@ void SpaceShip::reset(){
 	falling = false;
 	addPitch = 0;
 	fallingRate = 0;
+	addY = 0;
 }
 
 void SpaceShip::go(){
 	accelerating = true;
-	y = 0;
+	addY = 0;
 	roll = 0;
 }
 
@@ -93,14 +94,14 @@ void SpaceShip::update(double t){
 void SpaceShip::floatingMotion(double t){
 	//For when the ships isn't moving
 	floatingMotionCounter += t*3;
-	y = sin(floatingMotionCounter*2)*.05;
+	addY = sin(floatingMotionCounter*2)*.05;
 	roll = sin(floatingMotionCounter)*5;
 }
 
 void SpaceShip::draw(){
 	glPushMatrix();
 	
-	glTranslatef(x,y + floatingHeight,z);
+	glTranslatef(x,y + floatingHeight + addY,z);
 
     glTranslatef(centerX,centerY,centerZ);
     glRotatef(yaw+ addRoll/3 , 0,1,0);

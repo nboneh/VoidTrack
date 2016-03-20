@@ -20,45 +20,47 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 void TrackPiece::draw(){	
 
 	glPushMatrix();
-	
+
 	glTranslatef(x,y,z);
+
     glRotatef(yaw , 0,1,0);
     glRotatef(pitch, 1,0,0);
     glRotatef(roll, 0,0,1);
+	
 	//Top
 	glBegin(GL_QUADS);
-	glNormal3f( 0,+1, 0);
- 	glVertex3f(x,y,z);
- 	glVertex3f(x+width,y,z);
- 	glVertex3f(x+endWidth,y,z-length);
- 	glVertex3f(x+widthDiff,y,z-length);
+	glNormal3f( 0,1, 0);
+ 	glVertex3f(0,0,0);
+ 	glVertex3f(width,0,0);
+ 	glVertex3f(endWidth,0,-length);
+ 	glVertex3f(widthDiff,0,-length);
  	glEnd();
 
  	//Bottom
  	glBegin(GL_QUADS);
  	glNormal3f( 0,-1, 0);
- 	glVertex3f(x,y-trackHeight,z);
- 	glVertex3f(x+width,y-trackHeight,z);
- 	glVertex3f(x+endWidth,y-trackHeight,z-length);
- 	glVertex3f(x+widthDiff,y-trackHeight,z-length);
+ 	glVertex3f(0,-trackHeight,0);
+ 	glVertex3f(width,-trackHeight,0);
+ 	glVertex3f(endWidth,-trackHeight,-length);
+ 	glVertex3f(widthDiff,-trackHeight,-length);
  	glEnd();
 
  	//Left side
  	glBegin(GL_QUADS);
  	glNormal3f( -1,0, 0);
- 	glVertex3f(x,y-trackHeight,z);
- 	glVertex3f(x,y,z);
- 	glVertex3f(x+widthDiff,y,z-length);
- 	glVertex3f(x+widthDiff,y-trackHeight,z-length);
+ 	glVertex3f(0,-trackHeight,0);
+ 	glVertex3f(0,0,0);
+ 	glVertex3f(widthDiff,0,-length);
+ 	glVertex3f(widthDiff,-trackHeight,-length);
  	glEnd();
 
  	//Right side
  	glBegin(GL_QUADS);
  	glNormal3f(1,0, 0);
- 	glVertex3f(x+width,y-trackHeight,z);
- 	glVertex3f(x+width,y,z);
- 	glVertex3f(x+endWidth,y,z-length);
- 	glVertex3f(x+endWidth,y-trackHeight,z-length);
+ 	glVertex3f(width,-trackHeight,0);
+ 	glVertex3f(width,0,0);
+ 	glVertex3f(endWidth,0,-length);
+ 	glVertex3f(endWidth,-trackHeight,-length);
  	glEnd();
 
 
