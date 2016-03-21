@@ -37,8 +37,7 @@ class SpaceShip{
 		void draw();
 
 		void increaseTerminalVelocityBy(float add);
-		void stopMoving();
-
+		
 		void setRoll(float _roll);
 		void setPitch(float _pitch);
 

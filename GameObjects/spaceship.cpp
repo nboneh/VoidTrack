@@ -118,7 +118,10 @@ void SpaceShip::updateTurning(double t){
 
 void SpaceShip::updateFalling(double t){
 	fallingRate += t*4.9;
-	y -= t*fallingRate;
+	x += fallingRate*(Sin(roll)) *t;
+    y -=  fallingRate*(Cos(pitch)*Cos(roll))*t;
+    z -=  fallingRate*(Sin(pitch)) *t;
+		
 }
 
 void SpaceShip::updateValues(double t){
@@ -254,10 +257,6 @@ void SpaceShip::setPitch(float _updatePitch){
 	}
 }
 
-void SpaceShip::stopMoving(){
-	velocity = 0;
-	terminalVelocity = 0;
-}
 
 void SpaceShip::setY(float _y){
 	//This function will keep the ship from falling
@@ -303,7 +302,7 @@ void SpaceShip::jump(){
 
 void SpaceShip::startJump(){
 	//Setting the falling rate negative for jumping
-	fallingRate = -6;
+	fallingRate = -3;
 }
 
 bool SpaceShip::isJumping(){

@@ -8,11 +8,17 @@ int th=0;         //  Azimuth of view angle
 int ph=30;         //  Elevation of view angle
 double prevT = 0;
 float counter = 0;
+bool setAtFinalCam = false;
+
+float finalCameraX ;
+float finalCameraY ; 
+float finalCameraZ;
 
 
 Background* background = NULL;
 SpaceShip * spaceShip = NULL;
 Track * track = NULL;
+
 
 
 
@@ -59,13 +65,26 @@ void display()
    double Ey = (+2*dim        *Sin(shipPitch));
    double Ez = (+2*dim*Cos(shipYaw)*Cos(shipPitch));
 
+   float spaceShipX = spaceShip->getX();
    float spaceShipY = spaceShip->getY() + spaceShip->getFloatingHeight();
-   if(spaceShipY <= -10){
-      spaceShipY = -10;
-      spaceShip->stopMoving();
+   float spaceShipZ = spaceShip->getZ();
+
+   //If spaceship is out of bound of the track lost
+   if(!setAtFinalCam && spaceShipY <= -5){
+      finalCameraX = spaceShipX;
+      finalCameraY = spaceShipY;
+      finalCameraZ = spaceShipZ;
+      setAtFinalCam = true;
    }
-   gluLookAt(Ex +spaceShip->getX() ,Ey+spaceShipY,Ez+ spaceShip->getZ() 
-    , spaceShip->getX(),spaceShipY,spaceShip->getZ() 
+
+   if(setAtFinalCam){
+     spaceShipX = finalCameraX;
+      spaceShipY = finalCameraY;
+      spaceShipZ = finalCameraZ;
+   }
+
+   gluLookAt(Ex +spaceShipX ,Ey+spaceShipY,Ez+ spaceShipZ 
+    , spaceShipX,spaceShipY,spaceShipZ  
    ,0,Cos(shipPitch),0);
 
    background->draw();
