@@ -12,14 +12,13 @@ Track::Track(){
 										,4,20
 										,40,0,0));
 
-	trackPieces.push_back(new TrackPiece(-.5,0,-25
-										,2,5
-										,0,40,50));
+	trackPieces.push_back(new TrackPiece(-.5,0,-20
+										,4,20
+										,0,20,0));
 
-	//trackPieces.push_back(new TrackPiece(-.5,-1,-14
-									//	,3,5
-									//	,40,0,0));
-
+	//trackPieces.push_back(new TrackPiece(-.5,0,-20
+										//,20,5
+										//,0,0,0));
 	
 
 	reset();

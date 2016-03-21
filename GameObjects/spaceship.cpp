@@ -15,7 +15,7 @@ SpaceShip::SpaceShip(){
 	floatingHeight = .4;
 	maxStrecth = .3;
 
-	stretchRate = 10;
+	stretchRate = 3;
 
  	flame = new Flame();
 	reset();
@@ -40,6 +40,7 @@ void SpaceShip::reset(){
 	updateRoll = 0;
 	stretching = 0;
 	addStrecth =0;
+	jumped = false;
 }
 
 void SpaceShip::go(){
@@ -74,11 +75,13 @@ void SpaceShip::updateStretch(double t){
 	addStrecth += stretching * stretchRate * t;
 	if(addStrecth >= maxStrecth){
 		stretching = -1;
-		startJump();
+		if(!jumped)
+			startJump();
 	}
 	if(addStrecth <= 0){
 		addStrecth = 0;
 		stretching = 0;
+	   	jumped = !jumped;
 	}
 }
 
@@ -114,7 +117,7 @@ void SpaceShip::updateTurning(double t){
 }
 
 void SpaceShip::updateFalling(double t){
-	fallingRate += t*10;
+	fallingRate += t*4.9;
 	y -= t*fallingRate;
 }
 
@@ -251,11 +254,21 @@ void SpaceShip::setPitch(float _updatePitch){
 	}
 }
 
+void SpaceShip::stopMoving(){
+	velocity = 0;
+	terminalVelocity = 0;
+}
+
 void SpaceShip::setY(float _y){
 	//This function will keep the ship from falling
 	//the track will call on it if there is traction
 	fallingRate = 0;
 	y = _y;
+
+	//Stretching on land
+	if(jumped && stretching == 0){
+		stretching = 1;
+	}
 }
 
 float SpaceShip::getX(){
@@ -283,16 +296,14 @@ float SpaceShip::getPitch(){
 }
 
 void SpaceShip::jump(){
-	if(accelerating  && stretching == 0 && fallingRate == 0){
+	if(accelerating  && stretching == 0 && fallingRate == 0 && !jumped){
 		stretching = 1;
 	}
 }
 
 void SpaceShip::startJump(){
-	//Setting the falling rate negative to jump
+	//Setting the falling rate negative for jumping
 	fallingRate = -6;
-	setPitch(0);
-	setRoll(0);
 }
 
 bool SpaceShip::isJumping(){

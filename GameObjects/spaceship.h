@@ -8,7 +8,7 @@
 class SpaceShip{
 
 	float terminalVelocity, accelerationRate,velocity, floatingMotionCounter;
-	bool accelerating;
+	bool accelerating, jumped;
 	float x,y,z,roll, pitch, yaw, floatingHeight, updateRate;
 	float centerX, centerY, centerZ;
 	Flame * flame;
@@ -37,6 +37,7 @@ class SpaceShip{
 		void draw();
 
 		void increaseTerminalVelocityBy(float add);
+		void stopMoving();
 
 		void setRoll(float _roll);
 		void setPitch(float _pitch);

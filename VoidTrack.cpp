@@ -13,7 +13,6 @@ float counter = 0;
 Background* background = NULL;
 SpaceShip * spaceShip = NULL;
 Track * track = NULL;
-bool setGo = false;
 
 
 
@@ -26,18 +25,14 @@ void idle()
    if(counter >= 0)
       counter += t;
 
-   if(!setGo && counter >= 1.0){
+   if(counter >= 3.0){
      spaceShip->go();
-      setGo = true;
+     counter = -1;
    }
 
-   if(counter >= 4.0){
-     // spaceShip->setFalling();
-      counter = -1;
-   }
 
    spaceShip->update(t);
-  track->checkTraction(spaceShip);
+   track->checkTraction(spaceShip);
    prevT = currentT;
    glutPostRedisplay();
 }
@@ -65,6 +60,10 @@ void display()
    double Ez = (+2*dim*Cos(shipYaw)*Cos(shipPitch));
 
    float spaceShipY = spaceShip->getY() + spaceShip->getFloatingHeight();
+   if(spaceShipY <= -10){
+      spaceShipY = -10;
+      spaceShip->stopMoving();
+   }
    gluLookAt(Ex +spaceShip->getX() ,Ey+spaceShipY,Ez+ spaceShip->getZ() 
     , spaceShip->getX(),spaceShipY,spaceShip->getZ() 
    ,0,Cos(shipPitch),0);
@@ -110,7 +109,7 @@ void key_press(unsigned char ch,int x,int y)
       spaceShip->turnLeft();
     } 
 
-    //Space
+    //Space Bar
     else if(ch == 32){
       spaceShip->jump();
     }
@@ -154,7 +153,7 @@ int main(int argc,char* argv[])
    //  Create window
    glutCreateWindow("VoidTrack");
 
-   //glutFullScreen();  
+   glutFullScreen();  
    background = new Background();
    spaceShip = new SpaceShip();
    track = new Track();
