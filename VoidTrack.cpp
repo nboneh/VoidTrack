@@ -9,16 +9,68 @@ int ph=30;         //  Elevation of view angle
 double prevT = 0;
 float counter = 0;
 bool setAtFinalCam = false;
+bool gameOver = false;
+bool paused = false;
 
 float finalCameraX ;
 float finalCameraY ; 
 float finalCameraZ;
 
-
 Background* background = NULL;
 SpaceShip * spaceShip = NULL;
 Track * track = NULL;
 
+
+void reset(){
+  background->reset();
+  spaceShip->reset();
+  track->reset();
+  setAtFinalCam = false;
+  gameOver = false;
+  counter = 0;
+}
+
+void printGameOver(){
+
+  glPushMatrix();
+  glTranslatef(-1.9, .4,0);
+  glScalef(1/152.0, 1/152.0, 1/152.0);
+  glColor3f(1,0,0);
+  Print("Game Over");
+  glPopMatrix();
+
+  glPushMatrix();
+  glTranslatef(-2.5, -.4,0);
+  glScalef(1/300.0, 1/300.0, 1/300.0);
+  glColor3f(1,1,1);
+  Print("Press any button to retry");
+  glPopMatrix();
+
+}
+
+void printPause(){
+
+  glPushMatrix();
+  glTranslatef(-1.5, .4,0);
+  glScalef(1/152.0, 1/152.0, 1/152.0);
+  glColor3f(1,0,0);
+  Print("Paused");
+  glPopMatrix();
+
+  glPushMatrix();
+  glTranslatef(-4, -.2,0);
+  glScalef(1/300.0, 1/300.0, 1/300.0);
+  glColor3f(1,1,1);
+  Print("Use the arrow keys to look around");
+  glPopMatrix();
+
+  glPushMatrix();
+  glTranslatef(-3, -.8,0);
+  glScalef(1/300.0, 1/300.0, 1/300.0);
+  glColor3f(1,1,1);
+  Print("Press any button to resume");
+  glPopMatrix();
+}
 
 
 
@@ -36,9 +88,10 @@ void idle()
      counter = -1;
    }
 
-
-   spaceShip->update(t);
-   track->checkTraction(spaceShip);
+   if(!paused){
+    spaceShip->update(t);
+    track->checkTraction(spaceShip);
+  }
    prevT = currentT;
    glutPostRedisplay();
 }
@@ -56,41 +109,60 @@ void display()
   //glEnable(GL_NORMALIZE);
 
    //Setting camera around spaceship
+   
  glLoadIdentity();
+   float cameraYaw = th - spaceShip->getYaw();
+   float cameraPitch = ph-spaceShip->getPitch();
 
-  float shipYaw = th - spaceShip->getYaw();
-  float shipPitch = ph-spaceShip->getPitch();
+  double Ex = (-2*dim*Sin(cameraYaw)*Cos(cameraPitch));
+   double Ey = (+2*dim        *Sin(cameraPitch));
+   double Ez = (+2*dim*Cos(cameraYaw)*Cos(cameraPitch));
 
-  double Ex = (-2*dim*Sin(shipYaw)*Cos(shipPitch));
-   double Ey = (+2*dim        *Sin(shipPitch));
-   double Ez = (+2*dim*Cos(shipYaw)*Cos(shipPitch));
-
-   float spaceShipX = spaceShip->getX();
-   float spaceShipY = spaceShip->getY() + spaceShip->getFloatingHeight();
-   float spaceShipZ = spaceShip->getZ();
+    float cameraX = spaceShip->getX();
+    float cameraY = spaceShip->getY() + spaceShip->getFloatingHeight();
+    float cameraZ = spaceShip->getZ();
 
    //If spaceship is out of bound of the track lost
-   if(!setAtFinalCam && spaceShipY <= -5){
-      finalCameraX = spaceShipX;
-      finalCameraY = spaceShipY;
-      finalCameraZ = spaceShipZ;
+   if(!setAtFinalCam && cameraY <= -5){
+      finalCameraX = cameraX;
+      finalCameraY = cameraY;
+      finalCameraZ = cameraZ;
       setAtFinalCam = true;
+      gameOver = true;
    }
 
    if(setAtFinalCam){
-     spaceShipX = finalCameraX;
-      spaceShipY = finalCameraY;
-      spaceShipZ = finalCameraZ;
+     cameraX = finalCameraX;
+      cameraY = finalCameraY;
+      cameraZ = finalCameraZ;
    }
 
-   gluLookAt(Ex +spaceShipX ,Ey+spaceShipY,Ez+ spaceShipZ 
-    , spaceShipX,spaceShipY,spaceShipZ  
-   ,0,Cos(shipPitch),0);
+   gluLookAt(Ex +cameraX ,Ey+cameraY,Ez+ cameraZ 
+    , cameraX,cameraY,cameraZ  
+   ,0,Cos(cameraPitch),0);
+
 
    background->draw();
    spaceShip->draw();
   track->draw();
+      //Displaying UI elements
+   glDisable(GL_DEPTH_TEST);
+     // glEnable(GL_BLEND);
+  glPushMatrix();
+  glTranslatef(cameraX, cameraY,cameraZ);
 
+  glRotatef(-cameraYaw , 0,1,0);
+  glRotatef(-cameraPitch , 1,0,0);
+  if(gameOver)
+    printGameOver();
+
+  if(paused)
+    printPause();
+
+
+  glPopMatrix();
+   glEnable(GL_DEPTH_TEST);
+         //glDisable(GL_BLEND);
    //  Make scene visible
    glFlush();
    glutSwapBuffers();
@@ -99,6 +171,9 @@ void display()
 
 void special_press(int key,int x,int y)
 {
+  if(gameOver)
+      reset();
+    if(paused){
      //  Right arrow - increase rotation by 5 degree
    if (key == GLUT_KEY_RIGHT)
     th -= 5;
@@ -112,38 +187,55 @@ void special_press(int key,int x,int y)
    //  Down Arrow - decrease rotation by 5 degree
    else if (key == GLUT_KEY_DOWN)
      ph -= 5;
+  }else {
+    // Turn ship right
+   if (key == GLUT_KEY_RIGHT)
+      spaceShip->turnRight();
+   //  Turn ship left
+   else if (key == GLUT_KEY_LEFT)
+      spaceShip->turnLeft();
+  }
+}
 
-
+void special_key_up(int key,int x,int y)
+{
+    // Turn ship right
+   if (key == GLUT_KEY_RIGHT)
+      spaceShip->stopTurnRight();
+   //  Turn ship left
+   else if (key == GLUT_KEY_LEFT)
+      spaceShip->stopTurnLeft();
+  
 }
 
 void key_press(unsigned char ch,int x,int y)
 {
+  if(gameOver){
+      reset();
+      return;
+  }
+  if(paused){
+    paused = false;
+    th=0;   
+    ph=30;  
+    return;
+  }
+
    //  Exit on ESC
    if (ch == 27)
       exit(0);
 
-    if(ch == 'a' || ch == 'A'){
-      spaceShip->turnRight();
-    } else if(ch == 'd' || ch == 'D'){
-      spaceShip->turnLeft();
-    } 
-
-    //Space Bar
-    else if(ch == 32){
+      //Space Bar
+   if(ch == 32){
       spaceShip->jump();
-    }
+    }else if(ch == 'p'  || ch == 'P'){
+      if(!gameOver)
+         paused = true; 
+   }
+
 }
 
 
-
-void key_up(unsigned char ch, int x, int y){
-
-    if(ch == 'a' || ch == 'A'){
-      spaceShip->stopTurnRight();
-    } else if(ch == 'd' || ch == 'D'){
-      spaceShip->stopTurnLeft();
-    }
-}
 
 
 void reshape(int width,int height)
@@ -181,9 +273,8 @@ int main(int argc,char* argv[])
    glutDisplayFunc(display);
    glutReshapeFunc(reshape);
    glutSpecialFunc(special_press);
-   glutSpecialUpFunc(special_press);
+   glutSpecialUpFunc(special_key_up);
    glutKeyboardFunc(key_press);
-   glutKeyboardUpFunc(key_up);
    glutIdleFunc(idle);
    glEnable(GL_DEPTH_TEST);
 

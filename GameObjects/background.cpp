@@ -1,12 +1,15 @@
 #include "background.h"
 
 Background::Background(){
+	texture = LoadTexBMP("textures/background.bmp");
+	reset();
+}
+
+void Background::reset(){
 	r = 1;
 	g = 1;
 	b = 1;
-	texture = LoadTexBMP("textures/background.bmp");
 }
-
 
 void Background::draw(){
  	glPushMatrix();

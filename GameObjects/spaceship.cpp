@@ -96,7 +96,7 @@ void SpaceShip::updateTurning(double t){
 	if(turn != 0){	
 		yaw +=  t * Cos(roll)*addRoll;
 			if(fabs(addRoll) < maxAddRoll){
-				addRoll +=  turn * t * rollRate;
+				addRoll -=  turn * t * rollRate;
 				 if(fabs(addRoll) >= maxAddRoll){
 					addRoll = maxAddRoll * turn;
 				}	
@@ -117,7 +117,7 @@ void SpaceShip::updateTurning(double t){
 }
 
 void SpaceShip::updateFalling(double t){
-	fallingRate += t*4.9;
+	fallingRate += t*20;
 	x += fallingRate*(Sin(roll)) *t;
     y -=  fallingRate*(Cos(pitch)*Cos(roll))*t;
     z -=  fallingRate*(Sin(pitch)) *t;
@@ -302,7 +302,7 @@ void SpaceShip::jump(){
 
 void SpaceShip::startJump(){
 	//Setting the falling rate negative for jumping
-	fallingRate = -3;
+	fallingRate = -10;
 }
 
 bool SpaceShip::isJumping(){
