@@ -40,10 +40,10 @@ void printGameOver(){
   glPopMatrix();
 
   glPushMatrix();
-  glTranslatef(-2.5, -.4,0);
+  glTranslatef(-1.85, -.4,0);
   glScalef(1/300.0, 1/300.0, 1/300.0);
   glColor3f(1,1,1);
-  Print("Press any button to retry");
+  Print("Press space to retry");
   glPopMatrix();
 
 }
@@ -58,17 +58,24 @@ void printPause(){
   glPopMatrix();
 
   glPushMatrix();
-  glTranslatef(-4, -.2,0);
+  glTranslatef(-4, -.8,0);
   glScalef(1/300.0, 1/300.0, 1/300.0);
   glColor3f(1,1,1);
   Print("Use the arrow keys to look around");
   glPopMatrix();
 
   glPushMatrix();
-  glTranslatef(-3, -.8,0);
+  glTranslatef(-2.7, -1.5,0);
   glScalef(1/300.0, 1/300.0, 1/300.0);
   glColor3f(1,1,1);
-  Print("Press any button to resume");
+  Print("Press space to resume");
+  glPopMatrix();
+
+ glPushMatrix();
+  glTranslatef(-2.4, -2.2,0);
+  glScalef(1/300.0, 1/300.0, 1/300.0);
+  glColor3f(1,1,1);
+  Print("Press escape to exit");
   glPopMatrix();
 }
 
@@ -210,28 +217,31 @@ void special_key_up(int key,int x,int y)
 
 void key_press(unsigned char ch,int x,int y)
 {
-  if(gameOver){
-      reset();
-      return;
-  }
-  if(paused){
-    paused = false;
-    th=0;   
-    ph=30;  
-    return;
-  }
 
    //  Exit on ESC
-   if (ch == 27)
-      exit(0);
+   if (ch == 27){
+      if(!paused){
+        if(!gameOver)
+          paused = true; 
+      }
+      else 
+        exit(0);
+    }
 
       //Space Bar
    if(ch == 32){
-      spaceShip->jump();
-    }else if(ch == 'p'  || ch == 'P'){
-      if(!gameOver)
-         paused = true; 
-   }
+        if(gameOver){
+          reset();
+          return;
+        }
+        if(paused){
+          paused = false;
+          th=0;   
+          ph=30;  
+          return;
+        }
+        spaceShip->jump();
+    }
 
 }
 

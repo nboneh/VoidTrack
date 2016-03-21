@@ -98,7 +98,7 @@ void SpaceShip::updateTurning(double t){
 			if(fabs(addRoll) < maxAddRoll){
 				addRoll -=  turn * t * rollRate;
 				 if(fabs(addRoll) >= maxAddRoll){
-					addRoll = maxAddRoll * turn;
+					addRoll = -(maxAddRoll * turn);
 				}	
 			}			
     } 
@@ -196,8 +196,6 @@ void SpaceShip::turnLeft(){
 }
 
 void SpaceShip::stopTurnLeft(){
-	if(turn != -1)
-		return;
 	turn = 0;
 }
 
@@ -208,8 +206,6 @@ void SpaceShip::turnRight(){
 }
 
 void SpaceShip::stopTurnRight(){
-	if(turn != 1)
-		return;
 	turn =  0;
 }
 
