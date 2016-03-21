@@ -1,10 +1,5 @@
 #include "VoidTrack.h"
 
- float frand(float rng,float off)
-{
-   return rand()*rng/RAND_MAX+off;
-}
-
 //
 //  Read text file
 //

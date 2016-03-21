@@ -9,5 +9,5 @@ void Fatal(const char* format , ...)
    va_start(args,format);
    vfprintf(stderr,format,args);
    va_end(args);
-   exit(1);
+  // exit(1);
 }

@@ -6,6 +6,8 @@
 #include "spaceship.h"
 #endif
 
+
+
 class Track{
 	std::vector<TrackPiece *> trackPieces;
 	int currentTrackPiece;
@@ -14,6 +16,7 @@ class Track{
 		Track();
 		void reset();
 		void draw();
-		bool checkTraction(SpaceShip ship);
+		
+		bool checkTraction(SpaceShip* ship);
 
 };

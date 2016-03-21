@@ -5,15 +5,14 @@
 
 double dim=5.0;
 int th=0;         //  Azimuth of view angle
-int ph=20;         //  Elevation of view angle
+int ph=30;         //  Elevation of view angle
 double prevT = 0;
 float counter = 0;
 
-unsigned int BACKGROUND;
 
-Background* background;
-SpaceShip * spaceShip;
-Track * track;
+Background* background = NULL;
+SpaceShip * spaceShip = NULL;
+Track * track = NULL;
 bool setGo = false;
 
 
@@ -27,17 +26,18 @@ void idle()
    if(counter >= 0)
       counter += t;
 
-   if(!setGo && counter >= 2.0){
+   if(!setGo && counter >= 1.0){
      spaceShip->go();
       setGo = true;
    }
 
    if(counter >= 4.0){
-      //spaceShip->setFalling();
+     // spaceShip->setFalling();
       counter = -1;
    }
 
    spaceShip->update(t);
+  track->checkTraction(spaceShip);
    prevT = currentT;
    glutPostRedisplay();
 }
@@ -55,21 +55,23 @@ void display()
   //glEnable(GL_NORMALIZE);
 
    //Setting camera around spaceship
-   glLoadIdentity();
+ glLoadIdentity();
 
-   float shipTh = th - spaceShip->getYaw();
-   float shipPh = ph-spaceShip->getPitch();
-   double Ex = (-2*dim*Sin(shipTh)*Cos(shipPh));
-   double Ey = (+2*dim        *Sin(shipPh));
-   double Ez = (+2*dim*Cos(shipTh)*Cos(shipPh));
-   gluLookAt(Ex +spaceShip->getX() ,Ey+spaceShip->getY(),Ez+ spaceShip->getZ() 
-    , spaceShip->getX(),spaceShip->getY(),spaceShip->getZ() 
-    , 0,Cos(shipPh),0);
+  float shipYaw = th - spaceShip->getYaw();
+  float shipPitch = ph-spaceShip->getPitch();
+
+  double Ex = (-2*dim*Sin(shipYaw)*Cos(shipPitch));
+   double Ey = (+2*dim        *Sin(shipPitch));
+   double Ez = (+2*dim*Cos(shipYaw)*Cos(shipPitch));
+
+   float spaceShipY = spaceShip->getY() + spaceShip->getFloatingHeight();
+   gluLookAt(Ex +spaceShip->getX() ,Ey+spaceShipY,Ez+ spaceShip->getZ() 
+    , spaceShip->getX(),spaceShipY,spaceShip->getZ() 
+   ,0,Cos(shipPitch),0);
 
    background->draw();
    spaceShip->draw();
   track->draw();
-
 
    //  Make scene visible
    glFlush();
@@ -81,17 +83,17 @@ void special_press(int key,int x,int y)
 {
      //  Right arrow - increase rotation by 5 degree
    if (key == GLUT_KEY_RIGHT)
-    th += 5;
+    th -= 5;
    //  Left arrow - decrease rotation by 5 degree
    else if (key == GLUT_KEY_LEFT)
-    th -= 5;
+    th += 5;
 
    //  Up Arrow - increase rotation by 5 degree
    else if (key == GLUT_KEY_UP)
-    ph -= 5;
+    ph += 5;
    //  Down Arrow - decrease rotation by 5 degree
    else if (key == GLUT_KEY_DOWN)
-     ph += 5;
+     ph -= 5;
 
 
 }
@@ -139,6 +141,7 @@ int main(int argc,char* argv[])
 {
    //  Initialize GLUT
    glutInit(&argc,argv);
+
    //  Request double buffered true color window with Z-buffer
    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 
@@ -146,7 +149,11 @@ int main(int argc,char* argv[])
    //  Create window
    glutCreateWindow("VoidTrack");
 
-   glutFullScreen();  
+   //glutFullScreen();  
+   background = new Background();
+   spaceShip = new SpaceShip();
+   track = new Track();
+   
    //  Register display, reshape, and key callbacks
    glutDisplayFunc(display);
    glutReshapeFunc(reshape);
@@ -156,10 +163,6 @@ int main(int argc,char* argv[])
    glutKeyboardUpFunc(key_up);
    glutIdleFunc(idle);
    glEnable(GL_DEPTH_TEST);
-
-   background = new Background();
-   spaceShip = new SpaceShip();
-   track = new Track();
 
    //  Pass control to GLUT for events
    glutMainLoop();

@@ -22,6 +22,7 @@
 
 #define Cos(th) cos(3.1415926/180*(th))
 #define Sin(th) sin(3.1415926/180*(th))
+#define Tan(th) tan(3.1415926/180*(th))
 #define PI 3.14159265
 
 
@@ -31,7 +32,6 @@ extern "C" {
 #endif
 
 
-extern unsigned int BACKGROUND;
 
 void Print(const char* format , ...);
 void Fatal(const char* format , ...);
@@ -46,6 +46,7 @@ void PrintProgramLog(int obj);
 void CreateShader(int prog,const GLenum type,const char* file);
 int CreateShaderProg(const char* VertFile,const char* FragFile);
 int CreateShaderProgParticle(const char* VertFile,const char* FragFile, char ** arrayAttributes);
+float areaOfTrianlge(float x1,float y1,float x2,float y2,float x3,float y3);
 
 void drawBall();
 void drawCube();

@@ -3,23 +3,38 @@
 
 Track::Track(){
 	
-	trackPieces.push_back(new TrackPiece(-.5,-1,-14
-										,3,3,5
+	trackPieces.push_back(new TrackPiece(-1,0,0
+										,2,3
+										,0,0,0));
+
+
+	trackPieces.push_back(new TrackPiece(-.5,-.06,-2
+										,4,20
 										,40,0,0));
 
-	trackPieces.push_back(new TrackPiece(-.5,3,-9
-										,2,3,5
-										,0,-40,0));
+	trackPieces.push_back(new TrackPiece(-.5,0,-25
+										,2,5
+										,0,40,50));
+
+	//trackPieces.push_back(new TrackPiece(-.5,-1,-14
+									//	,3,5
+									//	,40,0,0));
+
 	
-	trackPieces.push_back(new TrackPiece(-.5,-.06,-5
-										,2,2,5
-										,0,40,0));
-	
-	trackPieces.push_back(new TrackPiece(-1.5,0,0
-										,4,3,5
-										,0,0,0));
+
 	reset();
 }	
+
+bool Track::checkTraction(SpaceShip* ship){
+
+	for(int i = 0; i < trackPieces.size(); i++){
+		if(trackPieces.at(i)->checkTraction(ship)){
+			currentTrackPiece = i;
+			return true;
+		}
+	}
+	return false;
+}
 
 void Track::reset(){
 	currentTrackPiece = 0;

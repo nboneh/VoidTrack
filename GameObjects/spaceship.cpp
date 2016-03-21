@@ -1,13 +1,12 @@
 #include "spaceship.h"
 
 SpaceShip::SpaceShip(){
-	accelerationRate = 20;
+	accelerationRate = 5;
+
+	updateRate = 200;
 
 	maxAddRoll = 40;
 	rollRate = 50;
-
-	maxAddPitch = 70;
-	pitchRate = 50;
 
 	centerX = .5;
 	centerY = 0;
@@ -22,25 +21,25 @@ SpaceShip::SpaceShip(){
 void SpaceShip::reset(){
 	x = 0;
 	y = 0;
-	z = 0;
+	z = -.5;
 	roll = 0;
 	pitch = 0;
 	yaw = 0;
 	accelerating = false;
 	floatingMotionCounter = 0;
-	terminalVelocity = 20;
+	terminalVelocity = 10;
 	velocity = 0;
 	addRoll = 0;
 	turn = 0;
-	falling = false;
-	addPitch = 0;
 	fallingRate = 0;
-	addY = 0;
+	floatingY = 0;
+	updatePitch = 0;
+	updateRoll = 0;
 }
 
 void SpaceShip::go(){
 	accelerating = true;
-	addY = 0;
+	floatingY = 0;
 	roll = 0;
 }
 
@@ -49,24 +48,40 @@ void SpaceShip::update(double t){
 	if(!accelerating){
 		floatingMotion(t);
 	} else {
-		flame->update(t, velocity);
 		velocity += accelerationRate *t;
 		if(velocity >= terminalVelocity)
 			velocity = terminalVelocity;
-	 	x -=  velocity*(Cos(pitch)*Sin(yaw)) *t;
+		
+		flame->update(t, velocity);
+		
+	 	x -=  velocity*(Cos(pitch )*Sin(yaw)) *t;
       	y +=  velocity*(Sin(pitch)) *t;
      	z -=  velocity*(Cos(pitch)*Cos(yaw)) *t;
 		
-     	if(turn != 0){	
-			yaw +=  t * addRoll;
+		updateValues(t);
+    	updateTurning(t);
+		updateFalling(t);
+	} 
+}
+
+void SpaceShip::floatingMotion(double t){
+	//For when the ships isn't moving
+	floatingMotionCounter += t*3;
+	floatingY = sin(floatingMotionCounter*2)*.05;
+	roll = sin(floatingMotionCounter)*5;
+}
+
+void SpaceShip::updateTurning(double t){
+	if(turn != 0){	
+		yaw +=  t * Cos(roll)*addRoll;
 			if(fabs(addRoll) < maxAddRoll){
 				addRoll +=  turn * t * rollRate;
 				 if(fabs(addRoll) >= maxAddRoll){
 					addRoll = maxAddRoll * turn;
 				}	
 			}			
-     	} else if(turn == 0 && addRoll != 0) {
-     		yaw +=  t * addRoll ;
+    } 
+    else if(turn == 0 && addRoll != 0) {
      		if(addRoll < 0){
      			addRoll +=  t * rollRate * 3;
      			if(addRoll >= 0)
@@ -76,36 +91,45 @@ void SpaceShip::update(double t){
      			if(addRoll <= 0)
      				addRoll = 0;
      		}
-     	}
+     }
 
-     	if(falling){
-			if(addPitch < maxAddPitch){
-				addPitch +=   t * pitchRate;
-				 if(addPitch >= maxAddPitch){
-					addPitch = maxAddPitch;
-				}	
-			}
-			fallingRate += t*60;
-			y -= t*fallingRate;
-		}
-	} 
 }
 
-void SpaceShip::floatingMotion(double t){
-	//For when the ships isn't moving
-	floatingMotionCounter += t*3;
-	addY = sin(floatingMotionCounter*2)*.05;
-	roll = sin(floatingMotionCounter)*5;
+void SpaceShip::updateFalling(double t){
+	fallingRate += t*10;
+	y -= t*fallingRate;
+}
+
+void SpaceShip::updateValues(double t){
+	if(roll < updateRoll){
+     	roll += t*updateRate;
+     	if(roll >= updateRoll)
+     		roll = updateRoll;
+    } else if (roll > updateRoll){
+    	roll -= t*updateRate;
+     	if(roll <= updateRoll)
+     		roll = updateRoll;
+    }
+
+    if(pitch < updatePitch){
+     	pitch += t*updateRate;
+     	if(pitch >= updatePitch)
+     		pitch = updatePitch;
+    } else if (pitch > updatePitch){
+    	pitch -= t*updateRate;
+     	if(pitch <= updatePitch)
+     		pitch = updatePitch;
+    }
 }
 
 void SpaceShip::draw(){
 	glPushMatrix();
 	
-	glTranslatef(x,y + floatingHeight + addY,z);
+	glTranslatef(x,y + floatingHeight + floatingY,z);
 
     glTranslatef(centerX,centerY,centerZ);
-    glRotatef(yaw+ addRoll/3 , 0,1,0);
-    glRotatef(pitch - addPitch, 1,0,0);
+    glRotatef(yaw , 0,1,0);
+    glRotatef(pitch , 1,0,0);
     glRotatef(roll+addRoll, 0,0,1);
 	glTranslatef(-centerX,-centerY,-centerZ);
 
@@ -163,14 +187,56 @@ void SpaceShip::stopTurnRight(){
 	turn =  0;
 }
 
-void SpaceShip::setRoll(float _roll){
-	roll = _roll;
+void SpaceShip::setRoll(float _updateRoll){
+	if(roll < 0)
+		roll += 360;
+	else if (roll > 360)
+		roll -= 360;
+
+	float updateRollUpLimit = _updateRoll+ 360;
+	float updateRollLowLimit = _updateRoll- 360;
+	
+	float dist1 = fabs(updateRollUpLimit -roll );
+	float dist2 = fabs(_updateRoll -roll );
+	float dist3 = fabs(updateRollLowLimit - roll);
+
+	if(dist1 <= dist2 && dist1 <= dist3){
+		updateRoll = updateRollUpLimit;
+	} else if(dist2 <= dist3 && dist2 <= dist1){
+		updateRoll = _updateRoll;
+	} else {
+		updateRoll = updateRollLowLimit;
+	}
 }
 
-void SpaceShip::setPitch(float _pitch){
-	pitch = _pitch;
+void SpaceShip::setPitch(float _updatePitch){
+	if(pitch < 0)
+		pitch += 360;
+	else if (pitch > 360)
+		pitch -= 360;
+
+	float updatePitchUpLimit = _updatePitch+ 360;
+	float updatePitchLowLimit = _updatePitch- 360;
+	
+	float dist1 = fabs(updatePitchUpLimit -pitch );
+	float dist2 = fabs(_updatePitch -pitch );
+	float dist3 = fabs(updatePitchLowLimit - pitch);
+
+	if(dist1 <= dist2 && dist1 <= dist3){
+		updatePitch = updatePitchUpLimit;
+	} else if(dist2 <= dist3 && dist2 <= dist1){
+		updatePitch = _updatePitch;
+	} else {
+		updatePitch = updatePitchLowLimit;
+	}
 }
 
+void SpaceShip::setY(float _y){
+	//This function will keep the ship from falling
+	//the track will call on it if there is traction
+	fallingRate = 0;
+	y = _y;
+}
 
 float SpaceShip::getX(){
 	return x + centerX;
@@ -188,13 +254,14 @@ float SpaceShip::getYaw(){
 	return yaw ;
 }
 
+float SpaceShip::getFloatingHeight(){
+	return floatingHeight;
+}
+
 float SpaceShip::getPitch(){
 	return pitch;
 }
 
-void SpaceShip::setFalling(){
-	falling = true;
-}
 
 
 

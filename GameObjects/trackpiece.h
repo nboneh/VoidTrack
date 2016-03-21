@@ -5,14 +5,23 @@
 #endif
 
 class TrackPiece{
-	float x, y, z, width, endWidth, length, roll, pitch, yaw;
-	float widthDiff;
+	//A cube plank that can be set up in 3d space
+	float x, y, z, width,length, roll, pitch, yaw;
+	//Height of the cube
 	float trackHeight;
+
+	//For changing y based on roll and pitch of the track piece
+	float pitchSlope;
+	float rollSlope;
+
+	//Our hit detection will work based on a projected rectangle on the z and x axis plane
+	float hitX1, hitZ1, hitX2, hitZ2, hitX3, hitZ3, hitX4, hitZ4;
+	float hitRectArea;
+
 	public: 
-		TrackPiece(float x, float y, float z, float width, 
-			float endWidth, float length, float roll, float pitch, float yaw);
+		TrackPiece(float x, float y, float z, float width, float length, float roll, float pitch, float yaw);
 		void setColor(float r, float g, float b);
 		void draw();
-		bool checkTraction(SpaceShip ship);
+		bool checkTraction(SpaceShip* ship);
 
 };
