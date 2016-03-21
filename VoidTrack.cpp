@@ -65,14 +65,14 @@ void printPause(){
   glPopMatrix();
 
   glPushMatrix();
-  glTranslatef(-2.7, -1.5,0);
+  glTranslatef(-2.6, -1.5,0);
   glScalef(1/300.0, 1/300.0, 1/300.0);
   glColor3f(1,1,1);
   Print("Press space to resume");
   glPopMatrix();
 
  glPushMatrix();
-  glTranslatef(-2.4, -2.2,0);
+  glTranslatef(-2.3, -2.2,0);
   glScalef(1/300.0, 1/300.0, 1/300.0);
   glColor3f(1,1,1);
   Print("Press escape to exit");
