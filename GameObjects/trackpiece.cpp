@@ -90,12 +90,18 @@ void TrackPiece::draw(){
 
 bool TrackPiece::checkTraction(SpaceShip* ship){
 
+	if(ship->isJumping())
+		return false; 
 	if(ship->getY() < y -1)
 		return false;
 	//Thanks to
 	//http://math.stackexchange.com/questions/190111/how-to-check-if-a-point-is-inside-a-rectangle/190373#190373
 	float px = ship->getX();
 	float pz = ship->getZ();
+
+	float landingY = y + pitchSlope *fabs(pz - z) + rollSlope* fabs(px - x);
+	if(ship->getY() > landingY)
+		return false; 
 
 	float areaSum = areaOfTrianlge(hitX1,hitZ1, hitX4, hitZ4, px,pz);
 	areaSum += areaOfTrianlge(hitX3,hitZ3, hitX4, hitZ4, px,pz);
@@ -107,7 +113,7 @@ bool TrackPiece::checkTraction(SpaceShip* ship){
 
 	//Setting y, roll, and pitch for ship according to the track piece
 	float shipYaw =ship->getYaw() -  yaw;
-	ship->setY(y + pitchSlope *fabs(pz - z) + rollSlope* fabs(px - x));
+	ship->setY(landingY);
 
 	ship->setPitch(Cos(shipYaw) *pitch + Sin(-shipYaw) * roll);
  	ship->setRoll(Sin(shipYaw) *pitch + Cos(shipYaw) * roll);

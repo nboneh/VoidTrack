@@ -109,6 +109,11 @@ void key_press(unsigned char ch,int x,int y)
     } else if(ch == 'd' || ch == 'D'){
       spaceShip->turnLeft();
     } 
+
+    //Space
+    else if(ch == 32){
+      spaceShip->jump();
+    }
 }
 
 

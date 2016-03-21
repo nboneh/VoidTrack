@@ -3,7 +3,7 @@
 SpaceShip::SpaceShip(){
 	accelerationRate = 5;
 
-	updateRate = 200;
+	updateRate = 100;
 
 	maxAddRoll = 40;
 	rollRate = 50;
@@ -13,6 +13,9 @@ SpaceShip::SpaceShip(){
 	centerZ = -.33; 
 
 	floatingHeight = .4;
+	maxStrecth = .3;
+
+	stretchRate = 10;
 
  	flame = new Flame();
 	reset();
@@ -35,6 +38,8 @@ void SpaceShip::reset(){
 	floatingY = 0;
 	updatePitch = 0;
 	updateRoll = 0;
+	stretching = 0;
+	addStrecth =0;
 }
 
 void SpaceShip::go(){
@@ -61,7 +66,20 @@ void SpaceShip::update(double t){
 		updateValues(t);
     	updateTurning(t);
 		updateFalling(t);
+		if(stretching != 0)
+			updateStretch(t);
 	} 
+}
+void SpaceShip::updateStretch(double t){
+	addStrecth += stretching * stretchRate * t;
+	if(addStrecth >= maxStrecth){
+		stretching = -1;
+		startJump();
+	}
+	if(addStrecth <= 0){
+		addStrecth = 0;
+		stretching = 0;
+	}
 }
 
 void SpaceShip::floatingMotion(double t){
@@ -131,7 +149,9 @@ void SpaceShip::draw(){
     glRotatef(yaw , 0,1,0);
     glRotatef(pitch , 1,0,0);
     glRotatef(roll+addRoll, 0,0,1);
+    glScalef(1+addStrecth,1- addStrecth,1);
 	glTranslatef(-centerX,-centerY,-centerZ);
+
 
 	if(accelerating){
 		glPushMatrix();
@@ -262,6 +282,23 @@ float SpaceShip::getPitch(){
 	return pitch;
 }
 
+void SpaceShip::jump(){
+	if(accelerating  && stretching == 0 && fallingRate == 0){
+		stretching = 1;
+	}
+}
 
+void SpaceShip::startJump(){
+	//Setting the falling rate negative to jump
+	fallingRate = -6;
+	setPitch(0);
+	setRoll(0);
+}
+
+bool SpaceShip::isJumping(){
+	if(fallingRate <= 0)
+		return true;
+	return false;
+}
 
 
