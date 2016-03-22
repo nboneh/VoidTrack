@@ -1,7 +1,7 @@
 #include "spaceship.h"
 
 SpaceShip::SpaceShip(){
-	updateRate = 100;
+	updateRate = 200;
 
 	maxAddRoll = 40;
 	rollRate = 50;
@@ -191,6 +191,13 @@ void SpaceShip::draw(){
     glVertex3f(0,0, 0);
     glVertex3f(.5,0, -1);
     glVertex3f(1,0, 0);
+    glEnd();
+
+    glColor3f(0,1,1);
+	glBegin(GL_POLYGON);
+    glVertex3f(.5,-1, 0);
+    glVertex3f(.5,0, -1);
+    glVertex3f(.5,1, 0);
     glEnd();
 
     glColor3f(0,1,0);

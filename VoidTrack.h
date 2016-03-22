@@ -23,7 +23,10 @@
 #define Cos(th) cos(3.1415926/180*(th))
 #define Sin(th) sin(3.1415926/180*(th))
 #define Tan(th) tan(3.1415926/180*(th))
+#define Cot(th) cot(3.1415926/180*(th))
+
 #define invCos(th) acos(th) *(180/3.1415926)
+#define invSin(th) asin(th) *(180/3.1415926)
 
 
 

@@ -13,24 +13,24 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	pitch = _pitch;
 	yaw = _yaw;
 
-	model = new GLfloat[16];
+	GLfloat *xzProjectModel = new GLfloat[16];
 
 	glPushMatrix();
 	glLoadIdentity();
     glRotatef(yaw , 0,1,0);
     glRotatef(pitch , 1,0,0);
     glRotatef(roll, 0,0,1);
-	glGetFloatv(GL_MODELVIEW_MATRIX, model);
+	glGetFloatv(GL_MODELVIEW_MATRIX, xzProjectModel);
 	glPopMatrix();
 
 	hitX1 = x;
 	hitZ1 = z;
 
-	float zcalc1 = length *model[10];
-	float zcalc2 = width * model[2];
+	float zcalc1 = length *xzProjectModel[10];
+	float zcalc2 = width * xzProjectModel[2];
 
-	float xcalc1 = width *model[0];
-	float xcalc2 = length *model[8];
+	float xcalc1 = width *xzProjectModel[0];
+	float xcalc2 = length *xzProjectModel[8];
 
 	hitX2 = x + xcalc1;
 	hitZ2 = z +zcalc2;
@@ -40,7 +40,9 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 
 	hitX4 = x  -xcalc2;
 	hitZ4 = z - zcalc1;
+	free(xzProjectModel);
 
+	//The length of the projection in the z does not equal the length
 	float xdiff3 = hitX4 -x;
 	float zdiff3 = hitZ4 -z;
 	diff3 = sqrt(xdiff3 * xdiff3 + zdiff3*zdiff3);
@@ -48,9 +50,19 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	hitRectArea = areaOfTrianlge(hitX1, hitZ1, hitX2, hitZ2, hitX3, hitZ3);
 	hitRectArea += areaOfTrianlge(hitX2, hitZ2, hitX3, hitZ3, hitX4, hitZ4);
 
-	//Raise over run using soh coh toa
-	pitchSlope = Tan(pitch);	
-	rollSlope = Tan(roll);
+	GLfloat *slopeModel = new GLfloat[16];
+	glPushMatrix();
+	glLoadIdentity();
+    glRotatef(pitch , 1,0,0);
+    glRotatef(roll, 0,0,1);
+	glGetFloatv(GL_MODELVIEW_MATRIX, slopeModel);
+	glPopMatrix();
+
+		
+	//Raise over run using the model matrix to calculate slopes
+	rollSlope =  -(slopeModel[4])/(slopeModel[5]);
+	pitchSlope = (slopeModel[6])/(slopeModel[5]);
+	free(slopeModel);
 }	
 
 
@@ -111,6 +123,18 @@ void TrackPiece::draw(){
  	//glVertex3f(hitX3,1,hitZ3);
  	glVertex3f(hitX4,1,hitZ4);
  	glEnd();*/
+
+
+//For pitch slope and roll slope modeling 
+ 	/*glColor3f(0,1,0);
+ 	glBegin(GL_POLYGON);
+ 	glNormal3f(1,0, 0);
+ 	glVertex3f(x,0+.1,z);
+ 	glVertex3f(x,pitchSlope*5+.1 ,z-5);
+ 	glVertex3f(x+5,pitchSlope*5 +.1+ rollSlope* 5,z-5);
+ 	glVertex3f(x+5,rollSlope *5+.1 ,z);
+ 	glEnd();
+ 	glColor3f(0,0,1);*/
 
 
  	glColor3f(0,0,1);
@@ -176,3 +200,5 @@ bool TrackPiece::checkTraction(SpaceShip* ship){
 
 	return true;
 }
+	
+

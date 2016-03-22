@@ -11,10 +11,6 @@ class TrackPiece{
 	float trackHeight;
 
 	float diff3;
-
-	GLfloat *model; 
-
-
 	//For changing y based on roll and pitch of the track piece
 	float pitchSlope;
 	float rollSlope;
