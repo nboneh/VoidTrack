@@ -2,23 +2,38 @@
 
 
 Track::Track(){
-	
-	trackPieces.push_back(new TrackPiece(-1,0,0
-										,2,3
+	trackPieces.push_back(new TrackPiece(-2,0,7
+										,5,8
 										,0,0,0));
 
 
-	trackPieces.push_back(new TrackPiece(-.5,-.06,-2
-										,4,20
-										,40,0,0));
+	//trackPieces.push_back(new TrackPiece(-2,0,-4
+	//									,4,50
+	//									,-20,0,40));
 
-	trackPieces.push_back(new TrackPiece(-.5,0,-20
+
+	//trackPieces.push_back(new TrackPiece(2,0,-4
+	//									,4,20
+	//   								,0,20,-40));
+
+	//trackPieces.push_back(new TrackPiece(0,0,-4
+	//									,40,20
+	//   								,0,40,0));
+	//trackPieces.push_back(new TrackPiece(0,0,-4
+	//									,40,20
+	 //  								,0,40,0));
+	trackPieces.push_back(new TrackPiece(0,0,-4
 										,4,20
-										,0,20,0));
+	   								,20,20,0));
 
 	//trackPieces.push_back(new TrackPiece(-.5,0,-20
 										//,20,5
 										//,0,0,0));
+
+
+	//trackPieces.push_back(new TrackPiece(-5,-1,20
+	//									,40,20
+	//									,0,40,40));
 	
 
 	reset();
@@ -28,6 +43,11 @@ bool Track::checkTraction(SpaceShip* ship){
 
 	for(int i = 0; i < trackPieces.size(); i++){
 		if(trackPieces.at(i)->checkTraction(ship)){
+			if(i < currentTrackPiece){
+				//Lap complete
+				lap++;
+			}
+
 			currentTrackPiece = i;
 			return true;
 		}
@@ -36,7 +56,8 @@ bool Track::checkTraction(SpaceShip* ship){
 }
 
 void Track::reset(){
-	currentTrackPiece = 0;
+	currentTrackPiece = trackPieces.size()-1;
+	lap = 0;
 }
 
 void Track::draw(){
@@ -44,4 +65,8 @@ void Track::draw(){
 	for(int i = 0; i < trackPieces.size(); i++){
 		trackPieces.at(i)->draw();
 	}
+}
+
+int Track::getLap(){
+	return lap;
 }

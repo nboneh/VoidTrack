@@ -12,24 +12,38 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	roll = _roll;
 	pitch = _pitch;
 	yaw = _yaw;
-	
-	float xcalc1 = width * Cos(roll) * Cos(-yaw);
-	float xcalc2 = length * Sin(-yaw);
 
-	float zcalc1 = length * Cos(pitch) * Cos(-yaw);
-	float zcalc2 = width * Sin(-yaw);
+	model = new GLfloat[16];
+
+	glPushMatrix();
+	glLoadIdentity();
+    glRotatef(yaw , 0,1,0);
+    glRotatef(pitch , 1,0,0);
+    glRotatef(roll, 0,0,1);
+	glGetFloatv(GL_MODELVIEW_MATRIX, model);
+	glPopMatrix();
 
 	hitX1 = x;
 	hitZ1 = z;
 
+	float zcalc1 = length *model[10];
+	float zcalc2 = width * model[2];
+
+	float xcalc1 = width *model[0];
+	float xcalc2 = length *model[8];
+
 	hitX2 = x + xcalc1;
-	hitZ2 = z + zcalc2;
+	hitZ2 = z +zcalc2;
 
-	hitX3 = x + xcalc1 + xcalc2; 
-	hitZ3 = z - zcalc1 + zcalc2;
+	hitX3 = x -xcalc2 +xcalc1; 
+	hitZ3 = z  - zcalc1 +zcalc2;
 
-	hitX4 = x + xcalc2;
+	hitX4 = x  -xcalc2;
 	hitZ4 = z - zcalc1;
+
+	float xdiff3 = hitX4 -x;
+	float zdiff3 = hitZ4 -z;
+	diff3 = sqrt(xdiff3 * xdiff3 + zdiff3*zdiff3);
 
 	hitRectArea = areaOfTrianlge(hitX1, hitZ1, hitX2, hitZ2, hitX3, hitZ3);
 	hitRectArea += areaOfTrianlge(hitX2, hitZ2, hitX3, hitZ3, hitX4, hitZ4);
@@ -38,6 +52,7 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	pitchSlope = Tan(pitch);	
 	rollSlope = Tan(roll);
 }	
+
 
 void TrackPiece::draw(){	
 
@@ -86,29 +101,69 @@ void TrackPiece::draw(){
  	glEnd();
 
  	glPopMatrix();
+
+ 	//To Check hit detection placement
+ 	 /*	glColor3f(0,1,0);
+ 	glBegin(GL_POLYGON);
+ 	glNormal3f(1,0, 0);
+ 	glVertex3f(hitX1,1,hitZ1);
+ 	glVertex3f(hitX2,1,hitZ2);
+ 	//glVertex3f(hitX3,1,hitZ3);
+ 	glVertex3f(hitX4,1,hitZ4);
+ 	glEnd();*/
+
+
+ 	glColor3f(0,0,1);
 }
 
 bool TrackPiece::checkTraction(SpaceShip* ship){
 
 	if(ship->isJumping())
 		return false; 
-	if(ship->getY() < y -1)
-		return false;
-	//Thanks to
-	//http://math.stackexchange.com/questions/190111/how-to-check-if-a-point-is-inside-a-rectangle/190373#190373
 	float px = ship->getX();
 	float pz = ship->getZ();
 
-	float landingY = y + pitchSlope *fabs(pz - z) + rollSlope* fabs(px - x);
-	if(ship->getY() > landingY)
-		return false; 
+	//Caluclating landing y finding the x and z points distance from the square 
+	//base for sloping
+	float xdiff1 = px -x;
+	float zdiff1 = pz -z;
+	float diff1 = sqrt(xdiff1*xdiff1 + zdiff1*zdiff1 );
 
+	float xdiff2 = hitX4 -px;
+	float zdiff2 = hitZ4 -pz;
+	float diff2 = sqrt(xdiff2*xdiff2 + zdiff2*zdiff2 );
+
+
+
+
+	//Law of cosines
+	float calc = (diff1*diff1+ diff3*diff3 - (diff2 * diff2))/ (2 * diff1 * diff3);
+	float angle = 0;
+	if(calc < 1)
+		angle = invCos(calc);
+	
+	//Removing yaw from x and z calc
+	float xs = diff1 * Sin(angle);
+	float zs = diff1 * Cos(-angle);
+
+
+	float landingY =y + pitchSlope*zs + xs* rollSlope;
+
+	//Checking that ship is close enough within y rangle
+	if(ship->getY() > landingY+1)
+		return false; 
+	if(ship->getY() < landingY-1)
+		return false;
+
+	//Checkingh hit detection 
+	//Thanks to
+	//http://math.stackexchange.com/questions/190111/how-to-check-if-a-point-is-inside-a-rectangle/190373#190373
 	float areaSum = areaOfTrianlge(hitX1,hitZ1, hitX4, hitZ4, px,pz);
 	areaSum += areaOfTrianlge(hitX3,hitZ3, hitX4, hitZ4, px,pz);
 	areaSum += areaOfTrianlge(hitX2,hitZ2, hitX3, hitZ3, px,pz);
 	areaSum += areaOfTrianlge(hitX1,hitZ1, hitX2, hitZ2, px,pz);
 	
-	if(!(fabs(areaSum - hitRectArea) < .01))
+	if(!(fabs(areaSum - hitRectArea) < .001))
 		return false; 
 
 	//Setting y, roll, and pitch for ship according to the track piece

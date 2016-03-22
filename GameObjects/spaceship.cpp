@@ -1,8 +1,6 @@
 #include "spaceship.h"
 
 SpaceShip::SpaceShip(){
-	accelerationRate = 5;
-
 	updateRate = 100;
 
 	maxAddRoll = 40;
@@ -17,6 +15,8 @@ SpaceShip::SpaceShip(){
 
 	stretchRate = 3;
 
+	model = new GLfloat[16];
+
  	flame = new Flame();
 	reset();
 }
@@ -24,7 +24,7 @@ SpaceShip::SpaceShip(){
 void SpaceShip::reset(){
 	x = 0;
 	y = 0;
-	z = -.5;
+	z = 7;
 	roll = 0;
 	pitch = 0;
 	yaw = 0;
@@ -41,22 +41,35 @@ void SpaceShip::reset(){
 	stretching = 0;
 	addStrecth =0;
 	jumped = false;
+	accelerationRate = 5;
 }
 
 void SpaceShip::go(){
 	accelerating = true;
 	floatingY = 0;
-	roll = 0;
+	addRoll = 0;
+}
+
+void SpaceShip::stop(){
+	//Negative acceleration rate to stop movements
+	accelerationRate = -20;
 }
 
 
 void SpaceShip::update(double t){
+
+	updateValues(t);
 	if(!accelerating){
 		floatingMotion(t);
 	} else {
 		velocity += accelerationRate *t;
 		if(velocity >= terminalVelocity)
 			velocity = terminalVelocity;
+		else if(velocity <= 0){
+			velocity = 0;
+			accelerating = false;
+		}
+			
 		
 		flame->update(t, velocity);
 		
@@ -64,7 +77,6 @@ void SpaceShip::update(double t){
       	y +=  velocity*(Sin(pitch)) *t;
      	z -=  velocity*(Cos(pitch)*Cos(yaw)) *t;
 		
-		updateValues(t);
     	updateTurning(t);
 		updateFalling(t);
 		if(stretching != 0)
@@ -89,38 +101,42 @@ void SpaceShip::floatingMotion(double t){
 	//For when the ships isn't moving
 	floatingMotionCounter += t*3;
 	floatingY = sin(floatingMotionCounter*2)*.05;
-	roll = sin(floatingMotionCounter)*5;
+	addRoll = sin(floatingMotionCounter)*5;
 }
 
 void SpaceShip::updateTurning(double t){
 	if(turn != 0){	
 		yaw +=  t * Cos(roll)*addRoll;
-			if(fabs(addRoll) < maxAddRoll){
-				addRoll -=  turn * t * rollRate;
-				 if(fabs(addRoll) >= maxAddRoll){
-					addRoll = -(maxAddRoll * turn);
-				}	
-			}			
+		if(fabs(addRoll) < maxAddRoll){
+			addRoll -=  turn * t * rollRate;
+			if(fabs(addRoll) >= maxAddRoll){
+				addRoll = -(maxAddRoll * turn);
+			}	
+		}			
     } 
     else if(turn == 0 && addRoll != 0) {
-     		if(addRoll < 0){
-     			addRoll +=  t * rollRate * 3;
-     			if(addRoll >= 0)
-     				addRoll = 0;
-     		} else {
-     			addRoll -=  t * rollRate * 3;
-     			if(addRoll <= 0)
-     				addRoll = 0;
-     		}
+     	if(addRoll < 0){
+     		addRoll +=  t * rollRate * 3;
+     		if(addRoll >= 0)
+     			addRoll = 0;
+     	} else {
+     		addRoll -=  t * rollRate * 3;
+     		if(addRoll <= 0)
+     			addRoll = 0;
+     	}
      }
 
 }
 
 void SpaceShip::updateFalling(double t){
+	
+	float* upVector = getUpVector();
+
+	x -= fallingRate*upVector[0] *t;
+    y -=  fallingRate*upVector[1]*t;
+    z -=  fallingRate*upVector[2] *t;
 	fallingRate += t*20;
-	x += fallingRate*(Sin(roll)) *t;
-    y -=  fallingRate*(Cos(pitch)*Cos(roll))*t;
-    z -=  fallingRate*(Sin(pitch)) *t;
+    free(upVector);
 		
 }
 
@@ -281,6 +297,9 @@ float SpaceShip::getZ(){
 float SpaceShip::getYaw(){
 	return yaw ;
 }
+float SpaceShip::getRoll(){
+	return roll;
+}
 
 float SpaceShip::getFloatingHeight(){
 	return floatingHeight;
@@ -302,9 +321,30 @@ void SpaceShip::startJump(){
 }
 
 bool SpaceShip::isJumping(){
-	if(fallingRate <= 0)
+	if(accelerating && fallingRate <= 0)
 		return true;
 	return false;
 }
+
+float* SpaceShip::getUpVector(){
+
+	glPushMatrix();
+	glLoadIdentity();
+    glRotatef(yaw , 0,1,0);
+    glRotatef(pitch , 1,0,0);
+    glRotatef(roll, 0,0,1);
+	glGetFloatv(GL_MODELVIEW_MATRIX, model);
+	glPopMatrix();
+
+	//Make sure to free
+	float  *upVector = new float[3];
+	upVector[0] = model[4];
+	upVector[1] = model[5];
+	upVector[2] = model[6];
+
+	return upVector;
+}
+
+
 
 

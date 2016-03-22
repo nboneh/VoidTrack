@@ -2,32 +2,61 @@
 #include "GameObjects/background.h"
 #include "GameObjects/spaceship.h"
 #include "GameObjects/track.h"
+#include "GameObjects/counter.h"
 
 double dim=5.0;
 int th=0;         //  Azimuth of view angle
-int ph=30;         //  Elevation of view angle
+int ph=0;         //  Elevation of view angle
 double prevT = 0;
-float counter = 0;
 bool setAtFinalCam = false;
 bool gameOver = false;
 bool paused = false;
+bool startedShip = false;
+bool won = false;
+double w2h ;
+
+int totalLaps = 6;
+int currentLap = 1;
 
 float finalCameraX ;
 float finalCameraY ; 
 float finalCameraZ;
 
-Background* background = NULL;
-SpaceShip * spaceShip = NULL;
-Track * track = NULL;
+Background* background;
+SpaceShip * spaceShip;
+Track * track;
+Counter *counter;
+
+
+void updateLap(){
+  currentLap = track->getLap();
+  if(currentLap > totalLaps){
+    won = true;
+    spaceShip->stop();
+  }
+}
 
 
 void reset(){
   background->reset();
   spaceShip->reset();
   track->reset();
+  counter->reset();
   setAtFinalCam = false;
   gameOver = false;
-  counter = 0;
+  startedShip = false;
+  won = false;
+  currentLap = 1;
+}
+
+void printLap(){
+  glPushMatrix();
+  glTranslatef(-5, -4.9,0);
+  glScalef(1/200.0, 1/200.0, 1/200.0);
+  glColor3f(1,1,1);
+  Print("Lap %d/%d", currentLap,totalLaps);
+  glPopMatrix();
+
 }
 
 void printGameOver(){
@@ -64,21 +93,23 @@ void printPause(){
   Print("Use the arrow keys to look around");
   glPopMatrix();
 
-  glPushMatrix();
-  glTranslatef(-2.6, -1.5,0);
-  glScalef(1/300.0, 1/300.0, 1/300.0);
-  glColor3f(1,1,1);
-  Print("Press space to resume");
-  glPopMatrix();
-
- glPushMatrix();
-  glTranslatef(-2.3, -2.2,0);
-  glScalef(1/300.0, 1/300.0, 1/300.0);
-  glColor3f(1,1,1);
-  Print("Press escape to exit");
-  glPopMatrix();
 }
 
+void printWin(){
+    glPushMatrix();
+  glTranslatef(-1.9, .4,0);
+  glScalef(1/152.0, 1/152.0, 1/152.0);
+  glColor3f(1,0,0);
+  Print("You Win");
+  glPopMatrix();
+
+  glPushMatrix();
+  glTranslatef(-3, -.4,0);
+  glScalef(1/300.0, 1/300.0, 1/300.0);
+  glColor3f(1,1,1);
+  Print("Press space to play again");
+  glPopMatrix();
+}
 
 
 void idle()
@@ -87,22 +118,20 @@ void idle()
    double currentT = glutGet(GLUT_ELAPSED_TIME)/1000.0;
    double t = currentT - prevT;
 
-   if(counter >= 0)
-      counter += t;
-
-   if(counter >= 3.0){
-     spaceShip->go();
-     counter = -1;
-   }
 
    if(!paused){
+    counter->update(t);
+    if(!startedShip && counter->startShip()){
+      spaceShip->go();
+      startedShip = true;
+    }
     spaceShip->update(t);
     track->checkTraction(spaceShip);
+    if(track->getLap() >currentLap )
+        updateLap();
   }
    prevT = currentT;
-   glutPostRedisplay();
 }
-
 
 
 void display()
@@ -118,8 +147,8 @@ void display()
    //Setting camera around spaceship
    
  glLoadIdentity();
-   float cameraYaw = th - spaceShip->getYaw();
-   float cameraPitch = ph-spaceShip->getPitch();
+   float cameraYaw = - spaceShip->getYaw();
+   float cameraPitch = 30-spaceShip->getPitch();
 
   double Ex = (-2*dim*Sin(cameraYaw)*Cos(cameraPitch));
    double Ey = (+2*dim        *Sin(cameraPitch));
@@ -130,7 +159,7 @@ void display()
     float cameraZ = spaceShip->getZ();
 
    //If spaceship is out of bound of the track lost
-   if(!setAtFinalCam && cameraY <= -5){
+   if(!setAtFinalCam && cameraY <= -20){
       finalCameraX = cameraX;
       finalCameraY = cameraY;
       finalCameraZ = cameraZ;
@@ -143,33 +172,58 @@ void display()
       cameraY = finalCameraY;
       cameraZ = finalCameraZ;
    }
+  float * upVector = spaceShip->getUpVector();
 
    gluLookAt(Ex +cameraX ,Ey+cameraY,Ez+ cameraZ 
     , cameraX,cameraY,cameraZ  
-   ,0,Cos(cameraPitch),0);
+   ,upVector[0],upVector[1]*Cos(cameraPitch),upVector[2]);
+   free(upVector);
 
-
+   glPushMatrix();
+   //Setting pause camera angles
+   glTranslatef(cameraX,cameraY,cameraZ);
+   glRotatef(th,0,1,0);
+  glRotatef(ph,1,0,0);
+    glTranslatef(-cameraX,-cameraY,-cameraZ);
+    //Drawing the scene
    background->draw();
    spaceShip->draw();
   track->draw();
+  glPopMatrix();
       //Displaying UI elements
    glDisable(GL_DEPTH_TEST);
-     // glEnable(GL_BLEND);
-  glPushMatrix();
-  glTranslatef(cameraX, cameraY,cameraZ);
 
-  glRotatef(-cameraYaw , 0,1,0);
-  glRotatef(-cameraPitch , 1,0,0);
+
+   glLineWidth(3);
+
+
+glMatrixMode(GL_PROJECTION);
+glPushMatrix();
+glLoadIdentity();
+glMatrixMode(GL_MODELVIEW);
+glPushMatrix();
+glLoadIdentity();
+glScalef(1/dim-.02,1/dim -.02,1);
+
+
   if(gameOver)
     printGameOver();
 
   if(paused)
     printPause();
 
+  if(!won)
+    printLap();
+  else 
+    printWin();
 
-  glPopMatrix();
+  counter->draw();
+glMatrixMode(GL_PROJECTION);
+glPopMatrix();
+glMatrixMode(GL_MODELVIEW);
+glPopMatrix();
    glEnable(GL_DEPTH_TEST);
-         //glDisable(GL_BLEND);
+    
    //  Make scene visible
    glFlush();
    glutSwapBuffers();
@@ -178,8 +232,6 @@ void display()
 
 void special_press(int key,int x,int y)
 {
-  if(gameOver)
-      reset();
     if(paused){
      //  Right arrow - increase rotation by 5 degree
    if (key == GLUT_KEY_RIGHT)
@@ -195,6 +247,8 @@ void special_press(int key,int x,int y)
    else if (key == GLUT_KEY_DOWN)
      ph -= 5;
   }else {
+    if(won || gameOver)
+      return;
     // Turn ship right
    if (key == GLUT_KEY_RIGHT)
       spaceShip->turnRight();
@@ -205,7 +259,7 @@ void special_press(int key,int x,int y)
 }
 
 void special_key_up(int key,int x,int y)
-{
+{ 
     // Turn ship right
    if (key == GLUT_KEY_RIGHT)
       spaceShip->stopTurnRight();
@@ -220,27 +274,28 @@ void key_press(unsigned char ch,int x,int y)
 
    //  Exit on ESC
    if (ch == 27){
-      if(!paused){
-        if(!gameOver)
-          paused = true; 
-      }
-      else 
-        exit(0);
+       exit(0);
     }
 
       //Space Bar
    if(ch == 32){
-        if(gameOver){
+        if(gameOver || won){
           reset();
           return;
         }
-        if(paused){
+        spaceShip->jump();
+    } else if(ch == 'p' || ch =='P'){
+   
+      if(gameOver || !counter->done() || won)
+        //Conditions where one can't pause
+        return;
+      if(!paused){
+        paused = true;
+      } else {
           paused = false;
           th=0;   
-          ph=30;  
-          return;
-        }
-        spaceShip->jump();
+          ph=0;  
+      }
     }
 
 }
@@ -251,7 +306,7 @@ void key_press(unsigned char ch,int x,int y)
 void reshape(int width,int height)
 {
    //  Ratio of the width to the height of the window
-    double w2h = (height>0) ? (double)width/height : 1;
+     w2h = (height>0) ? (double)width/height : 1;
    //  Set the viewport to the entire window
    glViewport(0,0, width,height);
    Project(55, w2h, dim);
@@ -274,11 +329,13 @@ int main(int argc,char* argv[])
    //  Create window
    glutCreateWindow("VoidTrack");
 
-   glutFullScreen();  
+   //glutFullScreen();  
+   
    background = new Background();
    spaceShip = new SpaceShip();
    track = new Track();
-   
+   counter = new Counter();
+
    //  Register display, reshape, and key callbacks
    glutDisplayFunc(display);
    glutReshapeFunc(reshape);

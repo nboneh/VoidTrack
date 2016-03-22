@@ -11,6 +11,7 @@
 class Track{
 	std::vector<TrackPiece *> trackPieces;
 	int currentTrackPiece;
+	int lap;
 
 	public: 
 		Track();
@@ -18,5 +19,7 @@ class Track{
 		void draw();
 		
 		bool checkTraction(SpaceShip* ship);
+
+		int getLap();
 
 };

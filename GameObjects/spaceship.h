@@ -21,6 +21,8 @@ class SpaceShip{
 
 	float floatingY;
 
+	GLfloat *model; 
+
 	//1 for right, 0 for no, -1 for left
 	int turn;
 
@@ -35,6 +37,8 @@ class SpaceShip{
 		void reset();
 		void update(double t);
 		void draw();
+
+		void stop();
 
 		void increaseTerminalVelocityBy(float add);
 		
@@ -61,10 +65,13 @@ class SpaceShip{
 		float getFloatingHeight();
 		float getZ();
 
+		float* getUpVector();
+
 		void setY(float y);
 		
 		float getYaw();
 		float getPitch();
+		float getRoll();
 
 
 	private:

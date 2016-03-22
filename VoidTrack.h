@@ -23,7 +23,7 @@
 #define Cos(th) cos(3.1415926/180*(th))
 #define Sin(th) sin(3.1415926/180*(th))
 #define Tan(th) tan(3.1415926/180*(th))
-#define PI 3.14159265
+#define invCos(th) acos(th) *(180/3.1415926)
 
 
 
