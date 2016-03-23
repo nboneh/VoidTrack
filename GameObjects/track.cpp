@@ -23,8 +23,8 @@ Track::Track(){
 	//									,40,20
 	 //  								,0,40,0));
 	trackPieces.push_back(new TrackPiece(0,0,-4
-										,10,20,
-	   								20,-40,20));
+										,80,80,
+	   								40,40,0));
 	//	trackPieces.push_back(new TrackPiece(0,0,-4
 	//									,10,10
 	 //  								,0,0,0));

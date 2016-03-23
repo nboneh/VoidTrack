@@ -42,6 +42,7 @@ void SpaceShip::reset(){
 	addStrecth =0;
 	jumped = false;
 	accelerationRate = 5;
+	updateModelMatrix();
 }
 
 void SpaceShip::go(){
@@ -57,7 +58,7 @@ void SpaceShip::stop(){
 
 
 void SpaceShip::update(double t){
-
+	updateModelMatrix();
 	updateValues(t);
 	if(!accelerating){
 		floatingMotion(t);
@@ -72,10 +73,15 @@ void SpaceShip::update(double t){
 			
 		
 		flame->update(t, velocity);
+
+		float* forwardVector = getForwardVector();
 		
-	 	x -=  velocity*(Cos(pitch )*Sin(yaw)) *t;
-      	y +=  velocity*(Sin(pitch)) *t;
-     	z -=  velocity*(Cos(pitch)*Cos(yaw)) *t;
+	 	x -=  velocity*forwardVector[0] *t;
+      	y -=  velocity*forwardVector[1] *t;
+     	z -=  velocity*forwardVector[2] *t;
+     	free(forwardVector);
+
+
 		
     	updateTurning(t);
 		updateFalling(t);
@@ -141,25 +147,32 @@ void SpaceShip::updateFalling(double t){
 }
 
 void SpaceShip::updateValues(double t){
+	bool updateMatrix = false;
 	if(roll < updateRoll){
      	roll += t*updateRate;
+     	updateMatrix = true;
      	if(roll >= updateRoll)
      		roll = updateRoll;
     } else if (roll > updateRoll){
     	roll -= t*updateRate;
+    	updateMatrix = true;
      	if(roll <= updateRoll)
      		roll = updateRoll;
     }
 
     if(pitch < updatePitch){
      	pitch += t*updateRate;
+     	updateMatrix = true;
      	if(pitch >= updatePitch)
      		pitch = updatePitch;
     } else if (pitch > updatePitch){
     	pitch -= t*updateRate;
+    	updateMatrix = true;
      	if(pitch <= updatePitch)
      		pitch = updatePitch;
     }
+    if(updateMatrix)
+    	updateModelMatrix();
 }
 
 void SpaceShip::draw(){
@@ -193,12 +206,15 @@ void SpaceShip::draw(){
     glVertex3f(1,0, 0);
     glEnd();
 
+    /*glPushMatrix();
+    glRotatef(90,0,1,0);
     glColor3f(0,1,1);
 	glBegin(GL_POLYGON);
     glVertex3f(.5,-1, 0);
     glVertex3f(.5,0, -1);
     glVertex3f(.5,1, 0);
     glEnd();
+    glPopMatrix();*/
 
     glColor3f(0,1,0);
 	glBegin(GL_POLYGON);
@@ -332,9 +348,7 @@ bool SpaceShip::isJumping(){
 		return true;
 	return false;
 }
-
-float* SpaceShip::getUpVector(){
-
+void SpaceShip::updateModelMatrix(){
 	glPushMatrix();
 	glLoadIdentity();
     glRotatef(yaw , 0,1,0);
@@ -342,7 +356,9 @@ float* SpaceShip::getUpVector(){
     glRotatef(roll, 0,0,1);
 	glGetFloatv(GL_MODELVIEW_MATRIX, model);
 	glPopMatrix();
+}
 
+float* SpaceShip::getUpVector(){
 	//Make sure to free
 	float  *upVector = new float[3];
 	upVector[0] = model[4];
@@ -350,6 +366,16 @@ float* SpaceShip::getUpVector(){
 	upVector[2] = model[6];
 
 	return upVector;
+}
+
+float* SpaceShip::getForwardVector(){
+	//Make sure to free
+	float  *forwardVector = new float[3];
+	forwardVector[0] = model[8];
+	forwardVector[1] = model[9];
+	forwardVector[2] = model[10];
+
+	return forwardVector;
 }
 
 

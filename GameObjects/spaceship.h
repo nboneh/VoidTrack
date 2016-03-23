@@ -66,6 +66,7 @@ class SpaceShip{
 		float getZ();
 
 		float* getUpVector();
+		float* getForwardVector();
 
 		void setY(float y);
 		
@@ -75,6 +76,7 @@ class SpaceShip{
 
 
 	private:
+		void updateModelMatrix();
 		void floatingMotion(double t);
 		void updateTurning(double t);
 		void updateFalling(double t);

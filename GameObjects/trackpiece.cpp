@@ -174,9 +174,9 @@ bool TrackPiece::checkTraction(SpaceShip* ship){
 	float landingY =y + pitchSlope*zs + xs* rollSlope;
 
 	//Checking that ship is close enough within y rangle
-	if(ship->getY() > landingY+1)
+	if(ship->getY() > landingY+.5)
 		return false; 
-	if(ship->getY() < landingY-1)
+	if(ship->getY() < landingY-.5)
 		return false;
 
 	//Checkingh hit detection 

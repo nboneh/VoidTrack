@@ -6,14 +6,16 @@
 
 double dim=5.0;
 int th=0;         //  Azimuth of view angle
-int ph=0;         //  Elevation of view angle
+int ph=25;         //  Elevation of view angle
 double prevT = 0;
 bool setAtFinalCam = false;
 bool gameOver = false;
 bool paused = false;
 bool startedShip = false;
 bool won = false;
+
 double w2h ;
+
 
 int totalLaps = 6;
 int currentLap = 1;
@@ -26,6 +28,7 @@ Background* background;
 SpaceShip * spaceShip;
 Track * track;
 Counter *counter;
+
 
 
 void updateLap(){
@@ -147,15 +150,22 @@ void display()
    //Setting camera around spaceship
    
  glLoadIdentity();
-   float cameraYaw = - spaceShip->getYaw();
-   float cameraPitch = 30-spaceShip->getPitch();
 
-  double Ex = (-2*dim*Sin(cameraYaw)*Cos(cameraPitch));
-   double Ey = (+2*dim        *Sin(cameraPitch));
-   double Ez = (+2*dim*Cos(cameraYaw)*Cos(cameraPitch));
+     float dim2 = 2*dim;
+     glTranslatef(0,-4,0);
+  glRotatef(25,1,0,0);
+     float * forwardVector = spaceShip->getForwardVector();
+
+   float cameraYaw = - spaceShip->getYaw();
+   float cameraPitch = -spaceShip->getPitch();
+
+  double Ex = -(dim2*Sin(cameraYaw)*Cos(cameraPitch));
+   double Ey = (dim2       *Sin(cameraPitch));
+   double Ez = (dim2*Cos(cameraYaw)*Cos(cameraPitch));
+
 
     float cameraX = spaceShip->getX();
-    float cameraY = spaceShip->getY() + spaceShip->getFloatingHeight();
+    float cameraY = spaceShip->getY()+ spaceShip->getFloatingHeight();
     float cameraZ = spaceShip->getZ();
 
    //If spaceship is out of bound of the track lost
@@ -172,19 +182,12 @@ void display()
       cameraY = finalCameraY;
       cameraZ = finalCameraZ;
    }
-  float * upVector = spaceShip->getUpVector();
-
+float * upVector = spaceShip->getUpVector();
    gluLookAt(Ex +cameraX ,Ey+cameraY,Ez+ cameraZ 
     , cameraX,cameraY,cameraZ  
-   ,upVector[0],upVector[1]*Cos(cameraPitch),upVector[2]);
+   ,upVector[0],upVector[1],upVector[2]);
    free(upVector);
 
-   glPushMatrix();
-   //Setting pause camera angles
-   glTranslatef(cameraX,cameraY,cameraZ);
-   glRotatef(th,0,1,0);
-  glRotatef(ph,1,0,0);
-    glTranslatef(-cameraX,-cameraY,-cameraZ);
     //Drawing the scene
    background->draw();
    spaceShip->draw();
@@ -294,7 +297,7 @@ void key_press(unsigned char ch,int x,int y)
       } else {
           paused = false;
           th=0;   
-          ph=0;  
+          ph=25;  
       }
     }
 
@@ -329,8 +332,7 @@ int main(int argc,char* argv[])
    //  Create window
    glutCreateWindow("VoidTrack");
 
-   //glutFullScreen();  
-   
+   glutFullScreen();  
    background = new Background();
    spaceShip = new SpaceShip();
    track = new Track();
@@ -344,6 +346,7 @@ int main(int argc,char* argv[])
    glutKeyboardFunc(key_press);
    glutIdleFunc(idle);
    glEnable(GL_DEPTH_TEST);
+
 
    //  Pass control to GLUT for events
    glutMainLoop();
