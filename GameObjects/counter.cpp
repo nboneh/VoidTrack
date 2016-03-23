@@ -52,11 +52,11 @@ void Counter::draw(){
 
 	if(currentCount == 0){
 		glColor3f(0,1,0);
-		glTranslatef(-.6- scale/4, -scale/4,0);
+		glTranslatef(0- scale/2, -scale/4,0);
 	}
 	else {
 		glColor3f(.8,.8,0);
-		glTranslatef(-.4 - scale/4, -scale/4,0);
+		glTranslatef(0 - scale/4, -scale/4,0);
 	}
     glScalef(scale/152.0, scale/152.0, scale/152.0);
     Print(text);

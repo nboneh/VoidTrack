@@ -24,7 +24,7 @@ Track::Track(){
 	 //  								,0,40,0));
 	trackPieces.push_back(new TrackPiece(0,0,-4
 										,80,80,
-	   								40,40,0));
+	   								40,40,30));
 	//	trackPieces.push_back(new TrackPiece(0,0,-4
 	//									,10,10
 	 //  								,0,0,0));

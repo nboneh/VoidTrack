@@ -4,15 +4,20 @@
 #include "GameObjects/track.h"
 #include "GameObjects/counter.h"
 
+float baseElevation = 20;
 double dim=5.0;
-int th=0;         //  Azimuth of view angle
-int ph=25;         //  Elevation of view angle
+float azimuth=0;         //  Azimuth of view angle
+float elevation=baseElevation;         //  Elevation of view angle
 double prevT = 0;
 bool setAtFinalCam = false;
 bool gameOver = false;
 bool paused = false;
 bool startedShip = false;
 bool won = false;
+float camdist =dim * 1.5;
+double t;
+
+float camAngRate = 200;
 
 double w2h ;
 
@@ -119,8 +124,7 @@ void idle()
 {
     //  Elapsed time in seconds
    double currentT = glutGet(GLUT_ELAPSED_TIME)/1000.0;
-   double t = currentT - prevT;
-
+   t = currentT - prevT;
 
    if(!paused){
     counter->update(t);
@@ -149,19 +153,14 @@ void display()
 
    //Setting camera around spaceship
    
- glLoadIdentity();
-
-     float dim2 = 2*dim;
-     glTranslatef(0,-4,0);
-  glRotatef(25,1,0,0);
-     float * forwardVector = spaceShip->getForwardVector();
+glLoadIdentity();
 
    float cameraYaw = - spaceShip->getYaw();
    float cameraPitch = -spaceShip->getPitch();
 
-  double Ex = -(dim2*Sin(cameraYaw)*Cos(cameraPitch));
-   double Ey = (dim2       *Sin(cameraPitch));
-   double Ez = (dim2*Cos(cameraYaw)*Cos(cameraPitch));
+  double Ex = -(camdist*Sin(cameraYaw)*Cos(cameraPitch));
+   double Ey = (camdist       *Sin(cameraPitch));
+   double Ez = (camdist*Cos(cameraYaw)*Cos(cameraPitch));
 
 
     float cameraX = spaceShip->getX();
@@ -182,6 +181,10 @@ void display()
       cameraY = finalCameraY;
       cameraZ = finalCameraZ;
    }
+   glTranslatef(0,0,-camdist);
+   glRotatef(elevation,1,0,0);
+     glRotatef(azimuth,0,1,0);
+    glTranslatef(0,0,camdist);
 float * upVector = spaceShip->getUpVector();
    gluLookAt(Ex +cameraX ,Ey+cameraY,Ez+ cameraZ 
     , cameraX,cameraY,cameraZ  
@@ -192,7 +195,6 @@ float * upVector = spaceShip->getUpVector();
    background->draw();
    spaceShip->draw();
   track->draw();
-  glPopMatrix();
       //Displaying UI elements
    glDisable(GL_DEPTH_TEST);
 
@@ -235,23 +237,28 @@ glPopMatrix();
 
 void special_press(int key,int x,int y)
 {
-    if(paused){
-     //  Right arrow - increase rotation by 5 degree
-   if (key == GLUT_KEY_RIGHT)
-    th -= 5;
-   //  Left arrow - decrease rotation by 5 degree
-   else if (key == GLUT_KEY_LEFT)
-    th += 5;
-
-   //  Up Arrow - increase rotation by 5 degree
-   else if (key == GLUT_KEY_UP)
-    ph += 5;
-   //  Down Arrow - decrease rotation by 5 degree
-   else if (key == GLUT_KEY_DOWN)
-     ph -= 5;
-  }else {
-    if(won || gameOver)
+  if(won || gameOver)
       return;
+
+    if(paused){
+   if (key == GLUT_KEY_RIGHT){
+      azimuth -= t*camAngRate;
+  }
+   else if (key == GLUT_KEY_LEFT){
+     azimuth += t*camAngRate;
+  }
+
+   else if (key == GLUT_KEY_UP){
+     elevation += t*camAngRate ;
+  }
+   else if (key == GLUT_KEY_DOWN){
+       elevation -= t*camAngRate;
+  }
+
+
+}
+  else 
+  {
     // Turn ship right
    if (key == GLUT_KEY_RIGHT)
       spaceShip->turnRight();
@@ -296,8 +303,8 @@ void key_press(unsigned char ch,int x,int y)
         paused = true;
       } else {
           paused = false;
-          th=0;   
-          ph=25;  
+          azimuth=0;   
+          elevation=baseElevation;  
       }
     }
 
@@ -313,6 +320,7 @@ void reshape(int width,int height)
    //  Set the viewport to the entire window
    glViewport(0,0, width,height);
    Project(55, w2h, dim);
+
 }
 
 
@@ -346,7 +354,6 @@ int main(int argc,char* argv[])
    glutKeyboardFunc(key_press);
    glutIdleFunc(idle);
    glEnable(GL_DEPTH_TEST);
-
 
    //  Pass control to GLUT for events
    glutMainLoop();

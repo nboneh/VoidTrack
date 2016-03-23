@@ -48,7 +48,7 @@ void SpaceShip::reset(){
 void SpaceShip::go(){
 	accelerating = true;
 	floatingY = 0;
-	addRoll = 0;
+	addRoll = 0; 
 }
 
 void SpaceShip::stop(){
@@ -58,7 +58,6 @@ void SpaceShip::stop(){
 
 
 void SpaceShip::update(double t){
-	updateModelMatrix();
 	updateValues(t);
 	if(!accelerating){
 		floatingMotion(t);
