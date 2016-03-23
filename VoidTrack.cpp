@@ -250,9 +250,13 @@ void special_press(int key,int x,int y)
 
    else if (key == GLUT_KEY_UP){
      elevation += t*camAngRate ;
+     if(elevation>= 45)
+      elevation = 45;
   }
    else if (key == GLUT_KEY_DOWN){
        elevation -= t*camAngRate;
+        if(elevation<= -45)
+         elevation = -45;
   }
 
 
