@@ -43,6 +43,18 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	hitZ4 = z - zcalc1;
 	free(xzProjectModel);
 
+	//To see where the top of left corner of the piece end makes track building manually a ton eaiser
+	char str[100];
+	float hitY4 = y - length *xzProjectModel[9];
+	float moveForward =0;
+	float moveUp = -1;
+	float moveRight = 0;
+	sprintf(str, "x:%.3f y:%.3f z:%.3f\n"
+		,hitX4 +xzProjectModel[0]*moveRight + xzProjectModel[4]* moveUp + xzProjectModel[8] * moveForward 
+		,hitY4 +xzProjectModel[1]*moveRight + xzProjectModel[5]* moveUp + xzProjectModel[9] * moveForward 
+		,hitZ4+xzProjectModel[2]*moveRight + xzProjectModel[6]* moveUp + xzProjectModel[10] * moveForward );
+	Fatal(str);
+
 	//The length of the projection in the z does not equal the length
 	float xdiff3 = hitX4 -x;
 	float zdiff3 = hitZ4 -z;
@@ -144,7 +156,7 @@ void TrackPiece::draw(){
 
 bool TrackPiece::checkTraction(SpaceShip* ship){
 
-	if(ship->isJumping())
+if(ship->isJumping())
 		return false; 
 	float px = ship->getX();
 	float pz = ship->getZ();
@@ -167,7 +179,7 @@ bool TrackPiece::checkTraction(SpaceShip* ship){
 	float angle = 0;
 	if(calc < 1)
 		angle = invCos(calc);
-	
+
 	//Removing yaw from x and z calc
 	float xs = diff1 * Sin(angle);
 	float zs = diff1 * Cos(-angle);
@@ -176,7 +188,7 @@ bool TrackPiece::checkTraction(SpaceShip* ship){
 	float landingY =y + pitchSlope*zs + xs* rollSlope;
 
 	//Checking that ship is close enough within y rangle
-	if(ship->getY() > landingY+.5)
+	if(ship->getY() > landingY+.1)
 		return false; 
 	if(ship->getY() < landingY-1)
 		return false;
@@ -189,8 +201,9 @@ bool TrackPiece::checkTraction(SpaceShip* ship){
 	areaSum += areaOfTrianlge(hitX2,hitZ2, hitX3, hitZ3, px,pz);
 	areaSum += areaOfTrianlge(hitX1,hitZ1, hitX2, hitZ2, px,pz);
 	
-	if(!(fabs(areaSum - hitRectArea) < .001))
+	if(fabs(areaSum - hitRectArea) >.3){
 		return false; 
+	}
 
 	//Setting y, roll, and pitch for ship according to the track piece
 	float shipYaw =ship->getYaw() -  yaw;
@@ -203,4 +216,14 @@ bool TrackPiece::checkTraction(SpaceShip* ship){
 	return true;
 }
 	
+float TrackPiece::getX(){
+	return x;
+}
 
+float TrackPiece::getY(){
+	return y;
+}
+
+float TrackPiece::getZ(){
+	return z;
+}

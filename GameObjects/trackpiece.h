@@ -24,4 +24,8 @@ class TrackPiece{
 		void draw();
 		bool checkTraction(SpaceShip* ship);
 
+		float getX();
+		float getY();
+		float getZ();
+
 };

@@ -37,7 +37,7 @@ static const char* Shader_Attribs_Track[] = { "","","","","","","","XCenter", NU
 extern "C" {
 #endif
 
-
+extern int SIMPLE_LIGHTING_SHADER;
 
 void Print(const char* format , ...);
 void Fatal(const char* format , ...);

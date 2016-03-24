@@ -1,6 +1,15 @@
-//  Phong lighting
+// This lighting shader will be used for the animated track platforms 
 
-vec4 phong()
+//  Light intensity and model position required by fragment shader
+varying float LightIntensity;
+varying vec2  ModelPos;
+attribute float XCenter;
+
+// Center and zoom (for Mandelbrot set)
+uniform vec3 loc;
+
+//  Phong lighting intensity only
+float phong()
 {
    //  P is the vertex coordinate on body
    vec3 P = vec3(gl_ModelViewMatrix * gl_Vertex);
@@ -20,20 +29,21 @@ vec4 phong()
    //  Shininess intensity is cosine of light and reflection vectors to a power
    float Is = (Id>0.0) ? pow(max(dot(R,V) , 0.0) , gl_FrontMaterial.shininess) : 0.0;
 
-   //  Vertex color
-   return gl_FrontMaterial.emission                         // Emission color
-     +    gl_LightModel.ambient*gl_FrontMaterial.ambient    // Global ambient
-     +    gl_FrontLightProduct[0].ambient                   // Light[0] ambient
-     + Id*gl_FrontLightProduct[0].diffuse                   // Light[0] diffuse
-     + Is*gl_FrontLightProduct[0].specular;                 // Light[0] specular
+   //  Vertex color (ignores emission and global ambient)
+   vec3 color = gl_FrontLightProduct[0].ambient.rgb
+           + Id*gl_FrontLightProduct[0].diffuse.rgb
+           + Is*gl_FrontLightProduct[0].specular.rgb;
+
+   //  Vertex intensity
+   return length(color);
 }
 
 void main()
 {
-   //  Vertex color (using Phong lighting)
-   gl_FrontColor = phong();
-   //  Texture coordinates
-   gl_TexCoord[0] = gl_MultiTexCoord0;
+   //  Scalar light intensity (for fragment shader)
+   LightIntensity = phong();
+   //  Save model coordinates (for fragment shader)
+   ModelPos = gl_Vertex.xz - vec2(XCenter,0);
    //  Return fixed transform coordinates for this vertex
    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 }

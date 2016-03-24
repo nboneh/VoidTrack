@@ -14,6 +14,9 @@ class Track{
 	int lap;
 	int shader;
 	float counter;
+	float liner, lineg, lineb;
+
+	bool setShip;
 
 	public: 
 		Track();
@@ -26,6 +29,7 @@ class Track{
 		int getLap();
 
 		void setColor(float pr, float pg, float pb, float cr, float cg, float cb);
+		void setStartLineColor(float r, float g, float b);
 		void setShader(int shader);
 
 };

@@ -21,7 +21,9 @@ int diffuse   = 100;  // Diffuse intensity (%)
 int specular  =   0;  // Specular intensity (%)
 
 float camAngRate = 200;
-float colorTransRate = .3;
+float colorTransRate = 200;
+//A simple lighting shader for what ever object needs to draw itself without a shader
+int SIMPLE_LIGHTING_SHADER = 0;
 
 double w2h ;
 
@@ -104,6 +106,7 @@ bool updateColors(double t){
   if(update){
     spaceShip->setColor(transColors[0], transColors[1], transColors[2], transColors[3], transColors[4], transColors[5]);
      track->setColor(transColors[6], transColors[7], transColors[8], transColors[9], transColors[10], transColors[11]);
+     track->setStartLineColor(transColors[3], transColors[4], transColors[5]);
      background->setColor(transColors[9],transColors[10],transColors[11]);
   }
   return update;
@@ -158,11 +161,13 @@ void updateLap(){
 
       break; 
   }
-
   int shaderIndex = currentLap -1;
-  if(shaderIndex <0)
+  if(shaderIndex < 0)
       shaderIndex = 0;
-  track->setShader(TrackShaders[shaderIndex]);
+    if(currentLap != 1){
+      //There is lap[0] update don't reupdate
+      track->setShader(TrackShaders[shaderIndex]);
+    }
   if(currentLap > 1){
     spaceShip->increaseTerminalVelocityBy(10);
   }
@@ -193,7 +198,7 @@ void printLap(){
   glColor3f(transColors[0],transColors[1],transColors[2]);
   int lap = currentLap;
   if(lap <= 0)
-    lap = -1;
+    lap = 1;
   Print("Lap %d/%d", lap,totalLaps);
 
   glPopMatrix();
@@ -268,7 +273,7 @@ void idle()
     }
     spaceShip->update(t);
     track->update(t);
-    track->checkTraction(spaceShip);
+     track->checkTraction(spaceShip);
     if(track->getLap() >currentLap )
         updateLap();
   }
@@ -478,9 +483,9 @@ int main(int argc,char* argv[])
    //  Create window
    glutCreateWindow("VoidTrack");
 
-   glutFullScreen();  
-
-   TrackShaders[0] =CreateShaderProg("shaders/lightingshader.vert","shaders/trackshader1.frag", (char **)Shader_Attribs_Track);
+  // glutFullScreen();  
+   SIMPLE_LIGHTING_SHADER=CreateShaderProg("shaders/lightingshader.vert","shaders/simpleshader.frag", NULL);
+   TrackShaders[0] =CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader1.frag", (char **)Shader_Attribs_Track);
    TrackShaders[1] =    TrackShaders[0];
   TrackShaders[2] =    TrackShaders[0];
   TrackShaders[3] =    TrackShaders[0];

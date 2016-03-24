@@ -27,7 +27,7 @@ class SpaceShip{
 	int turn;
 
 	float fallingRate;
-
+	
 	//For before the jump, stretching int 1 for increase stretch and -1 for decrease
 	int stretching;
 	float addStrecth, maxStrecth, stretchRate;
@@ -77,6 +77,11 @@ class SpaceShip{
 		float getYaw();
 		float getPitch();
 		float getRoll();
+
+
+		void setX(float _x);
+		void setZ(float _z);
+
 
 
 	private:

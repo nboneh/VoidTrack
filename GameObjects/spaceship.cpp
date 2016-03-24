@@ -1,10 +1,10 @@
 #include "spaceship.h"
 
 SpaceShip::SpaceShip(){
-	updateRate = 200;
+	updateRate = 100;
 
 	maxAddRoll = 40;
-	rollRate = 50;
+	rollRate = 90;
 
 	centerX = .5;
 	centerY = 0;
@@ -30,7 +30,7 @@ void SpaceShip::reset(){
 	yaw = 0;
 	accelerating = false;
 	floatingMotionCounter = 0;
-	terminalVelocity = 20;
+	terminalVelocity = 15;
 	velocity = 0;
 	addRoll = 0;
 	turn = 0;
@@ -41,7 +41,7 @@ void SpaceShip::reset(){
 	stretching = 0;
 	addStrecth =0;
 	jumped = false;
-	accelerationRate = 3;
+	accelerationRate = 10;
 	updateModelMatrix();
 	flame->reset();
 }
@@ -101,6 +101,7 @@ void SpaceShip::updateStretch(double t){
 	}
 }
 
+
 void SpaceShip::floatingMotion(double t){
 	//For when the ships isn't moving
 	floatingMotionCounter += t*3;
@@ -145,6 +146,7 @@ void SpaceShip::updateFalling(double t){
 }
 
 void SpaceShip::updateValues(double t){
+	  updateModelMatrix();
 	if(roll < updateRoll){
      	roll += t*updateRate;
      	if(roll >= updateRoll)
@@ -164,7 +166,7 @@ void SpaceShip::updateValues(double t){
      	if(pitch <= updatePitch)
      		pitch = updatePitch;
     }
-    updateModelMatrix();
+
 }
 
 void SpaceShip::draw(){
@@ -190,7 +192,6 @@ void SpaceShip::draw(){
     }
     
 
-
 	glColor3f(cr,cg,cb);
 	glBegin(GL_POLYGON);
     glVertex3f(0,0, 0);
@@ -214,6 +215,7 @@ void SpaceShip::draw(){
     glVertex3f(.5,.01, -1);
     glVertex3f(.66,.01, -.7);
     glEnd();
+ 
 
 
 	glPopMatrix();
@@ -227,6 +229,8 @@ void SpaceShip::turnLeft(){
 }
 
 void SpaceShip::stopTurnLeft(){
+	if(turn != -1)
+		return;
 	turn = 0;
 }
 
@@ -237,6 +241,8 @@ void SpaceShip::turnRight(){
 }
 
 void SpaceShip::stopTurnRight(){
+	if(turn != 1)
+		return;
 	turn =  0;
 }
 
@@ -303,7 +309,6 @@ void SpaceShip::setY(float _y){
 	//the track will call on it if there is traction
 	fallingRate = 0;
 	y = _y;
-
 	//Stretching on land
 	if(jumped && stretching == 0){
 		stretching = 1;
@@ -345,11 +350,11 @@ void SpaceShip::jump(){
 
 void SpaceShip::startJump(){
 	//Setting the falling rate negative for jumping
-	fallingRate = -10;
+	fallingRate = -9;
 }
 
 bool SpaceShip::isJumping(){
-	if(accelerating && fallingRate <= 0)
+	if(accelerating && fallingRate < 0)
 		return true;
 	return false;
 }
@@ -383,6 +388,12 @@ float* SpaceShip::getForwardVector(){
 	return forwardVector;
 }
 
+void SpaceShip::setX(float _x){
+	x =_x;
+}
+void SpaceShip::setZ(float _z){
+	z =_z;
+}
 
 
 
