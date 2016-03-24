@@ -32,6 +32,8 @@ class SpaceShip{
 	int stretching;
 	float addStrecth, maxStrecth, stretchRate;
 
+	float pr, pb, pg, cr, cb , cg; 
+
 	public: 
 		SpaceShip();
 		void reset();
@@ -67,6 +69,8 @@ class SpaceShip{
 
 		float* getUpVector();
 		float* getForwardVector();
+
+		void setColor(float pr, float pb,  float pg, float cr, float cb, float cg  );
 
 		void setY(float y);
 		

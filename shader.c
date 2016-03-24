@@ -83,29 +83,11 @@ void CreateShader(int prog,const GLenum type,const char* file)
    glAttachShader(prog,shader);
 }
 
-//
-//  Create Shader Program
-//
-int CreateShaderProg(const char* VertFile,const char* FragFile)
-{
-   //  Create program
-   int prog = glCreateProgram();
-   //  Create and compile vertex shader
-   if (VertFile) CreateShader(prog,GL_VERTEX_SHADER,VertFile);
-   //  Create and compile fragment shader
-   if (FragFile) CreateShader(prog,GL_FRAGMENT_SHADER,FragFile);
-   //  Link program
-   glLinkProgram(prog);
-   //  Check for errors
-   PrintProgramLog(prog);
-   //  Return name
-   return prog;
-}
 
 //
 //  Create Shader Program
 //
-int CreateShaderProgParticle(const char* VertFile,const char* FragFile, char ** arrayAttributes)
+int CreateShaderProg(const char* VertFile,const char* FragFile, char ** arrayAttributes)
 {
    //  Create program
    int prog = glCreateProgram();
@@ -113,9 +95,11 @@ int CreateShaderProgParticle(const char* VertFile,const char* FragFile, char ** 
    if (VertFile) CreateShader(prog,GL_VERTEX_SHADER,VertFile);
    //  Create and compile fragment shader
    if (FragFile) CreateShader(prog,GL_FRAGMENT_SHADER,FragFile);
+   if(arrayAttributes){
    for (int k=0;arrayAttributes[k];k++)
       if (arrayAttributes[k][0])
          glBindAttribLocation(prog,k,arrayAttributes[k]);
+   }
    //  Link program
    glLinkProgram(prog);
    //  Check for errors

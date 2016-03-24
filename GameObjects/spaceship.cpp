@@ -30,7 +30,7 @@ void SpaceShip::reset(){
 	yaw = 0;
 	accelerating = false;
 	floatingMotionCounter = 0;
-	terminalVelocity = 10;
+	terminalVelocity = 20;
 	velocity = 0;
 	addRoll = 0;
 	turn = 0;
@@ -41,8 +41,9 @@ void SpaceShip::reset(){
 	stretching = 0;
 	addStrecth =0;
 	jumped = false;
-	accelerationRate = 5;
+	accelerationRate = 3;
 	updateModelMatrix();
+	flame->reset();
 }
 
 void SpaceShip::go(){
@@ -69,8 +70,6 @@ void SpaceShip::update(double t){
 			velocity = 0;
 			accelerating = false;
 		}
-			
-		
 		flame->update(t, velocity);
 
 		float* forwardVector = getForwardVector();
@@ -146,32 +145,26 @@ void SpaceShip::updateFalling(double t){
 }
 
 void SpaceShip::updateValues(double t){
-	bool updateMatrix = false;
 	if(roll < updateRoll){
      	roll += t*updateRate;
-     	updateMatrix = true;
      	if(roll >= updateRoll)
      		roll = updateRoll;
     } else if (roll > updateRoll){
     	roll -= t*updateRate;
-    	updateMatrix = true;
      	if(roll <= updateRoll)
      		roll = updateRoll;
     }
 
     if(pitch < updatePitch){
      	pitch += t*updateRate;
-     	updateMatrix = true;
      	if(pitch >= updatePitch)
      		pitch = updatePitch;
     } else if (pitch > updatePitch){
     	pitch -= t*updateRate;
-    	updateMatrix = true;
      	if(pitch <= updatePitch)
      		pitch = updatePitch;
     }
-    if(updateMatrix)
-    	updateModelMatrix();
+    updateModelMatrix();
 }
 
 void SpaceShip::draw(){
@@ -198,7 +191,7 @@ void SpaceShip::draw(){
     
 
 
-	glColor3f(0,1,1);
+	glColor3f(cr,cg,cb);
 	glBegin(GL_POLYGON);
     glVertex3f(0,0, 0);
     glVertex3f(.5,0, -1);
@@ -215,7 +208,7 @@ void SpaceShip::draw(){
     glEnd();
     glPopMatrix();*/
 
-    glColor3f(0,1,0);
+    glColor3f(pr,pg,pb);
 	glBegin(GL_POLYGON);
     glVertex3f(.34,.01, -.7);
     glVertex3f(.5,.01, -1);
@@ -291,7 +284,20 @@ void SpaceShip::setPitch(float _updatePitch){
 	}
 }
 
+void SpaceShip::increaseTerminalVelocityBy(float add){
+	terminalVelocity += add;
+}
 
+void SpaceShip::setColor(float _pr, float _pg,  float _pb, float _cr, float _cg, float _cb  ){
+	pr = _pr;
+	pb = _pb;
+	pg = _pg;
+	cr = _cr;
+	cg = _cg; 
+	cb = _cb;
+	flame->setColor(pr,pg,pb, cr,cg,cb);
+
+}
 void SpaceShip::setY(float _y){
 	//This function will keep the ship from falling
 	//the track will call on it if there is traction

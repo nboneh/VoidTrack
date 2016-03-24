@@ -10,12 +10,8 @@ void main(void)
    float t = mod(time,DurationTime);
    //  Particle color
    gl_FrontColor = gl_Color;
-   if(t < 0.0){
-      gl_FrontColor = vec4(0,0,0,0);
-   } else {
-       //  Particle trajectory
-      vert  += t*vec4(Vel,0);
-   }
+   //  Particle trajectory
+   vert  += t*vec4(Vel,0);
    //  Transform particle location
    gl_Position = gl_ModelViewProjectionMatrix*vert;
 }

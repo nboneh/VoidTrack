@@ -6,9 +6,8 @@
 
 class TrackPiece{
 	//A cube plank that can be set up in 3d space
-	float x, y, z, width,length, roll, pitch, yaw;
-	//Height of the cube
-	float trackHeight;
+	float x, y, z, width,length,height, roll, pitch, yaw;
+	float XCenter;
 
 	float diff3;
 	//For changing y based on roll and pitch of the track piece

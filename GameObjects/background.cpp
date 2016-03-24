@@ -2,13 +2,6 @@
 
 Background::Background(){
 	texture = LoadTexBMP("textures/background.bmp");
-	reset();
-}
-
-void Background::reset(){
-	r = 1;
-	g = 1;
-	b = 1;
 }
 
 void Background::draw(){

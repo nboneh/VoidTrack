@@ -28,6 +28,9 @@
 #define invCos(th) acos(th) *(180/3.1415926)
 #define invSin(th) asin(th) *(180/3.1415926)
 
+#define XCENTER 7
+static const char* Shader_Attribs_Track[] = { "","","","","","","","XCenter", NULL};
+
 
 
 #ifdef __cplusplus
@@ -47,8 +50,7 @@ char* ReadText(const char *file);
 void PrintShaderLog(int obj,const char* file);
 void PrintProgramLog(int obj);
 void CreateShader(int prog,const GLenum type,const char* file);
-int CreateShaderProg(const char* VertFile,const char* FragFile);
-int CreateShaderProgParticle(const char* VertFile,const char* FragFile, char ** arrayAttributes);
+int CreateShaderProg(const char* VertFile,const char* FragFile, char ** arrayAttributes);
 float areaOfTrianlge(float x1,float y1,float x2,float y2,float x3,float y3);
 
 void drawBall();

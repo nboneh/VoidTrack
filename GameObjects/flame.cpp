@@ -2,7 +2,7 @@
 
 #define VELOCITY_ARRAY 4
 #define DURATION_ARRAY    5
-const char* Name[] = {"","","","","Vel","DurationTime", NULL};
+const char* Shader_Attribs[] = {"","","","","Vel","DurationTime", NULL};
 
 Flame::Flame(){
 	numOfParticles = 1000;
@@ -10,28 +10,15 @@ Flame::Flame(){
   Color = new float[3*numOfParticles];
   Vel   = new float[3*numOfParticles];
   DurationTime = new float[numOfParticles];
-  shader = CreateShaderProgParticle("shaders/flameshader.vert",NULL, (char **)Name);
+  shader = CreateShaderProg("shaders/flameshader.vert",NULL, (char **)Shader_Attribs);
   reset();
-  init();
 }
 
 void Flame::reset(){
   counter= 0;
-  highR = .9;
-  lowR = .5;
-
-  highG = .4;
-  lowG = 0;
-
-  highB = .4;
-  lowB = 0;
-  lastVelocity = 0;
-
-}
-void Flame::init(){
-		   //  Array Pointers
+  lastVelocity = 0; 
+     //  Array Pointers
    float* vert  = Vert;
-   float* color = Color;
    float* vel   = Vel;
    float* durationTime = DurationTime;
    //  Loop over NxN patch
@@ -42,23 +29,57 @@ void Flame::init(){
     *vert++ = radius * cos(angle);
     *vert++ = 0;
     *vert++ = radius * sin(angle);
-    //  Color r,g,b (0.5-1.0)
-    *color++ = frand(highR,lowR);
-    *color++ = frand(highG,lowG);
-    *color++ = frand(highB,lowB);
     //  Velocity
     *vel++ = (radius * cos(angle)) * frand(20.0, 14.0);
     *vel++ = frand(2.0, 0.0);
     *vel++ = (radius * sin(angle)) * frand(20.0, 14.0);
     //  Launch time
-    *durationTime++ = frand(0.05,0.005);
+    *durationTime++ = frand(0.01,0.005);
   }
+
 }
+
+void Flame::setColor(float r1,float g1,float b1, float r2, float g2, float b2){
+    if(r1 > r2){
+      highR = r1;
+      lowR = r2;
+    } else {
+      highR = r2;
+      lowR = r1;
+    }
+
+   if(g1 > g2){
+      highG = g1;
+      lowG = g2;
+    } else {
+      highG = g2;
+      lowG = g1;
+    }
+
+    if(b1 > b2){
+      highB = b1;
+      lowB = b2;
+    } else {
+      highB = b2;
+      lowB = b1;
+    }
+
+    float* color = Color;
+     //  Loop over NxN patch
+   for (int i=0;i<numOfParticles;i++){
+    *color++ = frand(highR,lowR);
+    *color++ = frand(highG,lowG);
+    *color++ = frand(highB,lowB);
+  
+  }
+
+}
+
 
 void Flame::update(float t, float velocity){
   if(lastVelocity <= velocity){
      for (int i=1;i<numOfParticles;i+=3){
-      Vel[i] += (velocity -lastVelocity)*.7;
+      Vel[i] += (velocity -lastVelocity);
      }
     lastVelocity = velocity;
   }
@@ -91,7 +112,7 @@ void Flame::draw(){
 	glEnable(GL_POINT_SPRITE);
     glTexEnvi(GL_POINT_SPRITE,GL_COORD_REPLACE,GL_TRUE);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+  glBlendFunc(GL_SRC_ALPHA,GL_ONE);
     glDrawArrays(GL_POINTS,0,numOfParticles);
 
     glDisable(GL_POINT_SPRITE);

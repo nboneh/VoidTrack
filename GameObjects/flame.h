@@ -17,7 +17,6 @@ class Flame{
 		void reset();
 	    void update(float t, float velocity);
 	    void draw();
-	private:
-		void init();
+	    void setColor(float r1,float g1,float b1, float r2, float g2, float b2);
 
 };

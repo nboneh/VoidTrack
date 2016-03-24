@@ -3,7 +3,7 @@
 TrackPiece::TrackPiece(float _x, float _y, float _z, float _width, 
 				 float _length, float _roll, float _pitch, float _yaw){
 
-	trackHeight = .2;
+	height = .2;
 	x = _x;
 	y = _y;
 	z = _z;
@@ -13,6 +13,7 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	pitch = _pitch;
 	yaw = _yaw;
 
+	XCenter = width/2;
 	GLfloat *xzProjectModel = new GLfloat[16];
 
 	glPushMatrix();
@@ -68,14 +69,16 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 
 void TrackPiece::draw(){	
 
-	glPushMatrix();
 
+ glVertexAttrib1f(	XCENTER,XCenter);
+   //glEnableVertexAttrib(XCENTER);
+	glPushMatrix();
 	glTranslatef(x,y,z);
 
     glRotatef(yaw , 0,1,0);
     glRotatef(pitch, 1,0,0);
     glRotatef(roll, 0,0,1);
-	
+
 	//Top
 	glBegin(GL_QUADS);
 	glNormal3f( 0,1, 0);
@@ -88,29 +91,30 @@ void TrackPiece::draw(){
  	//Bottom
  	glBegin(GL_QUADS);
  	glNormal3f( 0,-1, 0);
- 	glVertex3f(0,-trackHeight,0);
- 	glVertex3f(width,-trackHeight,0);
- 	glVertex3f(width,-trackHeight,-length);
- 	glVertex3f(0,-trackHeight,-length);
+ 	glVertex3f(0,-height,0);
+ 	glVertex3f(width,-height,0);
+ 	glVertex3f(width,-height,-length);
+ 	glVertex3f(0,-height,-length);
  	glEnd();
 
  	//Left side
  	glBegin(GL_QUADS);
  	glNormal3f( -1,0, 0);
- 	glVertex3f(0,-trackHeight,0);
+ 	glVertex3f(0,-height,0);
  	glVertex3f(0,0,0);
  	glVertex3f(0,0,-length);
- 	glVertex3f(0,-trackHeight,-length);
+ 	glVertex3f(0,-height,-length);
  	glEnd();
 
  	//Right side
  	glBegin(GL_QUADS);
  	glNormal3f(1,0, 0);
- 	glVertex3f(width,-trackHeight,0);
+ 	glVertex3f(width,-height,0);
  	glVertex3f(width,0,0);
  	glVertex3f(width,0,-length);
- 	glVertex3f(width,-trackHeight,-length);
+ 	glVertex3f(width,-height,-length);
  	glEnd();
+
 
  	glPopMatrix();
 
@@ -135,9 +139,7 @@ void TrackPiece::draw(){
  	glVertex3f(x+5,rollSlope *5+.1 ,z);
  	glEnd();
  	glColor3f(0,0,1);*/
-
-
- 	glColor3f(0,0,1);
+//glDisableVertexAttrib(XCENTER);
 }
 
 bool TrackPiece::checkTraction(SpaceShip* ship){

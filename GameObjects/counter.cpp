@@ -11,12 +11,13 @@ void Counter::reset(){
 	increasing = true;
 	text[0] = '3';
 	text[1] = '\0';
+	toDraw = false;
 }
 
 void Counter::update(double t){
 	if(done())
 		return;
-
+	toDraw =true;
 	if(increasing)
 		scale += t* scaleRate;
 	else 
@@ -45,19 +46,18 @@ void Counter::update(double t){
 }
 
 void Counter::draw(){
-	if(done())
+	if(done() || !toDraw)
 		return;
 
 	glPushMatrix();
 
 	if(currentCount == 0){
-		glColor3f(0,1,0);
 		glTranslatef(0- scale/2, -scale/4,0);
 	}
 	else {
-		glColor3f(.8,.8,0);
 		glTranslatef(0 - scale/4, -scale/4,0);
 	}
+		glColor3f(.8,.8,0);
     glScalef(scale/152.0, scale/152.0, scale/152.0);
     Print(text);
 

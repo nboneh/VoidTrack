@@ -16,14 +16,18 @@ bool startedShip = false;
 bool won = false;
 float camdist =dim * 1.5;
 double t;
+int ambient   =  60;  // Ambient intensity (%)
+int diffuse   = 100;  // Diffuse intensity (%)
+int specular  =   0;  // Specular intensity (%)
 
 float camAngRate = 200;
+float colorTransRate = .3;
 
 double w2h ;
 
 
 int totalLaps = 6;
-int currentLap = 1;
+int currentLap = 0;
 
 float finalCameraX ;
 float finalCameraY ; 
@@ -34,7 +38,76 @@ SpaceShip * spaceShip;
 Track * track;
 Counter *counter;
 
+int TrackShaders[4];
+int numOfColors = 12;
+//Current Color pallet
+//m is main
+//p is prime
+//b is back
+//g is green
+//and then rgb
+// mpr, mpg, mpb;
+// mcr, mcg, mcb;
+// bpr, bpg, bpb;
+// bcr, bcg, bcb;
+float colors[12];
 
+float transColors[] = {0,0,0,0,0,0,0,0,0,0,0,0};
+
+ void addLighting(){
+    //  Translate intensity to color vectors
+   float Ambient[]   = {0.01f*ambient ,0.01f*ambient ,0.01f*ambient ,1.0};
+   float Diffuse[]   = {0.01f*diffuse ,0.01f*diffuse ,0.01f*diffuse ,1.0};
+   float Specular[]  = {0.01f*specular,0.01f*specular,0.01f*specular,1.0};
+   float Postion[] = {0,50,0};
+   //  Light position
+
+    //  Draw light position as ball (still no lighting here)
+   //  OpenGL should normalize normal vectors
+   glEnable(GL_NORMALIZE);
+   //  Enable lighting
+   glEnable(GL_LIGHTING);
+   //  glColor sets ambient and diffuse color materials
+   glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
+   glEnable(GL_COLOR_MATERIAL);
+   //  Enable light 0
+   glEnable(GL_LIGHT0);
+   //  Set ambient, diffuse, specular components and position of light 0
+   glLightfv(GL_LIGHT0,GL_AMBIENT ,Ambient);
+   glLightfv(GL_LIGHT0,GL_DIFFUSE ,Diffuse);
+   glLightfv(GL_LIGHT0,GL_SPECULAR,Specular);
+   glLightfv(GL_LIGHT0,GL_POSITION,Postion);
+}
+void resetColors(){
+     spaceShip->setColor(0, 0, 0, 0, 0, 0);
+  track->setColor(0,0,0,0,0,0);
+  background->setColor(0,0,0);
+}
+bool updateColors(double t){
+     bool update = false;
+  
+  for(int i = 0; i <numOfColors; i++){
+     if(transColors[i] < colors[i]){
+        update = true;
+        transColors[i] += colorTransRate * t;
+        if(transColors[i] >= colors[i])
+            transColors[i] = colors[i];
+     }
+
+    if(transColors[i] > colors[i]){
+        update = true;
+        transColors[i] -= colorTransRate * t;
+        if(transColors[i] <= colors[i])
+            transColors[i] = colors[i];
+     }
+  }
+  if(update){
+    spaceShip->setColor(transColors[0], transColors[1], transColors[2], transColors[3], transColors[4], transColors[5]);
+     track->setColor(transColors[6], transColors[7], transColors[8], transColors[9], transColors[10], transColors[11]);
+     background->setColor(transColors[9],transColors[10],transColors[11]);
+  }
+  return update;
+}
 
 void updateLap(){
   currentLap = track->getLap();
@@ -42,11 +115,61 @@ void updateLap(){
     won = true;
     spaceShip->stop();
   }
+  switch(currentLap){
+    case 0:
+    case 1:
+      //Red main
+    colors[0] = 220/255.0;
+    colors[1] =  20/255.0;
+    colors[2] = 30/255.0;
+
+    colors[3] = 178/255.0;
+    colors[4] =  34/255.0;
+    colors[5] = 34/255.0;
+
+      //Green back
+      colors[6] = 50/255.0;
+      colors[7] = 205/255.0;
+      colors[8]= 50/255.0;
+
+     colors[9] = 34/255.0;
+      colors[10] = 139/255.0;
+      colors[11]= 34/255.0;
+
+      break; 
+    case 2:
+      //Orange main
+    colors[0] = 255/255.0;
+    colors[1] =  100/255.0;
+    colors[2] = 0/255.0;
+
+    colors[3] = 255/255.0;
+    colors[4] =  70/255.0;
+    colors[5] = 0/255.0;
+
+      //Blue back
+      colors[6] = 65/255.0;
+      colors[7] = 105/255.0;
+      colors[8]= 225/255.0;
+
+     colors[9] = 0/255.0;
+      colors[10] = 0/255.0;
+      colors[11]= 139/255.0;
+
+      break; 
+  }
+
+  int shaderIndex = currentLap -1;
+  if(shaderIndex <0)
+      shaderIndex = 0;
+  track->setShader(TrackShaders[shaderIndex]);
+  if(currentLap > 1){
+    spaceShip->increaseTerminalVelocityBy(10);
+  }
 }
 
 
 void reset(){
-  background->reset();
   spaceShip->reset();
   track->reset();
   counter->reset();
@@ -55,14 +178,24 @@ void reset(){
   startedShip = false;
   won = false;
   currentLap = 1;
+  for(int i = 0; i <numOfColors; i++){
+    transColors[i] = 0;
+  }
+  resetColors();
+  updateLap();
+
 }
 
 void printLap(){
   glPushMatrix();
   glTranslatef(-5, -4.9,0);
   glScalef(1/200.0, 1/200.0, 1/200.0);
-  glColor3f(1,1,1);
-  Print("Lap %d/%d", currentLap,totalLaps);
+  glColor3f(transColors[0],transColors[1],transColors[2]);
+  int lap = currentLap;
+  if(lap <= 0)
+    lap = -1;
+  Print("Lap %d/%d", lap,totalLaps);
+
   glPopMatrix();
 
 }
@@ -127,12 +260,14 @@ void idle()
    t = currentT - prevT;
 
    if(!paused){
-    counter->update(t);
+    if(!updateColors(t))
+        counter->update(t);
     if(!startedShip && counter->startShip()){
       spaceShip->go();
       startedShip = true;
     }
     spaceShip->update(t);
+    track->update(t);
     track->checkTraction(spaceShip);
     if(track->getLap() >currentLap )
         updateLap();
@@ -147,16 +282,14 @@ void display()
 
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-//  glEnable(GL_DEPTH_TEST);
- // glEnable(GL_LIGHTING);
-  //glEnable(GL_NORMALIZE);
-
+  glEnable(GL_DEPTH_TEST);
    //Setting camera around spaceship
    
 glLoadIdentity();
 
    float cameraYaw = - spaceShip->getYaw();
    float cameraPitch = -spaceShip->getPitch();
+
 
   double Ex = -(camdist*Sin(cameraYaw)*Cos(cameraPitch));
    double Ey = (camdist       *Sin(cameraPitch));
@@ -193,9 +326,11 @@ float * upVector = spaceShip->getUpVector();
 
     //Drawing the scene
    background->draw();
+   addLighting();
    spaceShip->draw();
   track->draw();
       //Displaying UI elements
+   glDisable(GL_LIGHTING);
    glDisable(GL_DEPTH_TEST);
 
 
@@ -227,7 +362,6 @@ glMatrixMode(GL_PROJECTION);
 glPopMatrix();
 glMatrixMode(GL_MODELVIEW);
 glPopMatrix();
-   glEnable(GL_DEPTH_TEST);
     
    //  Make scene visible
    glFlush();
@@ -345,10 +479,17 @@ int main(int argc,char* argv[])
    glutCreateWindow("VoidTrack");
 
    glutFullScreen();  
+
+   TrackShaders[0] =CreateShaderProg("shaders/lightingshader.vert","shaders/trackshader1.frag", (char **)Shader_Attribs_Track);
+   TrackShaders[1] =    TrackShaders[0];
+  TrackShaders[2] =    TrackShaders[0];
+  TrackShaders[3] =    TrackShaders[0];
    background = new Background();
    spaceShip = new SpaceShip();
    track = new Track();
    counter = new Counter();
+   resetColors();
+    updateLap();
 
    //  Register display, reshape, and key callbacks
    glutDisplayFunc(display);
@@ -357,7 +498,6 @@ int main(int argc,char* argv[])
    glutSpecialUpFunc(special_key_up);
    glutKeyboardFunc(key_press);
    glutIdleFunc(idle);
-   glEnable(GL_DEPTH_TEST);
 
    //  Pass control to GLUT for events
    glutMainLoop();
