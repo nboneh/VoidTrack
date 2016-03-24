@@ -343,7 +343,7 @@ float SpaceShip::getPitch(){
 }
 
 void SpaceShip::jump(){
-	if(accelerating  && stretching == 0 && fallingRate == 0 && !jumped){
+	if(accelerating  && stretching == 0 && fabs(fallingRate) < .3 && !jumped){
 		stretching = 1;
 	}
 }
