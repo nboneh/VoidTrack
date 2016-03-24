@@ -6,17 +6,21 @@ Track::Track(){
 
 	trackPieces.push_back(new TrackPiece(-3,0,-1
 										,6,5
-										,0,15,0));
+										,0,10,0));
 
-	trackPieces.push_back(new TrackPiece(-3,1.29,-5.82
-										,6,30
+	trackPieces.push_back(new TrackPiece(-3,0.868,-5.924
+										,6,5
+										,0,20,0));
+
+	trackPieces.push_back(new TrackPiece(-3.000, 2.578 ,-10.622
+										,6,20
 										,0,30,0));
 
-	trackPieces.push_back(new TrackPiece(-3,16.29,-31.801
+	trackPieces.push_back(new TrackPiece(-3.000, 17.578 ,-36.603
 										,6,5
 										,0,25,0));
 
-	trackPieces.push_back(new TrackPiece(-3,18.403,-36.33
+	trackPieces.push_back(new TrackPiece(-3.000, 19.691 ,-41.135
 										,6,5
 										,0,15,0));
 

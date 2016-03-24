@@ -13,7 +13,6 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	pitch = _pitch;
 	yaw = _yaw;
 
-	XCenter = width/2;
 	GLfloat *xzProjectModel = new GLfloat[16];
 
 	glPushMatrix();
@@ -47,9 +46,9 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	char str[100];
 	float hitY4 = y - length *xzProjectModel[9];
 	float moveForward =0;
-	float moveUp = -1;
+	float moveUp = 0;
 	float moveRight = 0;
-	sprintf(str, "x:%.3f y:%.3f z:%.3f\n"
+	sprintf(str, "%.3f, %.3f ,%.3f\n"
 		,hitX4 +xzProjectModel[0]*moveRight + xzProjectModel[4]* moveUp + xzProjectModel[8] * moveForward 
 		,hitY4 +xzProjectModel[1]*moveRight + xzProjectModel[5]* moveUp + xzProjectModel[9] * moveForward 
 		,hitZ4+xzProjectModel[2]*moveRight + xzProjectModel[6]* moveUp + xzProjectModel[10] * moveForward );
@@ -59,6 +58,9 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	float xdiff3 = hitX4 -x;
 	float zdiff3 = hitZ4 -z;
 	diff3 = sqrt(xdiff3 * xdiff3 + zdiff3*zdiff3);
+
+	shiftX = width/2;
+	shiftZ  = length/2;
 
 	hitRectArea = areaOfTrianlge(hitX1, hitZ1, hitX2, hitZ2, hitX3, hitZ3);
 	hitRectArea += areaOfTrianlge(hitX2, hitZ2, hitX3, hitZ3, hitX4, hitZ4);
@@ -81,9 +83,7 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 
 void TrackPiece::draw(){	
 
-
- glVertexAttrib1f(	XCENTER,XCenter);
-   //glEnableVertexAttrib(XCENTER);
+    glVertexAttrib2f(SHIFTS, shiftX, shiftZ);
 	glPushMatrix();
 	glTranslatef(x,y,z);
 
