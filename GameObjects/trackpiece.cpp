@@ -44,16 +44,14 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	free(xzProjectModel);
 
 	//To see where the top of left corner of the piece end makes track building manually a ton eaiser
-	char str[100];
 	float hitY4 = y - length *xzProjectModel[9];
 	float moveForward = 0;
 	float moveUp = 0;
 	float moveRight =0;
-	sprintf(str, "%.3f, %.3f ,%.3f\n"
+	Log("%.3f, %.3f ,%.3f\n"
 		,hitX4 +xzProjectModel[0]*moveRight + xzProjectModel[4]* moveUp + xzProjectModel[8] * moveForward 
 		,hitY4 +xzProjectModel[1]*moveRight + xzProjectModel[5]* moveUp + xzProjectModel[9] * moveForward 
 		,hitZ4+xzProjectModel[2]*moveRight + xzProjectModel[6]* moveUp + xzProjectModel[10] * moveForward );
-	Fatal(str);
 
 	//The length of the projection in the z does not equal the length
 	float xdiff3 = hitX4 -x;

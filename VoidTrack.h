@@ -41,6 +41,7 @@ extern int SIMPLE_LIGHTING_SHADER;
 
 void Print(const char* format , ...);
 void Fatal(const char* format , ...);
+void Log(const char * format, ...);
 unsigned int  LoadTexBMP(const char* file);
 void Project(double fov,double asp,double dim);
 void ErrCheck(const char* where);

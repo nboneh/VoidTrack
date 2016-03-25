@@ -257,20 +257,20 @@ Track::Track(){
 
 	addNewTrackPieceWidth(-90.220, 56.856 ,-253.171,
 						5, 15
-						,0,-40,64.87,GEN_WIDTH/2);
+						,-15,-40,64.87,GEN_WIDTH/2);
 
 	addNewTrackPieceWidth(-105.322, 42.072 ,-262.464,
 						5, 15
-						,0,-40,64.87,GEN_WIDTH/2-2);
+						,15,-40,64.87,GEN_WIDTH/2-2);
 
 
 	addNewTrackPieceWidth(-122.123, 27.288 ,-268.136,
 						3, 15
-						,0,-40,64.87,GEN_WIDTH/2);
+						,-5,-40,64.87,GEN_WIDTH/2);
 
 	addNewTrackPieceWidth(-133.601, 15.075 ,-277.938,
 						4, 15
-						,0,-40,64.87,GEN_WIDTH/2-4);
+						,5,-40,64.87,GEN_WIDTH/2-4);
 
 	
 
@@ -280,7 +280,7 @@ Track::Track(){
 
 
 	addNewTrackPiece(-158.880, -6.780 ,-285.378,
-						 12
+						 11.4
 						,0,-30,64.87);
 
 
