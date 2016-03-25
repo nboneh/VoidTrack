@@ -3,10 +3,11 @@
 //  Light intensity and model position required by fragment shader
 varying float LightIntensity;
 varying vec2  ModelPos;
-attribute vec2 Shifts;
+attribute float ZShift;
 
 // Center and zoom (for Mandelbrot set)
 uniform vec3 loc;
+uniform float XShift;
 
 //  Phong lighting intensity only
 float phong()
@@ -43,7 +44,7 @@ void main()
    //  Scalar light intensity (for fragment shader)
    LightIntensity = phong();
    //  Save model coordinates (for fragment shader)
-   ModelPos = gl_Vertex.xz - vec2(Shifts.x,-Shifts.y);
+   ModelPos = gl_Vertex.xz - vec2(XShift,ZShift);
    //  Return fixed transform coordinates for this vertex
    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 }

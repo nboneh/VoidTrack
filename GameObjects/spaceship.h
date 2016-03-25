@@ -8,12 +8,14 @@
 class SpaceShip{
 
 	float terminalVelocity, accelerationRate,velocity, floatingMotionCounter;
-	bool accelerating, jumped;
+	bool accelerating,  updateFallingOn, jumpOn;
 	float x,y,z,roll, pitch, yaw, floatingHeight, updateRate;
 	float centerX, centerY, centerZ;
 	Flame * flame;
 
 	float updatePitch, updateRoll;
+
+	float jumpVel;
 
 	//For turning
 	int rollRate, maxAddRoll;
@@ -21,14 +23,15 @@ class SpaceShip{
 
 	float floatingY;
 
+
 	GLfloat *model; 
 
 	//1 for right, 0 for no, -1 for left
 	int turn;
 
 	float fallingRate;
-	
-	//For before the jump, stretching int 1 for increase stretch and -1 for decrease
+	float fallingRateInc;
+	// stretching int 1 for increase stretch and -1 for decrease
 	int stretching;
 	float addStrecth, maxStrecth, stretchRate;
 
@@ -72,14 +75,19 @@ class SpaceShip{
 
 		void setColor(float pr, float pb,  float pg, float cr, float cb, float cg  );
 
-		void setY(float y);
+		void setLandingY(float y);
+
+		void setStretchingForVel(float vel);
 		
 		float getYaw();
 		float getPitch();
 		float getRoll();
 
+		bool fallen();
+
 
 		void setX(float _x);
+		void setY(float _y);
 		void setZ(float _z);
 
 

@@ -21,7 +21,7 @@ int diffuse   = 100;  // Diffuse intensity (%)
 int specular  =   0;  // Specular intensity (%)
 
 float camAngRate = 200;
-float colorTransRate = 200;
+float colorTransRate = .3;
 //A simple lighting shader for what ever object needs to draw itself without a shader
 int SIMPLE_LIGHTING_SHADER = 0;
 
@@ -199,7 +199,7 @@ void printLap(){
   int lap = currentLap;
   if(lap <= 0)
     lap = 1;
-  Print("Lap %d/%d", lap,totalLaps);
+  Print("Zone %d/%d", lap,totalLaps);
 
   glPopMatrix();
 
@@ -271,9 +271,11 @@ void idle()
       spaceShip->go();
       startedShip = true;
     }
+    track->checkTraction(spaceShip);
     spaceShip->update(t);
     track->update(t);
-     track->checkTraction(spaceShip);
+    if(spaceShip-> fallen())
+      gameOver = true;
     if(track->getLap() >currentLap )
         updateLap();
   }
@@ -306,12 +308,11 @@ glLoadIdentity();
     float cameraZ = spaceShip->getZ();
 
    //If spaceship is out of bound of the track lost
-   if(!setAtFinalCam && cameraY <= -20){
+   if( !gameOver && setAtFinalCam){
       finalCameraX = cameraX;
       finalCameraY = cameraY;
       finalCameraZ = cameraZ;
       setAtFinalCam = true;
-      gameOver = true;
    }
 
    if(setAtFinalCam){
@@ -483,7 +484,7 @@ int main(int argc,char* argv[])
    //  Create window
    glutCreateWindow("VoidTrack");
 
-  // glutFullScreen();  
+  //glutFullScreen();  
    SIMPLE_LIGHTING_SHADER=CreateShaderProg("shaders/lightingshader.vert","shaders/simpleshader.frag", NULL);
    TrackShaders[0] =CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader1.frag", (char **)Shader_Attribs_Track);
    TrackShaders[1] =    TrackShaders[0];

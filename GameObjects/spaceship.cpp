@@ -1,5 +1,24 @@
 #include "spaceship.h"
 
+void drawTriangle(){
+   glBegin(GL_POLYGON);
+   glVertex2f( 0.0, 0.0);
+   glVertex2f( 1.0,0.0);
+   glVertex2f(0.5,-1.0);
+   glEnd();
+}
+
+void drawSquare()
+{
+   glBegin(GL_POLYGON);
+   glVertex2f(0,0);
+   glVertex2f(0,1);
+   glVertex2f(1,1);
+   glVertex2f(1,0);
+   glEnd();
+}
+
+
 SpaceShip::SpaceShip(){
 	updateRate = 100;
 
@@ -7,22 +26,22 @@ SpaceShip::SpaceShip(){
 	rollRate = 90;
 
 	centerX = .5;
-	centerY = 0;
-	centerZ = -.33; 
+	centerY = .1;
+	centerZ = -.75; 
 
 	floatingHeight = .4;
-	maxStrecth = .3;
+	fallingRateInc = 20;
 
-	stretchRate = 3;
 
 	model = new GLfloat[16];
 
  	flame = new Flame();
+ 	jumpVel = 9;
 	reset();
 }
 
 void SpaceShip::reset(){
-	x = 0;
+	x = .5;
 	y = 0;
 	z = 7;
 	roll = 0;
@@ -40,10 +59,11 @@ void SpaceShip::reset(){
 	updateRoll = 0;
 	stretching = 0;
 	addStrecth =0;
-	jumped = false;
 	accelerationRate = 10;
 	updateModelMatrix();
 	flame->reset();
+	updateFallingOn = true;
+	jumpOn = false;
 }
 
 void SpaceShip::go(){
@@ -62,7 +82,8 @@ void SpaceShip::update(double t){
 	updateValues(t);
 	if(!accelerating){
 		floatingMotion(t);
-	} else {
+		return;
+	}
 		velocity += accelerationRate *t;
 		if(velocity >= terminalVelocity)
 			velocity = terminalVelocity;
@@ -83,21 +104,23 @@ void SpaceShip::update(double t){
 		
     	updateTurning(t);
 		updateFalling(t);
-		if(stretching != 0)
-			updateStretch(t);
-	} 
+		updateStretch(t);
+
 }
 void SpaceShip::updateStretch(double t){
+	if(stretching == 0)
+		return;
 	addStrecth += stretching * stretchRate * t;
-	if(addStrecth >= maxStrecth){
-		stretching = -1;
-		if(!jumped)
+	if(stretching == 1 && addStrecth >= maxStrecth){
+		if(jumpOn){
 			startJump();
+			jumpOn = false;
+		} 
+		stretching = -1;
 	}
-	if(addStrecth <= 0){
+	if(stretching == -1 && addStrecth <= 0){
 		addStrecth = 0;
 		stretching = 0;
-	   	jumped = !jumped;
 	}
 }
 
@@ -134,13 +157,17 @@ void SpaceShip::updateTurning(double t){
 }
 
 void SpaceShip::updateFalling(double t){
+	if(!updateFallingOn){
+		updateFallingOn = true;
+		return;
+	}
 	
 	float* upVector = getUpVector();
-
 	x -= fallingRate*upVector[0] *t;
     y -=  fallingRate*upVector[1]*t;
     z -=  fallingRate*upVector[2] *t;
-	fallingRate += t*20;
+    setStretchingForVel(-fabs(fallingRate)); 
+	fallingRate += t*fallingRateInc;
     free(upVector);
 		
 }
@@ -178,13 +205,17 @@ void SpaceShip::draw(){
     glRotatef(yaw , 0,1,0);
     glRotatef(pitch , 1,0,0);
     glRotatef(roll+addRoll, 0,0,1);
-    glScalef(1+addStrecth,1- addStrecth,1);
+    glScalef(1+addStrecth/2,1- addStrecth,1+addStrecth/2);
 	glTranslatef(-centerX,-centerY,-centerZ);
 
 
+	glTranslatef(centerX,centerY,-centerZ);
+    glScalef(1+addStrecth/2,1- addStrecth,1+addStrecth/2);
+	glTranslatef(-centerX,-centerY,centerZ);
+
 	if(accelerating){
 		glPushMatrix();
-		glTranslatef(centerX,0,0);
+		glTranslatef(centerX,centerY,0);
 		glRotatef(90,1,0,0);
 		glScalef(1.5,1,1.5);
   		flame->draw();
@@ -192,12 +223,12 @@ void SpaceShip::draw(){
     }
     
 
-	glColor3f(cr,cg,cb);
+	/*glColor3f(cr,cg,cb);
 	glBegin(GL_POLYGON);
     glVertex3f(0,0, 0);
     glVertex3f(.5,0, -1);
     glVertex3f(1,0, 0);
-    glEnd();
+    glEnd();*/
 
     /*glPushMatrix();
     glRotatef(90,0,1,0);
@@ -210,11 +241,31 @@ void SpaceShip::draw(){
     glPopMatrix();*/
 
     glColor3f(pr,pg,pb);
-	glBegin(GL_POLYGON);
-    glVertex3f(.34,.01, -.7);
-    glVertex3f(.5,.01, -1);
-    glVertex3f(.66,.01, -.7);
-    glEnd();
+	glPushMatrix();
+	glScalef( 1,.2,1.5);
+   drawSquare();
+
+   glRotatef(60,1.0,0.0,0.0);
+   drawTriangle();
+
+   glRotatef(-60,1.0,0.0,0.0);
+   glTranslatef(0,1,0);
+   glRotatef(120,1.0,0.0,0.0);
+   drawTriangle();
+
+
+   glRotatef(-120,1.0,0.0,0.0);
+   glTranslatef(0,-1,0);
+   glRotatef(90,0.0,0.0,1.0);
+   glRotatef(120,1.0,0.0,0.0);
+   drawTriangle();
+
+   glRotatef(-120,1.0,0.0,0.0);
+   glTranslatef(0,-1,0);
+   glRotatef(60,1.0,0.0,0.0);
+   drawTriangle();
+   glPopMatrix();
+
  
 
 
@@ -304,15 +355,15 @@ void SpaceShip::setColor(float _pr, float _pg,  float _pb, float _cr, float _cg,
 	flame->setColor(pr,pg,pb, cr,cg,cb);
 
 }
-void SpaceShip::setY(float _y){
+void SpaceShip::setLandingY(float _y){
 	//This function will keep the ship from falling
 	//the track will call on it if there is traction
+	setStretchingForVel(fallingRate);
 	fallingRate = 0;
+	updateFallingOn = false;
 	y = _y;
-	//Stretching on land
-	if(jumped && stretching == 0){
-		stretching = 1;
-	}
+	//maxStrecth = (fallingRate/fallingRateInc);
+	//stretching = 1;
 }
 
 float SpaceShip::getX(){
@@ -343,14 +394,29 @@ float SpaceShip::getPitch(){
 }
 
 void SpaceShip::jump(){
-	if(accelerating  && stretching == 0 && fabs(fallingRate) < .3 && !jumped){
+	if(accelerating  && stretching == 0 && fabs(fallingRate) < .1){
+		jumpOn = true;
+		setStretchingForVel(jumpVel);
+	}
+}
+
+void SpaceShip::setStretchingForVel(float vel){
+	if(vel > 0){
+		//For on ground
 		stretching = 1;
+		maxStrecth = vel/30;
+		stretchRate = vel /3;
+	} else if(stretching == 0  && vel <= 0 ){
+		//For in air
+		addStrecth = vel/60;
+		if(addStrecth < -.1)
+			addStrecth = -.1;
 	}
 }
 
 void SpaceShip::startJump(){
 	//Setting the falling rate negative for jumping
-	fallingRate = -9;
+	fallingRate = -jumpVel;
 }
 
 bool SpaceShip::isJumping(){
@@ -393,6 +459,13 @@ void SpaceShip::setX(float _x){
 }
 void SpaceShip::setZ(float _z){
 	z =_z;
+}
+void SpaceShip::setY(float _y){
+	y = _y;
+}
+
+bool SpaceShip::fallen(){
+	return fallingRate > fallingRateInc;
 }
 
 

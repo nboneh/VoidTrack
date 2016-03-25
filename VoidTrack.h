@@ -28,8 +28,8 @@
 #define invCos(th) acos(th) *(180/3.1415926)
 #define invSin(th) asin(th) *(180/3.1415926)
 
-#define SHIFTS 7
-static const char* Shader_Attribs_Track[] = { "","","","","","","","Shifts", NULL};
+#define ZSHIFT_IND 7
+static const char* Shader_Attribs_Track[] = { "","","","","","","","ZShift", NULL};
 
 
 

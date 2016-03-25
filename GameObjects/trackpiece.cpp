@@ -1,7 +1,7 @@
 #include "trackpiece.h"
 
 TrackPiece::TrackPiece(float _x, float _y, float _z, float _width, 
-				 float _length, float _roll, float _pitch, float _yaw){
+				 float _length, float _roll, float _pitch, float _yaw,float lengthFromStart){
 
 	height = .2;
 	x = _x;
@@ -59,8 +59,7 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	float zdiff3 = hitZ4 -z;
 	diff3 = sqrt(xdiff3 * xdiff3 + zdiff3*zdiff3);
 
-	shiftX = width/2;
-	shiftZ  = length/2;
+	shiftZ  = lengthFromStart;
 
 	hitRectArea = areaOfTrianlge(hitX1, hitZ1, hitX2, hitZ2, hitX3, hitZ3);
 	hitRectArea += areaOfTrianlge(hitX2, hitZ2, hitX3, hitZ3, hitX4, hitZ4);
@@ -83,7 +82,7 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 
 void TrackPiece::draw(){	
 
-    glVertexAttrib2f(SHIFTS, shiftX, shiftZ);
+    glVertexAttrib1f(ZSHIFT_IND, shiftZ);
 	glPushMatrix();
 	glTranslatef(x,y,z);
 
@@ -155,9 +154,10 @@ void TrackPiece::draw(){
 }
 
 bool TrackPiece::checkTraction(SpaceShip* ship){
+	 if(ship->isJumping())
+	 	//Ship is jumping no need to check traction
+ 		return false;
 
-if(ship->isJumping())
-		return false; 
 	float px = ship->getX();
 	float pz = ship->getZ();
 
@@ -186,13 +186,7 @@ if(ship->isJumping())
 
 
 	float landingY =y + pitchSlope*zs + xs* rollSlope;
-
-	//Checking that ship is close enough within y rangle
-	if(ship->getY() > landingY+.1)
-		return false; 
-	if(ship->getY() < landingY-1)
-		return false;
-
+ 
 	//Checkingh hit detection 
 	//Thanks to
 	//http://math.stackexchange.com/questions/190111/how-to-check-if-a-point-is-inside-a-rectangle/190373#190373
@@ -205,12 +199,19 @@ if(ship->isJumping())
 		return false; 
 	}
 
-	//Setting y, roll, and pitch for ship according to the track piece
 	float shipYaw =ship->getYaw() -  yaw;
-	ship->setY(landingY);
-
 	ship->setPitch(Cos(shipYaw) *pitch + Sin(-shipYaw) * roll);
  	ship->setRoll(Sin(shipYaw) *pitch + Cos(shipYaw) * roll);
+
+
+ 	//Checking that ship is close enough within y rangle
+	if(ship->getY() > landingY+.5)
+		return false; 
+	if(ship->getY() < landingY-.5)
+		return false;
+
+
+	ship->setLandingY(landingY);
 
 
 	return true;
@@ -227,3 +228,4 @@ float TrackPiece::getY(){
 float TrackPiece::getZ(){
 	return z;
 }
+

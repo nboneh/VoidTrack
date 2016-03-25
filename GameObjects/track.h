@@ -15,8 +15,11 @@ class Track{
 	int shader;
 	float counter;
 	float liner, lineg, lineb;
+	
 
 	bool setShip;
+
+	float lengthOfTrack;
 
 	public: 
 		Track();
@@ -31,5 +34,7 @@ class Track{
 		void setColor(float pr, float pg, float pb, float cr, float cg, float cb);
 		void setStartLineColor(float r, float g, float b);
 		void setShader(int shader);
+	private:
+		void addNewTrackPiece(float x, float y, float z, float width, float length, float roll, float pitch, float yaw);
 
 };

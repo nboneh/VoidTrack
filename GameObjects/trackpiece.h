@@ -9,7 +9,7 @@ class TrackPiece{
 	float x, y, z, width,length,height, roll, pitch, yaw;
 
 	//These shifts for the shader to allign it
-	float shiftX, shiftZ;
+	float shiftZ;
 
 	float diff3;
 	//For changing y based on roll and pitch of the track piece
@@ -22,7 +22,7 @@ class TrackPiece{
 
 
 	public: 
-		TrackPiece(float x, float y, float z, float width, float length, float roll, float pitch, float yaw);
+		TrackPiece(float x, float y, float z, float width, float length, float roll, float pitch, float yaw, float lengthFromStart);
 		void setColor(float r, float g, float b);
 		void draw();
 		bool checkTraction(SpaceShip* ship);

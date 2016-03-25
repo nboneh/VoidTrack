@@ -1,31 +1,48 @@
 #include "track.h"
 
+const float  WIDTH_OF_TRACK = 8;
+const float MIN_WIDTH_OF_TRACK = 2;
+
 
 Track::Track(){
 	setShip = true;
+	lengthOfTrack = 0;
 
-	trackPieces.push_back(new TrackPiece(-3,0,-1
+		addNewTrackPiece(-3,0,7
+										,6,8
+										,0,0,0);
+
+	addNewTrackPiece(-3,0,-1
 										,6,5
-										,0,10,0));
+										,0,10,0);
 
-	trackPieces.push_back(new TrackPiece(-3,0.868,-5.924
+	addNewTrackPiece(-3,0.868,-5.924
 										,6,5
-										,0,20,0));
+										,0,20,0);
 
-	trackPieces.push_back(new TrackPiece(-3.000, 2.578 ,-10.622
-										,6,20
-										,0,30,0));
+	addNewTrackPiece(0.000, 2.578 ,-13.622
+										,6,22
+										,20,30,0);
 
-	trackPieces.push_back(new TrackPiece(-3.000, 17.578 ,-36.603
-										,6,5
-										,0,25,0));
+	addNewTrackPiece(-2.500, 17.578 ,-36.603
+										,5,10
+										,0,30,0);
 
-	trackPieces.push_back(new TrackPiece(-3.000, 19.691 ,-41.135
-										,6,5
-										,0,15,0));
+	addNewTrackPiece(-2.500, 22.578 ,-45.263
+										,5,5
+										,0,20,0);
+
+	addNewTrackPiece(-2.500, 24.288 ,-49.961
+										,5,5
+										,0,10,0);
 
 
-	trackPieces.push_back(new TrackPiece(-3,19.67,-41.16
+	addNewTrackPiece(-2.500, 24.288 ,-49.961
+										,5,5
+										,0,0,0);
+
+
+	/*trackPieces.push_back(new TrackPiece(-3,19.67,-41.16
 										,6,20
 										,0,5,0));
 
@@ -64,7 +81,7 @@ Track::Track(){
 
 	trackPieces.push_back(new TrackPiece(-97.966,24.57,-141.981
 								,6,30
-								,40,-5,105));
+								,40,-5,105));*/
 
 	//trackPieces.push_back(new TrackPiece(-22.955,26.652,-118.749
 	//									,8,25
@@ -79,10 +96,6 @@ Track::Track(){
 	//									,30,20,40));*/
 
 
-	
-	trackPieces.push_back(new TrackPiece(-3,0,7
-										,6,8
-										,0,0,0));
 
 	reset();
 }	
@@ -94,6 +107,9 @@ void Track::setColor(float r1, float g1, float b1, float r2, float g2, float b2)
  	 if (loc>=0) glUniform3f(loc,r1,g1,b1);
  	 loc = glGetUniformLocation(shader, "ComplimentColor");
  	 if (loc>=0) glUniform3f(loc,r2,g2,b2);
+ 	 loc = glGetUniformLocation(shader, "XShift");
+ 	 if (loc>=0) glUniform1f(loc,WIDTH_OF_TRACK/2);
+ 	 glUseProgram(0);
 }
 
 void Track::update(float t){
@@ -115,7 +131,7 @@ bool Track::checkTraction(SpaceShip* ship){
 	}
 	for(int i = 0; i < trackPieces.size(); i++){
 		if(trackPieces.at(i)->checkTraction(ship)){
-			if(i < currentTrackPiece){
+			if(i == 3 && lap < 2){
 				//Lap complete
 				lap++;
 			}
@@ -146,8 +162,8 @@ void Track::draw(){
     glBegin(GL_QUADS);
  	glNormal3f(1,0, 0);
  	glVertex3f(-3,.01,0);
- 	glVertex3f(3,.01,0);
- 	glVertex3f(3,.01,-1);
+ 	glVertex3f(5,.01,0);
+ 	glVertex3f(5,.01,-1);
  	glVertex3f(-3,.01,-1);
  	glEnd();
  	glUseProgram(0);
@@ -167,4 +183,12 @@ void Track::setStartLineColor(float r, float g, float b){
 void Track::setShader(int _shader){
 	counter = 0;
 	shader = _shader; 
+}
+
+void Track::addNewTrackPiece(float x, float y, float z, float width, float length, float roll, float pitch, float yaw){
+		trackPieces.push_back(new TrackPiece(x,y,z
+										,WIDTH_OF_TRACK,length
+										,roll,pitch,yaw, lengthOfTrack));
+
+	lengthOfTrack += length;
 }
