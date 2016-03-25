@@ -199,7 +199,7 @@ void printLap(){
   int lap = currentLap;
   if(lap <= 0)
     lap = 1;
-  Print("Zone %d/%d", lap,totalLaps);
+  Print("Laps %d/%d", lap,totalLaps);
 
   glPopMatrix();
 
@@ -308,7 +308,7 @@ glLoadIdentity();
     float cameraZ = spaceShip->getZ();
 
    //If spaceship is out of bound of the track lost
-   if( !gameOver && setAtFinalCam){
+   if( gameOver && !setAtFinalCam){
       finalCameraX = cameraX;
       finalCameraY = cameraY;
       finalCameraZ = cameraZ;
@@ -484,7 +484,7 @@ int main(int argc,char* argv[])
    //  Create window
    glutCreateWindow("VoidTrack");
 
-  //glutFullScreen();  
+  glutFullScreen();  
    SIMPLE_LIGHTING_SHADER=CreateShaderProg("shaders/lightingshader.vert","shaders/simpleshader.frag", NULL);
    TrackShaders[0] =CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader1.frag", (char **)Shader_Attribs_Track);
    TrackShaders[1] =    TrackShaders[0];

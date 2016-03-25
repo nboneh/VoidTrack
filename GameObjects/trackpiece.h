@@ -20,9 +20,10 @@ class TrackPiece{
 	float hitX1, hitZ1, hitX2, hitZ2, hitX3, hitZ3, hitX4, hitZ4;
 	float hitRectArea;
 
+	float shiftX;
 
 	public: 
-		TrackPiece(float x, float y, float z, float width, float length, float roll, float pitch, float yaw, float lengthFromStart);
+		TrackPiece(float x, float y, float z, float width, float length, float roll, float pitch, float yaw, float lengthFromStart, float shiftX);
 		void setColor(float r, float g, float b);
 		void draw();
 		bool checkTraction(SpaceShip* ship);

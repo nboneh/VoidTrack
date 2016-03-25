@@ -1,7 +1,7 @@
 #include "trackpiece.h"
 
 TrackPiece::TrackPiece(float _x, float _y, float _z, float _width, 
-				 float _length, float _roll, float _pitch, float _yaw,float lengthFromStart){
+				 float _length, float _roll, float _pitch, float _yaw,float lengthFromStart, float _shiftX){
 
 	height = .2;
 	x = _x;
@@ -12,6 +12,7 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	roll = _roll;
 	pitch = _pitch;
 	yaw = _yaw;
+	shiftX = _shiftX;
 
 	GLfloat *xzProjectModel = new GLfloat[16];
 
@@ -45,9 +46,9 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	//To see where the top of left corner of the piece end makes track building manually a ton eaiser
 	char str[100];
 	float hitY4 = y - length *xzProjectModel[9];
-	float moveForward =0;
+	float moveForward = 0;
 	float moveUp = 0;
-	float moveRight = 0;
+	float moveRight =0;
 	sprintf(str, "%.3f, %.3f ,%.3f\n"
 		,hitX4 +xzProjectModel[0]*moveRight + xzProjectModel[4]* moveUp + xzProjectModel[8] * moveForward 
 		,hitY4 +xzProjectModel[1]*moveRight + xzProjectModel[5]* moveUp + xzProjectModel[9] * moveForward 
@@ -82,7 +83,7 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 
 void TrackPiece::draw(){	
 
-    glVertexAttrib1f(ZSHIFT_IND, shiftZ);
+    glVertexAttrib2f(SHIFTS, shiftX, shiftZ);
 	glPushMatrix();
 	glTranslatef(x,y,z);
 
@@ -182,7 +183,7 @@ bool TrackPiece::checkTraction(SpaceShip* ship){
 
 	//Removing yaw from x and z calc
 	float xs = diff1 * Sin(angle);
-	float zs = diff1 * Cos(-angle);
+	float zs = diff1 * Cos(angle);
 
 
 	float landingY =y + pitchSlope*zs + xs* rollSlope;
@@ -199,16 +200,16 @@ bool TrackPiece::checkTraction(SpaceShip* ship){
 		return false; 
 	}
 
-	float shipYaw =ship->getYaw() -  yaw;
-	ship->setPitch(Cos(shipYaw) *pitch + Sin(-shipYaw) * roll);
- 	ship->setRoll(Sin(shipYaw) *pitch + Cos(shipYaw) * roll);
-
-
- 	//Checking that ship is close enough within y rangle
+	 //Checking that ship is close enough within y rangle
 	if(ship->getY() > landingY+.5)
 		return false; 
 	if(ship->getY() < landingY-.5)
 		return false;
+
+	float shipYaw =ship->getYaw() -  yaw;
+	ship->setPitch(Cos(shipYaw) *pitch + Sin(-shipYaw) * roll);
+ 	ship->setRoll(Sin(shipYaw) *pitch + Cos(shipYaw) * roll);
+
 
 
 	ship->setLandingY(landingY);

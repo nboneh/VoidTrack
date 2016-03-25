@@ -394,7 +394,7 @@ float SpaceShip::getPitch(){
 }
 
 void SpaceShip::jump(){
-	if(accelerating  && stretching == 0 && fabs(fallingRate) < .1){
+	if(accelerating   && fabs(fallingRate) < .01){
 		jumpOn = true;
 		setStretchingForVel(jumpVel);
 	}

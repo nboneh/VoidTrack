@@ -65,11 +65,11 @@ void Counter::draw(){
 }
 
 bool Counter::startShip(){
-	return true;
-	//return currentCount <= 0;
+	return currentCount <= 0;
+	//return true;
 }
 
 bool Counter::done(){
-	return true;
-	//return currentCount <= -1;
+	return currentCount <= -1;
+	//return true;
 }
