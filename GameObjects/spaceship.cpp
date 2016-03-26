@@ -20,13 +20,13 @@ void drawSquare()
 
 
 SpaceShip::SpaceShip(){
-	updateRate = 100;
+	updateRate = 50;
 
 	maxAddRoll = 40;
 	rollRate = 90;
 
 	centerX = .5;
-	centerY = .1;
+	centerY = .15;
 	centerZ = -.75; 
 
 	floatingHeight = .4;
@@ -59,7 +59,7 @@ void SpaceShip::reset(){
 	updateRoll = 0;
 	stretching = 0;
 	addStrecth =0;
-	accelerationRate = 10;
+	accelerationRate = 5;
 	updateModelMatrix();
 	flame->reset();
 	updateFallingOn = true;
@@ -215,7 +215,7 @@ void SpaceShip::draw(){
 
 	if(accelerating){
 		glPushMatrix();
-		glTranslatef(centerX,centerY,0);
+		glTranslatef(centerX,centerY,	-.01);
 		glRotatef(90,1,0,0);
 		glScalef(1.5,1,1.5);
   		flame->draw();
@@ -242,7 +242,7 @@ void SpaceShip::draw(){
 
     glColor3f(pr,pg,pb);
 	glPushMatrix();
-	glScalef( 1,.2,1.5);
+	glScalef( 1,.3,1.5);
    drawSquare();
 
    glRotatef(60,1.0,0.0,0.0);

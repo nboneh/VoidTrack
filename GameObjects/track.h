@@ -37,4 +37,6 @@ class Track{
 	private:
 		void addNewTrackPieceWidth(float x, float y, float z, float width, float length, float roll, float pitch, float yaw, float xShift);
 		void addNewTrackPiece(float x, float y, float z, float length, float roll, float pitch, float yaw);
+		void addNewTrackPieceTriWidth(float x, float y, float z, float width, float length, float roll, float pitch, float yaw, int deactiveCorner, float xShift);
+		void addNewTrackPieceTri(float x, float y, float z, float length, float roll, float pitch, float yaw, int deactiveCorner);
 };

@@ -2,7 +2,6 @@
 
 class Flame{
 	int numOfParticles;
-	int shader;
 	float * Vert;
 	float * DurationTime;
 	float * Color;

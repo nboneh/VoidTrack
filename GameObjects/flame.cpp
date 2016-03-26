@@ -1,8 +1,5 @@
 #include "flame.h"
 
-#define VELOCITY_ARRAY 4
-#define DURATION_ARRAY    5
-const char* Shader_Attribs[] = {"","","","","Vel","DurationTime", NULL};
 
 Flame::Flame(){
 	numOfParticles = 1000;
@@ -10,7 +7,6 @@ Flame::Flame(){
   Color = new float[3*numOfParticles];
   Vel   = new float[3*numOfParticles];
   DurationTime = new float[numOfParticles];
-  shader = CreateShaderProg("shaders/flameshader.vert",NULL, (char **)Shader_Attribs);
   reset();
 }
 
@@ -30,11 +26,11 @@ void Flame::reset(){
     *vert++ = 0;
     *vert++ = radius * sin(angle);
     //  Velocity
-    *vel++ = (radius * cos(angle)) * frand(20.0, 14.0);
-    *vel++ = frand(2.0, 0.0);
-    *vel++ = (radius * sin(angle)) * frand(20.0, 14.0);
+    *vel++ = (radius * cos(angle)) * 10;
+    *vel++ = 0;
+    *vel++ = (radius * sin(angle)) *10;
     //  Launch time
-    *durationTime++ = frand(0.01,0.005);
+    *durationTime++ = frand(0.05,0.01);
   }
 
 }
@@ -83,16 +79,16 @@ void Flame::update(float t, float velocity){
      }
     lastVelocity = velocity;
   }
-   glUseProgram(shader);
+   glUseProgram(FLAME_SHADER);
 	int loc;
 	counter += t;
-	loc = glGetUniformLocation(shader, "time");
+	loc = glGetUniformLocation(FLAME_SHADER, "time");
   if (loc>=0) glUniform1f(loc,counter);
   glUseProgram(0);
 }
 
 void Flame::draw(){
-	 glUseProgram(shader);
+	 glUseProgram(FLAME_SHADER);
 	glPointSize(2);
 	 //  Set particle size
    //  Point vertex location to local array Vert

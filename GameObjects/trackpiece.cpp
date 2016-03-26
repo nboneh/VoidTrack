@@ -4,6 +4,7 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 				 float _length, float _roll, float _pitch, float _yaw,float lengthFromStart, float _shiftX){
 
 	height = .2;
+	deactiveCorner = -1;
 	x = _x;
 	y = _y;
 	z = _z;
@@ -78,7 +79,32 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	free(slopeModel);
 }	
 
+float TrackPiece::makeIntoTriangle(int _deactiveCorner){
+	deactiveCorner = _deactiveCorner;
+	switch(deactiveCorner){
+		case BOT_LEFT:
+			hitRectArea = areaOfTrianlge(hitX2, hitZ2, hitX3, hitZ3, hitX4, hitZ4);
+		   	  break;
+	    case BOT_RIGHT:
+	    	hitRectArea = areaOfTrianlge(hitX1, hitZ1, hitX3, hitZ3, hitX4, hitZ4);
+	    	break;
+	    case TOP_RIGHT:
+	    	hitRectArea = areaOfTrianlge(hitX1, hitZ1, hitX2, hitZ2, hitX4, hitZ4);
+	    	break;
+		 case TOP_LEFT:
+	      	hitRectArea = areaOfTrianlge(hitX1, hitZ1, hitX2, hitZ2, hitX3, hitZ3);
+	    	break;
+	    default:
+	    	break;
 
+	}
+
+	//Returning length for track
+	if(deactiveCorner == TOP_RIGHT || deactiveCorner == TOP_LEFT){
+		return length/2;
+	}
+	return length;
+}
 void TrackPiece::draw(){	
 
     glVertexAttrib2f(SHIFTS, shiftX, shiftZ);
@@ -89,67 +115,14 @@ void TrackPiece::draw(){
     glRotatef(pitch, 1,0,0);
     glRotatef(roll, 0,0,1);
 
-	//Top
-	glBegin(GL_QUADS);
-	glNormal3f( 0,1, 0);
- 	glVertex3f(0,0,0);
- 	glVertex3f(width,0,0);
- 	glVertex3f(width,0,-length);
- 	glVertex3f(0,0,-length);
- 	glEnd();
-
- 	//Bottom
- 	glBegin(GL_QUADS);
- 	glNormal3f( 0,-1, 0);
- 	glVertex3f(0,-height,0);
- 	glVertex3f(width,-height,0);
- 	glVertex3f(width,-height,-length);
- 	glVertex3f(0,-height,-length);
- 	glEnd();
-
- 	//Left side
- 	glBegin(GL_QUADS);
- 	glNormal3f( -1,0, 0);
- 	glVertex3f(0,-height,0);
- 	glVertex3f(0,0,0);
- 	glVertex3f(0,0,-length);
- 	glVertex3f(0,-height,-length);
- 	glEnd();
-
- 	//Right side
- 	glBegin(GL_QUADS);
- 	glNormal3f(1,0, 0);
- 	glVertex3f(width,-height,0);
- 	glVertex3f(width,0,0);
- 	glVertex3f(width,0,-length);
- 	glVertex3f(width,-height,-length);
- 	glEnd();
-
+    if(deactiveCorner < 0)
+    	//Square
+		drawCube(width,height,length);
+	else 
+		//Triangle
+		drawRightAngleTrianlgePrism(width,height,length, deactiveCorner);
 
  	glPopMatrix();
-
- 	//To Check hit detection placement
- 	 /*	glColor3f(0,1,0);
- 	glBegin(GL_POLYGON);
- 	glNormal3f(1,0, 0);
- 	glVertex3f(hitX1,1,hitZ1);
- 	glVertex3f(hitX2,1,hitZ2);
- 	//glVertex3f(hitX3,1,hitZ3);
- 	glVertex3f(hitX4,1,hitZ4);
- 	glEnd();*/
-
-
-//For pitch slope and roll slope modeling 
- 	/*glColor3f(0,1,0);
- 	glBegin(GL_POLYGON);
- 	glNormal3f(1,0, 0);
- 	glVertex3f(x,0+.1,z);
- 	glVertex3f(x,pitchSlope*5+.1 ,z-5);
- 	glVertex3f(x+5,pitchSlope*5 +.1+ rollSlope* 5,z-5);
- 	glVertex3f(x+5,rollSlope *5+.1 ,z);
- 	glEnd();
- 	glColor3f(0,0,1);*/
-//glDisableVertexAttrib(XCENTER);
 }
 
 bool TrackPiece::checkTraction(SpaceShip* ship){
@@ -189,10 +162,37 @@ bool TrackPiece::checkTraction(SpaceShip* ship){
 	//Checkingh hit detection 
 	//Thanks to
 	//http://math.stackexchange.com/questions/190111/how-to-check-if-a-point-is-inside-a-rectangle/190373#190373
-	float areaSum = areaOfTrianlge(hitX1,hitZ1, hitX4, hitZ4, px,pz);
-	areaSum += areaOfTrianlge(hitX3,hitZ3, hitX4, hitZ4, px,pz);
-	areaSum += areaOfTrianlge(hitX2,hitZ2, hitX3, hitZ3, px,pz);
-	areaSum += areaOfTrianlge(hitX1,hitZ1, hitX2, hitZ2, px,pz);
+	float areaSum = 0;
+	switch(deactiveCorner){
+		//Triangles
+		case BOT_LEFT:
+			areaSum = areaOfTrianlge(hitX2,hitZ2, hitX3, hitZ3, px,pz);
+			areaSum += areaOfTrianlge(hitX3,hitZ3, hitX4, hitZ4, px,pz);
+			areaSum += areaOfTrianlge(hitX4,hitZ4, hitX2, hitZ2, px,pz);
+			break;
+		case BOT_RIGHT:
+			areaSum = areaOfTrianlge(hitX1,hitZ1, hitX3, hitZ3, px,pz);
+			areaSum += areaOfTrianlge(hitX3,hitZ3, hitX4, hitZ4, px,pz);
+			areaSum += areaOfTrianlge(hitX4,hitZ4, hitX1, hitZ1, px,pz);
+			break;
+		case TOP_RIGHT:
+			areaSum = areaOfTrianlge(hitX1,hitZ1, hitX4, hitZ4, px,pz);
+			areaSum += areaOfTrianlge(hitX4,hitZ4, hitX2, hitZ2, px,pz);
+			areaSum += areaOfTrianlge(hitX2,hitZ2, hitX1, hitZ1, px,pz);
+			break;
+		case TOP_LEFT:
+			areaSum = areaOfTrianlge(hitX1,hitZ1, hitX3, hitZ3, px,pz);
+			areaSum += areaOfTrianlge(hitX3,hitZ3, hitX2, hitZ2, px,pz);
+			areaSum += areaOfTrianlge(hitX2,hitZ2, hitX1, hitZ1, px,pz);
+			break;
+		//Squares
+		default:
+    		areaSum = areaOfTrianlge(hitX1,hitZ1, hitX4, hitZ4, px,pz);
+			areaSum += areaOfTrianlge(hitX3,hitZ3, hitX4, hitZ4, px,pz);
+			areaSum += areaOfTrianlge(hitX2,hitZ2, hitX3, hitZ3, px,pz);
+			areaSum += areaOfTrianlge(hitX1,hitZ1, hitX2, hitZ2, px,pz);
+			break;
+	}
 	
 	if(fabs(areaSum - hitRectArea) >.3){
 		return false; 

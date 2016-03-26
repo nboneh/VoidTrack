@@ -28,16 +28,25 @@
 #define invCos(th) acos(th) *(180/3.1415926)
 #define invSin(th) asin(th) *(180/3.1415926)
 
+#define VELOCITY_ARRAY 4
+#define DURATION_ARRAY  5
+static const char* Shader_Attribs_Flame[] = {"","","","","Vel","DurationTime", NULL};
+
 #define SHIFTS 7
 static const char* Shader_Attribs_Track[] = { "","","","","","","","Shifts", NULL};
 
-
+#define BOT_LEFT 0
+#define BOT_RIGHT 1
+#define TOP_RIGHT 2
+#define TOP_LEFT 3
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 extern int SIMPLE_LIGHTING_SHADER;
+extern int BACKGROUND_TEXTURE;
+extern int FLAME_SHADER;
 
 void Print(const char* format , ...);
 void Fatal(const char* format , ...);
@@ -55,7 +64,8 @@ int CreateShaderProg(const char* VertFile,const char* FragFile, char ** arrayAtt
 float areaOfTrianlge(float x1,float y1,float x2,float y2,float x3,float y3);
 
 void drawBall();
-void drawCube();
+void drawCube(float width, float length, float height);
+void drawRightAngleTrianlgePrism(float width, float length, float height, int deactiveCorner);
 #ifdef __cplusplus
 }
 

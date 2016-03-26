@@ -4,6 +4,8 @@
 #include "GameObjects/track.h"
 #include "GameObjects/counter.h"
 
+
+
 float baseElevation = 20;
 double dim=5.0;
 float azimuth=0;         //  Azimuth of view angle
@@ -23,7 +25,9 @@ int specular  =   0;  // Specular intensity (%)
 float camAngRate = 200;
 float colorTransRate = .3;
 //A simple lighting shader for what ever object needs to draw itself without a shader
-int SIMPLE_LIGHTING_SHADER = 0;
+int SIMPLE_LIGHTING_SHADER ;
+int BACKGROUND_TEXTURE;
+int FLAME_SHADER;
 
 double w2h ;
 
@@ -486,6 +490,8 @@ int main(int argc,char* argv[])
 
   glutFullScreen();  
    SIMPLE_LIGHTING_SHADER=CreateShaderProg("shaders/lightingshader.vert","shaders/simpleshader.frag", NULL);
+BACKGROUND_TEXTURE = LoadTexBMP("textures/background.bmp");
+FLAME_SHADER = CreateShaderProg("shaders/flameshader.vert",NULL, (char **)Shader_Attribs_Flame);
    TrackShaders[0] =CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader1.frag", (char **)Shader_Attribs_Track);
    TrackShaders[1] =    TrackShaders[0];
   TrackShaders[2] =    TrackShaders[0];

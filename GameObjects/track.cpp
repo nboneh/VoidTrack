@@ -7,8 +7,10 @@ Track::Track(){
 	setShip = true;
 	lengthOfTrack = 0;
 
-
-	addNewTrackPiece(-3.5,0,-1
+	addNewTrackPieceTriWidth(-3.5,0,-1
+										,GEN_WIDTH, 7
+										,0,0,0, BOT_LEFT,GEN_WIDTH/2);
+	/*addNewTrackPiece(-3.5,0,-1
 										,5
 										,0,5,0 );
 	addNewTrackPiece(-3.500, 0.436 ,-5.981
@@ -298,7 +300,7 @@ Track::Track(){
 
 
 
-	
+	*/
 
 
 	addNewTrackPiece(-3.5,0,7
@@ -404,4 +406,16 @@ void Track::addNewTrackPieceWidth(float x, float y, float z, float width, float 
 
 void Track::addNewTrackPiece(float x, float y, float z, float length, float roll, float pitch, float yaw){
 		addNewTrackPieceWidth(x,y,z, GEN_WIDTH, length, roll, pitch,yaw, GEN_WIDTH/2);
+}
+
+void Track::addNewTrackPieceTriWidth(float x, float y, float z, float width, float length, float roll, float pitch, float yaw, int deactiveCorner, float xShift){
+		TrackPiece *trackpiece = new TrackPiece(x,y,z
+										,width,length
+										,roll,pitch,yaw, lengthOfTrack,xShift);
+		trackPieces.push_back(trackpiece);
+		lengthOfTrack += trackpiece->makeIntoTriangle(deactiveCorner);
+}
+
+void Track::addNewTrackPieceTri(float x, float y, float z, float length, float roll, float pitch, float yaw, int deactiveCorner){
+	addNewTrackPieceTriWidth(x,y,z, GEN_WIDTH, length, roll, pitch,yaw, GEN_WIDTH/2, deactiveCorner);
 }
