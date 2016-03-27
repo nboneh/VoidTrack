@@ -20,25 +20,32 @@
 #include <GL/glut.h>
 #endif
 
+#define PI 3.1415926
 #define Cos(th) cos(3.1415926/180*(th))
 #define Sin(th) sin(3.1415926/180*(th))
 #define Tan(th) tan(3.1415926/180*(th))
 #define Cot(th) cot(3.1415926/180*(th))
+#define ToRad(th) (3.1415926/180) * th
 
 #define invCos(th) acos(th) *(180/3.1415926)
 #define invSin(th) asin(th) *(180/3.1415926)
+#define invTan(th) atan(th) *(180/3.1415926)
 
 #define VELOCITY_ARRAY 4
 #define DURATION_ARRAY  5
-static const char* Shader_Attribs_Flame[] = {"","","","","Vel","DurationTime", NULL};
 
 #define SHIFTS 7
-static const char* Shader_Attribs_Track[] = { "","","","","","","","Shifts", NULL};
+#define LEN_REL_TO_TRACK 8
 
 #define BOT_LEFT 0
 #define BOT_RIGHT 1
 #define TOP_RIGHT 2
 #define TOP_LEFT 3
+
+static const char* Shader_Attribs_Flame[] = {"","","","","Vel","DurationTime", NULL};
+static const char* Shader_Attribs_Track[] = { "","","","","","","","Shifts", "lenRelToTrack", NULL};
+
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,6 +68,7 @@ void PrintShaderLog(int obj,const char* file);
 void PrintProgramLog(int obj);
 void CreateShader(int prog,const GLenum type,const char* file);
 int CreateShaderProg(const char* VertFile,const char* FragFile, char ** arrayAttributes);
+
 float areaOfTrianlge(float x1,float y1,float x2,float y2,float x3,float y3);
 
 void drawBall();

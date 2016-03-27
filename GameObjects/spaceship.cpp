@@ -20,7 +20,6 @@ void drawSquare()
 
 
 SpaceShip::SpaceShip(){
-	updateRate = 50;
 
 	maxAddRoll = 40;
 	rollRate = 90;
@@ -41,9 +40,9 @@ SpaceShip::SpaceShip(){
 }
 
 void SpaceShip::reset(){
-	x = .5;
+	x = 0;
 	y = 0;
-	z = 7;
+	z = -1;
 	roll = 0;
 	pitch = 0;
 	yaw = 0;
@@ -175,21 +174,21 @@ void SpaceShip::updateFalling(double t){
 void SpaceShip::updateValues(double t){
 	  updateModelMatrix();
 	if(roll < updateRoll){
-     	roll += t*updateRate;
+     	roll += t*velocity;
      	if(roll >= updateRoll)
      		roll = updateRoll;
     } else if (roll > updateRoll){
-    	roll -= t*updateRate;
+    	roll -= t*velocity;
      	if(roll <= updateRoll)
      		roll = updateRoll;
     }
 
     if(pitch < updatePitch){
-     	pitch += t*updateRate;
+     	pitch += t*velocity;
      	if(pitch >= updatePitch)
      		pitch = updatePitch;
     } else if (pitch > updatePitch){
-    	pitch -= t*updateRate;
+    	pitch -= t*velocity;
      	if(pitch <= updatePitch)
      		pitch = updatePitch;
     }

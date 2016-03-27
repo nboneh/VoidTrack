@@ -1,7 +1,7 @@
 #include "trackpiece.h"
 
 TrackPiece::TrackPiece(float _x, float _y, float _z, float _width, 
-				 float _length, float _roll, float _pitch, float _yaw,float lengthFromStart, float _shiftX){
+				 float _length, float _roll, float _pitch, float _yaw,float lengthFromStart, float _shiftX, GLfloat *model){
 
 	height = .2;
 	deactiveCorner = -1;
@@ -9,30 +9,31 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	y = _y;
 	z = _z;
 	width = _width;
+	//Extend length slightly to connect tracks better use the given length for calc
 	length = _length;
 	roll = _roll;
 	pitch = _pitch;
 	yaw = _yaw;
 	shiftX = _shiftX;
 
-	GLfloat *xzProjectModel = new GLfloat[16];
 
 	glPushMatrix();
 	glLoadIdentity();
     glRotatef(yaw , 0,1,0);
     glRotatef(pitch , 1,0,0);
     glRotatef(roll, 0,0,1);
-	glGetFloatv(GL_MODELVIEW_MATRIX, xzProjectModel);
+	glGetFloatv(GL_MODELVIEW_MATRIX, model);
 	glPopMatrix();
+
 
 	hitX1 = x;
 	hitZ1 = z;
 
-	float zcalc1 = length *xzProjectModel[10];
-	float zcalc2 = width * xzProjectModel[2];
+	float zcalc1 = length *model[10];
+	float zcalc2 = width * model[2];
 
-	float xcalc1 = width *xzProjectModel[0];
-	float xcalc2 = length *xzProjectModel[8];
+	float xcalc1 = width *model[0];
+	float xcalc2 = length *model[8];
 
 	hitX2 = x + xcalc1;
 	hitZ2 = z +zcalc2;
@@ -42,17 +43,7 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 
 	hitX4 = x  -xcalc2;
 	hitZ4 = z - zcalc1;
-	free(xzProjectModel);
 
-	//To see where the top of left corner of the piece end makes track building manually a ton eaiser
-	float hitY4 = y - length *xzProjectModel[9];
-	float moveForward = 0;
-	float moveUp = 0;
-	float moveRight =0;
-	Log("%.3f, %.3f ,%.3f\n"
-		,hitX4 +xzProjectModel[0]*moveRight + xzProjectModel[4]* moveUp + xzProjectModel[8] * moveForward 
-		,hitY4 +xzProjectModel[1]*moveRight + xzProjectModel[5]* moveUp + xzProjectModel[9] * moveForward 
-		,hitZ4+xzProjectModel[2]*moveRight + xzProjectModel[6]* moveUp + xzProjectModel[10] * moveForward );
 
 	//The length of the projection in the z does not equal the length
 	float xdiff3 = hitX4 -x;
@@ -77,9 +68,17 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	rollSlope =  -(slopeModel[4])/(slopeModel[5]);
 	pitchSlope = (slopeModel[6])/(slopeModel[5]);
 	free(slopeModel);
+
+    //Setting model x, y and, z to end of the piece to help with track building
+	model[12] =hitX4;
+	model[13] =  y - length *model[9];
+	model[14] = hitZ4;
+	shiftAngle = 0;
+	shiftRadius = sqrt(shiftZ*shiftZ + shiftX*shiftX);
+	lenRelToTrack = length;
 }	
 
-float TrackPiece::makeIntoTriangle(int _deactiveCorner){
+void TrackPiece::makeIntoTriangle(int _deactiveCorner){
 	deactiveCorner = _deactiveCorner;
 	switch(deactiveCorner){
 		case BOT_LEFT:
@@ -96,18 +95,12 @@ float TrackPiece::makeIntoTriangle(int _deactiveCorner){
 	    	break;
 	    default:
 	    	break;
-
 	}
-
-	//Returning length for track
-	if(deactiveCorner == TOP_RIGHT || deactiveCorner == TOP_LEFT){
-		return length/2;
-	}
-	return length;
 }
 void TrackPiece::draw(){	
 
-    glVertexAttrib2f(SHIFTS, shiftX, shiftZ);
+    glVertexAttrib4f(SHIFTS, shiftX, shiftZ,shiftRadius, shiftAngle);
+    glVertexAttrib1f(LEN_REL_TO_TRACK,length);
 	glPushMatrix();
 	glTranslatef(x,y,z);
 
@@ -118,9 +111,10 @@ void TrackPiece::draw(){
     if(deactiveCorner < 0)
     	//Square
 		drawCube(width,height,length);
-	else 
+	else {
 		//Triangle
 		drawRightAngleTrianlgePrism(width,height,length, deactiveCorner);
+	}
 
  	glPopMatrix();
 }
@@ -226,5 +220,13 @@ float TrackPiece::getY(){
 
 float TrackPiece::getZ(){
 	return z;
+}
+
+void TrackPiece::setShiftAngle(float angle){
+	shiftAngle = ToRad(angle);
+}
+
+void TrackPiece::setLenRelToTrack(float len){
+	lenRelToTrack = len;
 }
 

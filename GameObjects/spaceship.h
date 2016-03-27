@@ -9,7 +9,7 @@ class SpaceShip{
 
 	float terminalVelocity, accelerationRate,velocity, floatingMotionCounter;
 	bool accelerating,  updateFallingOn, jumpOn;
-	float x,y,z,roll, pitch, yaw, floatingHeight, updateRate;
+	float x,y,z,roll, pitch, yaw, floatingHeight;
 	float centerX, centerY, centerZ;
 	Flame * flame;
 

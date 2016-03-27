@@ -24,17 +24,27 @@ class TrackPiece{
 
 	float shiftX;
 
+	//Will be in radians becuase we need to pass shader, shiftRadius 
+	//will be the third variable passed in shifts and Angle will be fourth
+	float shiftAngle;
+	float shiftRadius;
+
 	//The deactivePoint will let us draw triangle 
 	//by deactivating one of the points on the square
 	int deactiveCorner;
 
+	//Length of piece of piece relative to the track 
+	float lenRelToTrack;
+
 	public: 
-		TrackPiece(float x, float y, float z, float width, float length, float roll, float pitch, float yaw, float lengthFromStart, float shiftX);
+		TrackPiece(float x, float y, float z, float width, float length, float roll, float pitch, float yaw, float lengthFromStart, float shiftX, GLfloat *model);
 		void setColor(float r, float g, float b);
 		//Makes into triangle also returns the new length from base to use for shader and track
-		float makeIntoTriangle(int _deactiveCorner);
+		void makeIntoTriangle(int _deactiveCorner);
 		void draw();
 		bool checkTraction(SpaceShip* ship);
+		void setShiftAngle(float angle);
+		void setLenRelToTrack(float len);
 
 		float getX();
 		float getY();

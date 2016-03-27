@@ -21,6 +21,9 @@ class Track{
 
 	float lengthOfTrack;
 
+	GLfloat * model;
+		float currentXShift;
+
 	public: 
 		Track();
 		void reset();
@@ -35,8 +38,9 @@ class Track{
 		void setStartLineColor(float r, float g, float b);
 		void setShader(int shader);
 	private:
-		void addNewTrackPieceWidth(float x, float y, float z, float width, float length, float roll, float pitch, float yaw, float xShift);
-		void addNewTrackPiece(float x, float y, float z, float length, float roll, float pitch, float yaw);
-		void addNewTrackPieceTriWidth(float x, float y, float z, float width, float length, float roll, float pitch, float yaw, int deactiveCorner, float xShift);
-		void addNewTrackPieceTri(float x, float y, float z, float length, float roll, float pitch, float yaw, int deactiveCorner);
+		void addNewTrackPiece(float moveRight, float moveUp, float moveFor, float width,float length, float roll, float pitch, float yaw);
+		void addNewTrackPieceTri(float moveRight, float moveUp, float moveFor, float width, float length, float roll, float pitch, float yaw, int deactiveCorner);
+		void addNewYawTurn(float moveRight, float moveUp, float moveFor, float width, float length, float roll, float pitch, float currentYaw, int deactiveCorner, float yaw);
+		
+		void getXYZfromVectors(float moveRight, float moveUp, float moveFor);
 };

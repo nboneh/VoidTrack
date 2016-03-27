@@ -23,7 +23,7 @@ int diffuse   = 100;  // Diffuse intensity (%)
 int specular  =   0;  // Specular intensity (%)
 
 float camAngRate = 200;
-float colorTransRate = .3;
+float colorTransRate = 100;
 //A simple lighting shader for what ever object needs to draw itself without a shader
 int SIMPLE_LIGHTING_SHADER ;
 int BACKGROUND_TEXTURE;
@@ -294,6 +294,7 @@ void display()
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
   glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LESS);
    //Setting camera around spaceship
    
 glLoadIdentity();
@@ -386,21 +387,21 @@ void special_press(int key,int x,int y)
 
     if(paused){
    if (key == GLUT_KEY_RIGHT){
-      azimuth -= t*camAngRate;
+      azimuth += t*camAngRate;
   }
    else if (key == GLUT_KEY_LEFT){
-     azimuth += t*camAngRate;
+     azimuth -= t*camAngRate;
   }
 
    else if (key == GLUT_KEY_UP){
-     elevation += t*camAngRate ;
-     if(elevation>= 45)
-      elevation = 45;
+   elevation -= t*camAngRate;
+   if(elevation<= -45)
+         elevation = -45;
   }
    else if (key == GLUT_KEY_DOWN){
-       elevation -= t*camAngRate;
-        if(elevation<= -45)
-         elevation = -45;
+      elevation += t*camAngRate ;
+     if(elevation>= 45)
+      elevation = 45;
   }
 
 
@@ -488,7 +489,7 @@ int main(int argc,char* argv[])
    //  Create window
    glutCreateWindow("VoidTrack");
 
-  glutFullScreen();  
+  //glutFullScreen();  
    SIMPLE_LIGHTING_SHADER=CreateShaderProg("shaders/lightingshader.vert","shaders/simpleshader.frag", NULL);
 BACKGROUND_TEXTURE = LoadTexBMP("textures/background.bmp");
 FLAME_SHADER = CreateShaderProg("shaders/flameshader.vert",NULL, (char **)Shader_Attribs_Flame);

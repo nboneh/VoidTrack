@@ -1,6 +1,5 @@
 #include "VoidTrack.h"
 
-
 static void Vertex(double th,double ph)
 {
   double x = Sin(th)*Cos(ph);
