@@ -16,13 +16,13 @@ Track::Track(){
 	model[12] = -GEN_WIDTH/2;
 	model[13] = 0;
 	model[14] = 0 ;
-	addNewTrackPiece(0,0,1
+	addNewTrackPiece(0,0,0
 										,GEN_WIDTH,10
 										,0,0,0 );
 
 	
 	//uphill
-	/*for(int i = 0; i <= 30; i+=1){
+	for(int i = 0; i <= 30; i+=1){
 			addNewTrackPiece(0,0,0
 										,GEN_WIDTH,1
 										,0,i,0 );							
@@ -69,16 +69,229 @@ Track::Track(){
 
 	addNewTrackPiece(2,-3,2
 										,GEN_WIDTH,10
-										,0,30,0 );*/
+										,0,30,0 );
+
+		//stop
+	for(int i = 30; i >= 0 ; i-=1){
+			addNewTrackPiece(0,0,0
+										,GEN_WIDTH,1
+										,0,i,0 );							
+	}
+
+	for(int i = 0; i < 15 ; i+=4){
+		int gap = 0;
+		if(i% 3 ==0)
+			gap = 5;
+		addNewYawTurn(0,0,gap
+					,GEN_WIDTH,i*2
+					,0,0,i, TOP_LEFT,i);						
+	}
 
 
-	addNewYawTurn(0,0,0
+	for(int i = 0; i >= -30 ; i-=1){
+			addNewTrackPiece(0,0,0
+										,GEN_WIDTH,1
+										,0,i,35);							
+	}
+
+	addNewTrackPiece(0,0,4
+							,GEN_WIDTH,20
+								,3,-30,35);	
+
+
+	addNewTrackPiece(1,0,4
+							,GEN_WIDTH-2,20
+								,6,-30,40);		
+
+	addNewTrackPiece(2,0,4
+							,GEN_WIDTH-4,20
+								,9,-30,45);	
+
+
+	addNewTrackPiece(-1,0,4
+							,GEN_WIDTH-4,20
+								,12,-30,50);	
+
+		addNewTrackPiece(-2,0,4
+							,GEN_WIDTH-2,20
+								,15,-30,55);
+
+	addNewTrackPiece(-2,0,4
+						,GEN_WIDTH-1,20
+							,10,-25,60);
+
+
+		addNewTrackPiece(-1,0,4
+						,GEN_WIDTH-1,20
+							,5,-20,65);
+
+		addNewTrackPiece(-1,0,4
+						,GEN_WIDTH,20
+							,0,-20,70);
+
+for(int i = -20; i <= 0 ; i++){
+			addNewTrackPiece(0,0,0
+										,GEN_WIDTH,1
+										,0,i,70);							
+	}
+
+
+	addNewTrackPiece(0,0,0
+										,GEN_WIDTH,30
+										,10,0,90);	
+
+
+
+
+	addNewTrackPiece(0,0,0
+										,GEN_WIDTH,30
+										,20,0,120);	
+
+
+	addNewTrackPiece(0,0,0
+										,GEN_WIDTH,30
+										,30,0,150);	
+
+
+	addNewTrackPiece(0,0,0
+									,GEN_WIDTH,30
+									,40,0,180);
+
+
+
+	addNewTrackPiece(0,0,0
+									,GEN_WIDTH,30
+									,30,0,180);
+
+		addNewTrackPiece(0,0,0
+									,GEN_WIDTH,30
+									,20,0,180);
+
+				addNewTrackPiece(0,0,0
+									,GEN_WIDTH,30
+									,10,0,180);
+
+
+		addNewTrackPiece(0,0,4
+									,GEN_WIDTH,30
+									,10,0,210);
+		addNewTrackPiece(0,0,0
 									,GEN_WIDTH,10
-									,0,0,0 , TOP_RIGHT,30);
-
-	addNewYawTurn(0,0,0
+									,0,10,210);
+		addNewTrackPiece(0,0,0
 									,GEN_WIDTH,10
-									,0,0,-30 , TOP_RIGHT,30);
+									,0,20,210);
+
+addNewTrackPiece(0,0,0
+									,GEN_WIDTH,10
+									,0,30,210);
+
+
+		addNewTrackPiece(0,0,0
+									,GEN_WIDTH,10
+									,0,40,210);
+
+				addNewTrackPiece(0,0,0
+									,GEN_WIDTH,10
+									,0,50,210);
+
+							addNewTrackPiece(0,0,0
+									,GEN_WIDTH,10
+									,0,60,210);
+
+					addNewTrackPiece(0,0,0
+									,GEN_WIDTH,10
+									,0,50,210);
+
+
+					addNewTrackPiece(0,0,0
+									,GEN_WIDTH-1,10
+									,0,40,210);
+				addNewTrackPiece(0,0,0
+									,GEN_WIDTH-2,10
+									,0,30,210);
+
+							addNewTrackPiece(0,0,0
+									,GEN_WIDTH-3,10
+									,0,20,210);
+				addNewTrackPiece(0,0,0
+									,GEN_WIDTH-2,10
+									,0,10,210);
+
+				addNewTrackPiece(0,0,0
+									,GEN_WIDTH-1,10
+									,0,0,210);
+
+				addNewTrackPiece(0,0,0
+									,GEN_WIDTH,10
+									,0,-10,210);
+
+					addNewTrackPiece(0,0,0
+									,GEN_WIDTH-2,10
+									,0,-20,210);
+
+						addNewTrackPiece(0,0,0
+									,GEN_WIDTH-3,10
+									,0,-30,210);
+					addNewTrackPiece(0,0,0
+									,GEN_WIDTH-2,10
+									,0,-20,210);
+						addNewTrackPiece(0,0,0
+									,GEN_WIDTH-1,10
+									,0,-10,225);
+						addNewTrackPiece(0,0,0
+									,GEN_WIDTH,30
+									,0,0,233);
+
+							addNewTrackPiece(0,0,0
+									,GEN_WIDTH,30
+									,10,0,245);
+
+							addNewTrackPiece(0,0,0
+									,GEN_WIDTH,30
+									,20,0,257);
+						addNewTrackPiece(0,0,0
+									,GEN_WIDTH,30
+									,30,0,270);
+
+						addNewTrackPiece(0,0,5
+									,GEN_WIDTH,25
+									,20,0,282);
+
+						addNewTrackPiece(0,0,5
+									,GEN_WIDTH,20
+									,10,-2,290);
+							addNewTrackPiece(0,2,3
+									,GEN_WIDTH,10
+									,0,-5,300);
+
+								addNewTrackPiece(0,0,0
+									,GEN_WIDTH,7
+									,7,5,310);
+
+							addNewTrackPiece(0,0,0
+									,GEN_WIDTH,7
+									,14,12,330);
+
+								addNewTrackPiece(0,0,0
+									,GEN_WIDTH,10
+									,21,15,350);
+
+
+								addNewTrackPiece(0,0,0
+									,GEN_WIDTH,10
+									,28,20,10);
+
+
+								addNewTrackPiece(0,0,0
+									,GEN_WIDTH,10
+									,30,22,30);
+
+
+
+	//addNewYawTurn(0,0,0
+	//								,GEN_WIDTH,10
+	//								,0,0,30, TOP_LEFT,30);
 
 
 	//	addNewYawTurn(0,0,0
@@ -86,6 +299,7 @@ Track::Track(){
 	//								,0,0,30 , TOP_LEFT);
 
 
+	free(model);
 
 	reset();
 }	
@@ -112,9 +326,9 @@ void Track::update(float t){
 
 bool Track::checkTraction(SpaceShip* ship){
 	if(!setShip){
-		ship->setX(trackPieces.at(trackPieces.size()-50)->getX());
-		ship->setY(trackPieces.at(trackPieces.size()-50)->getY());
-		ship->setZ(trackPieces.at(trackPieces.size()-50)->getZ());
+		ship->setX(trackPieces.at(trackPieces.size()-1)->getX());
+		ship->setY(trackPieces.at(trackPieces.size()-1)->getY());
+		ship->setZ(trackPieces.at(trackPieces.size()-1)->getZ());
 		setShip = true;
 	}
 	for(int i = 0; i < trackPieces.size(); i++){
@@ -149,10 +363,10 @@ void Track::draw(){
 	//Drawing starting line
     glBegin(GL_QUADS);
  	glNormal3f(1,0, 0);
- 	glVertex3f(-3.5,.01,0);
- 	glVertex3f(3.5,.01,0);
- 	glVertex3f(3.5,.01,-1);
- 	glVertex3f(-3.5,.01,-1);
+ 	glVertex3f(-4,.01,0);
+ 	glVertex3f(4,.01,0);
+ 	glVertex3f(4,.01,-1);
+ 	glVertex3f(-4,.01,-1);
  	glEnd();
  	glUseProgram(0);
 
@@ -178,9 +392,8 @@ void Track::addNewTrackPiece(float moveRight, float moveUp, float moveFor, float
 }
 
 void Track::addNewTrackPieceTri(float moveRight, float moveUp, float moveFor, float width, float length, float roll, float pitch, float yaw, int deactiveCorner){
-		 currentXShift -= moveRight;
 		float x = model[12] + model[0] * moveRight + model[1] * moveUp +model[2] * moveFor; 
-		float y = model[13]+ model[4] * moveRight + model[5] * moveUp +model[6] * moveFor; 
+		float y = model[13]-model[4] * moveRight + model[5] * moveUp +model[6] * moveFor; 
 		float z = model[14]+ model[8] * moveRight + model[9] * moveUp - model[10] * moveFor; 
 		TrackPiece *trackpiece = new TrackPiece(x,y,z
 										,width,length
@@ -193,9 +406,8 @@ void Track::addNewTrackPieceTri(float moveRight, float moveUp, float moveFor, fl
 }
 
 void Track::addNewYawTurn(float moveRight, float moveUp, float moveFor, float width, float length, float roll, float pitch, float currentYaw, int deactiveCorner, float yaw){
-	currentXShift -= moveRight;
 	float x = model[12] + model[0] * moveRight + model[1] * moveUp +model[2] * moveFor; 
-	float y = model[13]+ model[4] * moveRight + model[5] * moveUp +model[6] * moveFor; 
+	float y = model[13]-model[4] * moveRight + model[5] * moveUp -model[6] * moveFor; 
 	float z = model[14]+ model[8] * moveRight + model[9] * moveUp - model[10] * moveFor; 
 
 
@@ -206,17 +418,17 @@ void Track::addNewYawTurn(float moveRight, float moveUp, float moveFor, float wi
 										,width,sideLength
 										,roll,pitch,currentYaw, lengthOfTrack,currentXShift,model);
 	tripiece->makeIntoTriangle(deactiveCorner);
-		if(TOP_RIGHT)
-			yaw = -yaw;
-	//Adjusting x  y and z accordingly to be able to connect pieces
+
+
 	float sqx = model[12];
 	float sqy = model[13];
 	float sqz = model[14];
-	//sqx = x;
-	//sqy= y;
-	//if(deactiveCorner == TOP_LEFT){
-	//	sqz =z;
-	//}
+	//Adjusting x  y and z accordingly to be able to connect pieces
+	if(deactiveCorner == TOP_LEFT){
+		sqx =x;
+		sqy =y;
+		sqz =z;
+	}
 
 	//Finding length added to the track by triangle using law of cosines
 	float hyp = sqrt(sideLength*sideLength + width*width);
@@ -233,7 +445,7 @@ void Track::addNewYawTurn(float moveRight, float moveUp, float moveFor, float wi
 
 
 	//Adding square also have to change gen width to get a new center point
-	float lengthOfSquare = length -triaddLength;
+	float lengthOfSquare = length;
 	float widthOfSquare = hyp;
 
 	currentXShift +=(widthOfSquare - GEN_WIDTH)/2.0;

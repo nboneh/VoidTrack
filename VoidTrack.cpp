@@ -44,7 +44,7 @@ SpaceShip * spaceShip;
 Track * track;
 Counter *counter;
 
-int TrackShaders[4];
+int TrackShaders[6];
 int numOfColors = 12;
 //Current Color pallet
 //m is main
@@ -164,6 +164,94 @@ void updateLap(){
       colors[11]= 139/255.0;
 
       break; 
+
+    case 3:
+      //Purple main
+    colors[0] = 128/255.0;
+    colors[1] =  0/255.0;
+    colors[2] = 128/255.0;
+
+    colors[3] = 75/255.0;
+    colors[4] =  0/255.0;
+    colors[5] = 130/255.0;
+
+      //Yellow back
+      colors[6] = 255/255.0;
+      colors[7] = 255/255.0;
+      colors[8]= 0/255.0;
+
+     colors[9] = 204/255.0;
+      colors[10] = 204/255.0;
+      colors[11]= 0/255.0;
+
+      break; 
+
+          case 4:
+
+      //Yellow main
+      colors[0] = 255/255.0;
+      colors[1] = 255/255.0;
+      colors[2]= 0/255.0;
+
+     colors[3] = 204/255.0;
+      colors[4] = 204/255.0;
+      colors[5]= 0/255.0;
+
+          //Purple back
+    colors[6] = 128/255.0;
+    colors[7] =  0/255.0;
+    colors[8] = 128/255.0;
+
+    colors[9] = 75/255.0;
+    colors[10] =  0/255.0;
+    colors[11] = 130/255.0;
+
+      break; 
+
+
+    case 5:
+          //Blue main
+      colors[0] = 65/255.0;
+      colors[1] = 105/255.0;
+      colors[2]= 225/255.0;
+
+     colors[3] = 0/255.0;
+      colors[4] = 0/255.0;
+      colors[5]= 139/255.0;
+
+      //Orange back
+
+        colors[6] = 255/255.0;
+    colors[7] =  100/255.0;
+    colors[8] = 0/255.0;
+
+    colors[9] = 255/255.0;
+    colors[10] =  70/255.0;
+    colors[11] = 0/255.0;
+
+      break; 
+    case 6:
+
+
+      //Red main
+      colors[0] = 50/255.0;
+      colors[1] = 205/255.0;
+      colors[2]= 50/255.0;
+
+     colors[3] = 34/255.0;
+      colors[4] = 139/255.0;
+      colors[5]= 34/255.0;
+       //Green back
+    colors[6] = 220/255.0;
+    colors[7] =  20/255.0;
+    colors[8] = 30/255.0;
+
+    colors[9] = 178/255.0;
+    colors[10] =  34/255.0;
+    colors[11] = 34/255.0;
+    break;
+
+
   }
   int shaderIndex = currentLap -1;
   if(shaderIndex < 0)
@@ -173,7 +261,7 @@ void updateLap(){
       track->setShader(TrackShaders[shaderIndex]);
     }
   if(currentLap > 1){
-    spaceShip->increaseTerminalVelocityBy(10);
+    spaceShip->increaseTerminalVelocityBy(3);
   }
 }
 
@@ -489,7 +577,7 @@ int main(int argc,char* argv[])
    //  Create window
    glutCreateWindow("VoidTrack");
 
-  //glutFullScreen();  
+  glutFullScreen();  
    SIMPLE_LIGHTING_SHADER=CreateShaderProg("shaders/lightingshader.vert","shaders/simpleshader.frag", NULL);
 BACKGROUND_TEXTURE = LoadTexBMP("textures/background.bmp");
 FLAME_SHADER = CreateShaderProg("shaders/flameshader.vert",NULL, (char **)Shader_Attribs_Flame);
@@ -497,6 +585,8 @@ FLAME_SHADER = CreateShaderProg("shaders/flameshader.vert",NULL, (char **)Shader
    TrackShaders[1] =    TrackShaders[0];
   TrackShaders[2] =    TrackShaders[0];
   TrackShaders[3] =    TrackShaders[0];
+    TrackShaders[4] =    TrackShaders[0];
+      TrackShaders[5] =    TrackShaders[0];
    background = new Background();
    spaceShip = new SpaceShip();
    track = new Track();

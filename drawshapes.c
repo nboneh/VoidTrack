@@ -50,6 +50,8 @@ void drawCube(float width, float height ,float length)
   glVertex3f(width,-height,-length);
   glEnd();
 
+  glEnable(GL_POLYGON_OFFSET_FILL);
+   glPolygonOffset(1.0, 1.0);
   //Back
   glBegin(GL_QUADS);
   glNormal3f(0,0, 1);
@@ -67,7 +69,7 @@ void drawCube(float width, float height ,float length)
   glVertex3f(width,-height,-length);
   glVertex3f(0,-height,-length);
   glEnd();
-
+  glDisable(GL_POLYGON_OFFSET_FILL);
 
 
   //  Undo transformations and textures
