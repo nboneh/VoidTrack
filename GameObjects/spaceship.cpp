@@ -58,7 +58,7 @@ void SpaceShip::reset(){
 	updateRoll = 0;
 	stretching = 0;
 	addStrecth =0;
-	accelerationRate = 3;
+	accelerationRate = 4;
 	updateModelMatrix();
 	flame->reset();
 	updateFallingOn = true;
@@ -415,7 +415,7 @@ void SpaceShip::setStretchingForVel(float vel){
 
 void SpaceShip::startJump(){
 	//Setting the falling rate negative for jumping
-	fallingRate = -jumpVel + (terminalVelocity-16)/3;
+	fallingRate = -jumpVel + (terminalVelocity-16)/7;
 }
 
 bool SpaceShip::isJumping(){

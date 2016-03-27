@@ -23,7 +23,7 @@ int diffuse   = 100;  // Diffuse intensity (%)
 int specular  =   0;  // Specular intensity (%)
 
 float camAngRate = 200;
-float colorTransRate = 100;
+float colorTransRate = .3;
 //A simple lighting shader for what ever object needs to draw itself without a shader
 int SIMPLE_LIGHTING_SHADER ;
 int BACKGROUND_TEXTURE;
