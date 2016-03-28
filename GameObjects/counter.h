@@ -6,7 +6,8 @@ class Counter{
 	bool increasing;
 	int currentCount;
 	char * text;
-	bool toDraw;
+	bool started;
+	bool playedMusic;
 	public: 
 		Counter();
 		void reset();

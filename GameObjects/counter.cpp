@@ -11,13 +11,17 @@ void Counter::reset(){
 	increasing = true;
 	text[0] = '3';
 	text[1] = '\0';
-	toDraw = false;
+	started = false;
+	playedMusic = false;
 }
 
 void Counter::update(double t){
 	if(done())
 		return;
-	toDraw =true;
+	if(!started){
+		playSound(COUNT_DOWN_SOUND, false);
+		started = true;
+	}
 	if(increasing)
 		scale += t* scaleRate;
 	else 
@@ -39,6 +43,10 @@ void Counter::update(double t){
 			text[1] = 'O';
 			text[2] = '!';
 			text[3] = '\0';
+			if(!playedMusic){
+				playSound(MUSIC, true);
+				playedMusic = true;
+			}
 		}
 	}
 
@@ -46,7 +54,7 @@ void Counter::update(double t){
 }
 
 void Counter::draw(){
-	if(done() || !toDraw)
+	if(done() || !started)
 		return;
 
 	glPushMatrix();

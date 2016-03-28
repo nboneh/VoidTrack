@@ -20,6 +20,7 @@ class Track{
 	bool setShip;
 
 	float lengthOfTrack;
+	bool updatedLap;
 
 	GLfloat * model;
 		float currentXShift;

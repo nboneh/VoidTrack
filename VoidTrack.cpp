@@ -31,6 +31,10 @@ int FLAME_SHADER;
 unsigned int CLICK_ON_SOUND;
 unsigned int CLICK_OFF_SOUND;
 unsigned int JUMP_SOUND;
+unsigned int COUNT_DOWN_SOUND;
+unsigned int GAME_OVER_SOUND;
+unsigned int WIN_SOUND;
+unsigned int MUSIC;
 
 double w2h ;
 
@@ -121,8 +125,12 @@ bool updateColors(double t){
 
 void updateLap(){
   currentLap = track->getLap();
+  if(won)
+    return;
   if(currentLap > totalLaps){
     won = true;
+    playSound(WIN_SOUND, false);
+    stopSound(MUSIC);
     spaceShip->stop();
   }
   switch(currentLap){
@@ -369,8 +377,13 @@ void idle()
     track->checkTraction(spaceShip);
     spaceShip->update(t);
     track->update(t);
-    if(spaceShip-> fallen())
+    if(spaceShip-> fallen()){
+      if(!gameOver){
+        playSound(GAME_OVER_SOUND, false);
+        stopSound(MUSIC);
+      }
       gameOver = true;
+    }
     if(track->getLap() >currentLap )
         updateLap();
   }
@@ -541,9 +554,11 @@ void key_press(unsigned char ch,int x,int y)
         return;
       if(!paused){
         playSound(CLICK_ON_SOUND,false);
+        pauseSound(MUSIC);
         paused = true;
       } else {
         playSound(CLICK_OFF_SOUND,false);
+         playSound(MUSIC,true);
           paused = false;
           azimuth=0;   
           elevation=baseElevation;  
@@ -582,11 +597,15 @@ int main(int argc,char* argv[])
    glutInitWindowSize(600, 600);
    //  Create window
    glutCreateWindow("VoidTrack");
-     glutFullScreen();  
+     //glutFullScreen();  
 
      CLICK_ON_SOUND = loadSoundFile("sounds/clickon.wav");
       CLICK_OFF_SOUND = loadSoundFile("sounds/clickoff.wav");
         JUMP_SOUND = loadSoundFile("sounds/jump.wav");
+        COUNT_DOWN_SOUND= loadSoundFile("sounds/countdown.wav");
+        GAME_OVER_SOUND = loadSoundFile("sounds/gameover.wav");
+        WIN_SOUND = loadSoundFile("sounds/win.wav");
+        MUSIC = loadSoundFile("sounds/music.wav");
    SIMPLE_LIGHTING_SHADER=CreateShaderProg("shaders/lightingshader.vert","shaders/simpleshader.frag", NULL);
 BACKGROUND_TEXTURE = LoadTexBMP("textures/background.bmp");
 FLAME_SHADER = CreateShaderProg("shaders/flameshader.vert",NULL, (char **)Shader_Attribs_Flame);

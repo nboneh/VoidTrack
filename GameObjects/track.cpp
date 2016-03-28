@@ -4,6 +4,9 @@ float  GEN_WIDTH = 8;
 
 
 Track::Track(){
+	liner = 0;
+	lineg =0;
+	lineb = 0;
 	setShip = true;
 	lengthOfTrack = 0;
 	 currentXShift= GEN_WIDTH/2 ;
@@ -336,6 +339,7 @@ bool Track::checkTraction(SpaceShip* ship){
 			if(i < currentTrackPiece){
 				//Lap complete
 				lap++;
+
 			}
 			currentTrackPiece = i;
 			return true;
@@ -346,7 +350,7 @@ bool Track::checkTraction(SpaceShip* ship){
 
 void Track::reset(){
 	counter = 0;
-	currentTrackPiece = trackPieces.size()-1;
+	currentTrackPiece = 0;
 	lap = 0;
 }
 

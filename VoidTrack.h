@@ -61,6 +61,9 @@ extern int FLAME_SHADER;
 extern unsigned int CLICK_ON_SOUND;
 extern unsigned int CLICK_OFF_SOUND;
 extern unsigned int JUMP_SOUND;
+extern unsigned int COUNT_DOWN_SOUND;
+extern unsigned int WIN_SOUND;
+extern unsigned int MUSIC;
 
 void Print(const char* format , ...);
 void Fatal(const char* format , ...);
@@ -85,6 +88,9 @@ void setupOpenAl();
 
 unsigned int loadSoundFile(const char *file);
 void playSound(unsigned int alSource, bool loop);
+void stopSound(unsigned int alSource);
+
+void pauseSound(unsigned int alSource);
 #ifdef __cplusplus
 }
 

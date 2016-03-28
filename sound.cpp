@@ -151,3 +151,7 @@ void playSound(unsigned int alSource, bool loop){
 void stopSound(unsigned int alSource){
 	alSourceStop(alSource);
 }
+
+void pauseSound(unsigned int alSource){
+	alSourcePause(alSource);
+}
