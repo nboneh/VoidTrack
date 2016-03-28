@@ -392,9 +392,10 @@ void Track::addNewTrackPiece(float moveRight, float moveUp, float moveFor, float
 }
 
 void Track::addNewTrackPieceTri(float moveRight, float moveUp, float moveFor, float width, float length, float roll, float pitch, float yaw, int deactiveCorner){
-		float x = model[12] + model[0] * moveRight + model[1] * moveUp +model[2] * moveFor; 
-		float y = model[13]-model[4] * moveRight + model[5] * moveUp +model[6] * moveFor; 
-		float z = model[14]+ model[8] * moveRight + model[9] * moveUp - model[10] * moveFor; 
+		moveFor = -moveFor;
+		float x = model[12] + model[0] * moveRight + model[4] * moveUp +model[8] * moveFor; 
+		float y = model[13]+ model[1] * moveRight + model[5] * moveUp +model[9] * moveFor; 
+		float z = model[14]+ model[2] * moveRight + model[6] * moveUp + model[10] * moveFor; 
 		TrackPiece *trackpiece = new TrackPiece(x,y,z
 										,width,length
 										,roll,pitch,yaw, lengthOfTrack,currentXShift,model);
@@ -406,9 +407,10 @@ void Track::addNewTrackPieceTri(float moveRight, float moveUp, float moveFor, fl
 }
 
 void Track::addNewYawTurn(float moveRight, float moveUp, float moveFor, float width, float length, float roll, float pitch, float currentYaw, int deactiveCorner, float yaw){
-	float x = model[12] + model[0] * moveRight + model[1] * moveUp +model[2] * moveFor; 
-	float y = model[13]-model[4] * moveRight + model[5] * moveUp -model[6] * moveFor; 
-	float z = model[14]+ model[8] * moveRight + model[9] * moveUp - model[10] * moveFor; 
+		moveFor = -moveFor;
+	float x = model[12] + model[0] * moveRight + model[4] * moveUp +model[8] * moveFor; 
+	float y = model[13]+model[1] * moveRight + model[5] * moveUp +model[9] * moveFor; 
+	float z = model[14]+ model[2] * moveRight + model[6] * moveUp + model[10] * moveFor; 
 
 
 	//Finding side lenght of triangle

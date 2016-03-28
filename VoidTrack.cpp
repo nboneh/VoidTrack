@@ -26,8 +26,11 @@ float camAngRate = 200;
 float colorTransRate = .3;
 //A simple lighting shader for what ever object needs to draw itself without a shader
 int SIMPLE_LIGHTING_SHADER ;
-int BACKGROUND_TEXTURE;
+unsigned int BACKGROUND_TEXTURE;
 int FLAME_SHADER;
+unsigned int CLICK_ON_SOUND;
+unsigned int CLICK_OFF_SOUND;
+unsigned int JUMP_SOUND;
 
 double w2h ;
 
@@ -537,8 +540,10 @@ void key_press(unsigned char ch,int x,int y)
         //Conditions where one can't pause
         return;
       if(!paused){
+        playSound(CLICK_ON_SOUND,false);
         paused = true;
       } else {
+        playSound(CLICK_OFF_SOUND,false);
           paused = false;
           azimuth=0;   
           elevation=baseElevation;  
@@ -569,15 +574,19 @@ int main(int argc,char* argv[])
 {
    //  Initialize GLUT
    glutInit(&argc,argv);
-
+   // Setup OpenAl
+   setupOpenAl();
    //  Request double buffered true color window with Z-buffer
    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 
    glutInitWindowSize(600, 600);
    //  Create window
    glutCreateWindow("VoidTrack");
+     glutFullScreen();  
 
-  glutFullScreen();  
+     CLICK_ON_SOUND = loadSoundFile("sounds/clickon.wav");
+      CLICK_OFF_SOUND = loadSoundFile("sounds/clickoff.wav");
+        JUMP_SOUND = loadSoundFile("sounds/jump.wav");
    SIMPLE_LIGHTING_SHADER=CreateShaderProg("shaders/lightingshader.vert","shaders/simpleshader.frag", NULL);
 BACKGROUND_TEXTURE = LoadTexBMP("textures/background.bmp");
 FLAME_SHADER = CreateShaderProg("shaders/flameshader.vert",NULL, (char **)Shader_Attribs_Flame);
@@ -604,6 +613,11 @@ FLAME_SHADER = CreateShaderProg("shaders/flameshader.vert",NULL, (char **)Shader
 
    //  Pass control to GLUT for events
    glutMainLoop();
+
+   free(spaceShip);
+   free(track);
+   free(background);
+   free(counter);
    //  Return to OS
    return 0;
 }

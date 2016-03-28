@@ -16,7 +16,7 @@ else
 #  OSX
 ifeq "$(shell uname)" "Darwin"
 CFLG=-O3 -Wall -Wno-deprecated-declarations
-LIBS=-framework GLUT -framework OpenGL
+LIBS=-framework GLUT -framework OpenGL -framework OpenAL
 #  Linux/Unix/Solaris
 else
 CFLG=-O3 -Wall
@@ -34,7 +34,7 @@ print.o: print.c
 project.o: project.c 
 errcheck.o: errcheck.c
 drawshapes.o: drawshapes.c 
-sound.o: sound.c
+sound.o: sound.cpp
 shader.o: shader.c
 calc.o: calc.c
 log.o: log.c

@@ -16,8 +16,12 @@
 #define GL_GLEXT_PROTOTYPES
 #ifdef __APPLE__
 #include <GLUT/glut.h>
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
 #else
 #include <GL/glut.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 #endif
 
 #define PI 3.1415926
@@ -52,8 +56,11 @@ extern "C" {
 #endif
 
 extern int SIMPLE_LIGHTING_SHADER;
-extern int BACKGROUND_TEXTURE;
+extern  unsigned int BACKGROUND_TEXTURE;
 extern int FLAME_SHADER;
+extern unsigned int CLICK_ON_SOUND;
+extern unsigned int CLICK_OFF_SOUND;
+extern unsigned int JUMP_SOUND;
 
 void Print(const char* format , ...);
 void Fatal(const char* format , ...);
@@ -61,7 +68,6 @@ void Log(const char * format, ...);
 unsigned int  LoadTexBMP(const char* file);
 void Project(double fov,double asp,double dim);
 void ErrCheck(const char* where);
-void PlaySound(const char* soundname);
 float frand(float rng,float off);
 char* ReadText(const char *file);
 void PrintShaderLog(int obj,const char* file);
@@ -74,6 +80,11 @@ float areaOfTrianlge(float x1,float y1,float x2,float y2,float x3,float y3);
 void drawBall();
 void drawCube(float width, float length, float height);
 void drawRightAngleTrianlgePrism(float width, float length, float height, int deactiveCorner);
+
+void setupOpenAl();
+
+unsigned int loadSoundFile(const char *file);
+void playSound(unsigned int alSource, bool loop);
 #ifdef __cplusplus
 }
 
