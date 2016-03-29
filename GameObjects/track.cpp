@@ -264,11 +264,18 @@ addNewTrackPiece(0,0,0
 						addNewTrackPiece(0,0,5
 									,GEN_WIDTH,20
 									,10,-2,290);
-							/*addNewTrackPiece(0,2,3
-									,GEN_WIDTH,10
-									,0,-5,300);
+	
+								addNewYawTurn(0,0,0
+									,GEN_WIDTH,3
+									,10,-5,290,TOP_LEFT,20);
 
-							addNewTrackPiece(0,0,0
+
+	addNewTrackPieceTri(0,0,0
+										,GEN_WIDTH,10
+										,10,-5,290 , TOP_RIGHT);
+
+
+						/*	addNewTrackPiece(0,0,0
 									,GEN_WIDTH,7
 									,5,5,310);
 

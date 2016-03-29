@@ -8,20 +8,24 @@
 class SpaceShip{
 
 	float terminalVelocity, accelerationRate,velocity, floatingMotionCounter;
-	bool accelerating,  updateFallingOn, jumpOn;
+	bool accelerating,  updateFallingOn, jumpOn, jumpReady;
 	float x,y,z,roll, pitch, yaw, floatingHeight;
 	float centerX, centerY, centerZ;
 	Flame * flame;
 
 	float updatePitch, updateRoll;
 
-	float jumpVel;
+	float jumpVel, maxJumpVel;
 
 	//For turning
 	int rollRate, maxAddRoll;
 	float addRoll;
 
 	float floatingY;
+
+	//Rate at which jump vel increases
+	float updateJumpRate;
+	float updateJumpRateRate;
 
 
 	GLfloat *model; 
@@ -62,7 +66,9 @@ class SpaceShip{
 
 		void go();
 
+		void setupJump();
 		void jump();
+
 		bool isJumping();
 
 		float getX();

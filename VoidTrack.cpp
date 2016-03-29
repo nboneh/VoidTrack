@@ -529,7 +529,6 @@ void special_key_up(int key,int x,int y)
    //  Turn ship left
    else if (key == GLUT_KEY_LEFT)
       spaceShip->stopTurnLeft();
-  
 }
 
 void key_press(unsigned char ch,int x,int y)
@@ -546,7 +545,7 @@ void key_press(unsigned char ch,int x,int y)
           reset();
           return;
         }
-        spaceShip->jump();
+        spaceShip->setupJump();
     } else if(ch == 'p' || ch =='P'){
    
       if(gameOver || !counter->done() || won)
@@ -565,6 +564,13 @@ void key_press(unsigned char ch,int x,int y)
       }
     }
 
+}
+
+void key_press_up(unsigned char ch,int x,int y){
+      //Space Bar
+   if(ch == 32){
+        spaceShip->jump();
+   }
 }
 
 
@@ -628,6 +634,7 @@ FLAME_SHADER = CreateShaderProg("shaders/flameshader.vert",NULL, (char **)Shader
    glutSpecialFunc(special_press);
    glutSpecialUpFunc(special_key_up);
    glutKeyboardFunc(key_press);
+    glutKeyboardUpFunc(key_press_up);
    glutIdleFunc(idle);
 
    //  Pass control to GLUT for events

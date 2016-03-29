@@ -28,6 +28,7 @@ SpaceShip::SpaceShip(){
 	centerY = .15;
 	centerZ = -.75; 
 
+	updateJumpRateRate = 1200;
 	floatingHeight = .4;
 	fallingRateInc = 20;
 
@@ -35,14 +36,15 @@ SpaceShip::SpaceShip(){
 	model = new GLfloat[16];
 
  	flame = new Flame();
- 	jumpVel = 9;
+ 	jumpVel = 4;
+ 	maxJumpVel = 9;
 	reset();
 }
 
 void SpaceShip::reset(){
 	x = 0;
 	y = 0;
-	z = -1;
+	z = 2;
 	roll = 0;
 	pitch = 0;
 	yaw = 0;
@@ -51,6 +53,7 @@ void SpaceShip::reset(){
 	terminalVelocity = 17;
 	velocity = 0;
 	addRoll = 0;
+	updateJumpRate = 0;
 	turn = 0;
 	fallingRate = 0;
 	floatingY = 0;
@@ -63,6 +66,7 @@ void SpaceShip::reset(){
 	flame->reset();
 	updateFallingOn = true;
 	jumpOn = false;
+	jumpReady = false;
 }
 
 void SpaceShip::go(){
@@ -92,16 +96,21 @@ void SpaceShip::update(double t){
 		}
 		flame->update(t, velocity);
 
-		float* forwardVector = getForwardVector();
-		
-	 	x -=  velocity*forwardVector[0] *t;
-      	y -=  velocity*forwardVector[1] *t;
-     	z -=  velocity*forwardVector[2] *t;
-     	free(forwardVector);
 
-
+		if(jumpVel < maxJumpVel && jumpReady){
+			jumpVel += updateJumpRate* t;
+			updateJumpRate += updateJumpRateRate* t;
+			if(jumpVel >= maxJumpVel)
+				jump();
+		}
 		
-    	updateTurning(t);
+	 	x -=  velocity*(Cos(pitch )*Sin(yaw)) *t;
+      	y +=  velocity*(Sin(pitch)) *t;
+     	z -=  velocity*(Cos(pitch)*Cos(yaw)) *t;
+
+		if(!fallen())
+    		updateTurning(t);
+		
 		updateFalling(t);
 		updateStretch(t);
 
@@ -114,8 +123,11 @@ void SpaceShip::updateStretch(double t){
 		if(jumpOn){
 			startJump();
 			jumpOn = false;
+			jumpVel = 4;
+			updateJumpRate = 0;
 		} 
-		stretching = -1;
+		if(stretching == 1)
+		 stretching = -1;
 	}
 	if(stretching == -1 && addStrecth <= 0){
 		addStrecth = 0;
@@ -172,7 +184,9 @@ void SpaceShip::updateFalling(double t){
 }
 
 void SpaceShip::updateValues(double t){
-	  updateModelMatrix();
+	  bool updateMatrix = false;
+	  if(fabs(roll -updateRoll ) > .3){
+	  	updateMatrix = true;
 	if(roll < updateRoll){
      	roll += t*velocity;
      	if(roll >= updateRoll)
@@ -182,7 +196,9 @@ void SpaceShip::updateValues(double t){
      	if(roll <= updateRoll)
      		roll = updateRoll;
     }
-
+	}
+ if(fabs(pitch -updatePitch ) > .3){
+ 	updateMatrix = true;
     if(pitch < updatePitch){
      	pitch += t*velocity;
      	if(pitch >= updatePitch)
@@ -192,7 +208,9 @@ void SpaceShip::updateValues(double t){
      	if(pitch <= updatePitch)
      		pitch = updatePitch;
     }
-
+ }
+ if(updateMatrix)
+ 	updateModelMatrix();
 }
 
 void SpaceShip::draw(){
@@ -392,12 +410,19 @@ float SpaceShip::getPitch(){
 	return pitch;
 }
 
+void SpaceShip::setupJump(){
+	if(accelerating   && fabs(fallingRate) < .01 && !jumpOn){
+		jumpReady = true;
+	}
+}
+
 void SpaceShip::jump(){
-	if(accelerating   && fabs(fallingRate) < .01){
+	if(jumpReady){
 		jumpOn = true;
+		jumpReady = false;
 		playSound(JUMP_SOUND, false);
 		setStretchingForVel(jumpVel);
-	}
+    }
 }
 
 void SpaceShip::setStretchingForVel(float vel){
@@ -406,6 +431,7 @@ void SpaceShip::setStretchingForVel(float vel){
 		stretching = 1;
 		maxStrecth = vel/30;
 		stretchRate = vel /3;
+		addStrecth = 0;
 	} else if(stretching == 0  && vel <= 0 ){
 		//For in air
 		addStrecth = vel/60;
@@ -416,7 +442,7 @@ void SpaceShip::setStretchingForVel(float vel){
 
 void SpaceShip::startJump(){
 	//Setting the falling rate negative for jumping
-	fallingRate = -jumpVel + (terminalVelocity-16)/7;
+	fallingRate = -jumpVel;
 }
 
 bool SpaceShip::isJumping(){
