@@ -74,8 +74,6 @@ TrackPiece::TrackPiece(float _x, float _y, float _z, float _width,
 	model[13] =  y - length *model[9];
 	model[14] = hitZ4;
 	shiftAngle = 0;
-	shiftRadius = sqrt(shiftZ*shiftZ + shiftX*shiftX);
-	lenRelToTrack = length;
 }	
 
 void TrackPiece::makeIntoTriangle(int _deactiveCorner){
@@ -99,8 +97,8 @@ void TrackPiece::makeIntoTriangle(int _deactiveCorner){
 }
 void TrackPiece::draw(){	
 
-    glVertexAttrib4f(SHIFTS, shiftX, shiftZ,shiftRadius, shiftAngle);
-    glVertexAttrib1f(LEN_REL_TO_TRACK,length);
+    glVertexAttrib2f(SHIFTS, shiftX, shiftZ);
+
 	glPushMatrix();
 	glTranslatef(x,y,z);
 
@@ -193,7 +191,7 @@ bool TrackPiece::checkTraction(SpaceShip* ship){
 	}
 
 	 //Checking that ship is close enough within y rangle
-	if(ship->getY() > landingY+.5)
+	if(ship->getY() > landingY+.1)
 		return false; 
 	if(ship->getY() < landingY-.5)
 		return false;
@@ -225,8 +223,3 @@ float TrackPiece::getZ(){
 void TrackPiece::setShiftAngle(float angle){
 	shiftAngle = ToRad(angle);
 }
-
-void TrackPiece::setLenRelToTrack(float len){
-	lenRelToTrack = len;
-}
-

@@ -18,6 +18,8 @@ class Track{
 
 
 	bool setShip;
+	bool zoneCount1;
+	bool zoneCount2;
 
 	float lengthOfTrack;
 	bool updatedLap;

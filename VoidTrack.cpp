@@ -272,7 +272,7 @@ void updateLap(){
       track->setShader(TrackShaders[shaderIndex]);
     }
   if(currentLap > 1){
-    spaceShip->increaseTerminalVelocityBy(3);
+    spaceShip->increaseTerminalVelocityBy(2);
   }
 }
 
@@ -302,7 +302,7 @@ void printLap(){
   int lap = currentLap;
   if(lap <= 0)
     lap = 1;
-  Print("Laps %d/%d", lap,totalLaps);
+  Print("Zones %d/%d", lap,totalLaps);
 
   glPopMatrix();
 
@@ -603,7 +603,7 @@ int main(int argc,char* argv[])
    glutInitWindowSize(600, 600);
    //  Create window
    glutCreateWindow("VoidTrack");
-     //glutFullScreen();  
+    glutFullScreen();  
 
      CLICK_ON_SOUND = loadSoundFile("sounds/clickon.wav");
       CLICK_OFF_SOUND = loadSoundFile("sounds/clickoff.wav");
@@ -616,9 +616,9 @@ int main(int argc,char* argv[])
 BACKGROUND_TEXTURE = LoadTexBMP("textures/background.bmp");
 FLAME_SHADER = CreateShaderProg("shaders/flameshader.vert",NULL, (char **)Shader_Attribs_Flame);
    TrackShaders[0] =CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader1.frag", (char **)Shader_Attribs_Track);
-   TrackShaders[1] =    TrackShaders[0];
-  TrackShaders[2] =    TrackShaders[0];
-  TrackShaders[3] =    TrackShaders[0];
+   TrackShaders[1] =   CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader2.frag", (char **)Shader_Attribs_Track);
+  TrackShaders[2] =     CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader3.frag", (char **)Shader_Attribs_Track);
+  TrackShaders[3] =    CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader4.frag", (char **)Shader_Attribs_Track);
     TrackShaders[4] =    TrackShaders[0];
       TrackShaders[5] =    TrackShaders[0];
    background = new Background();

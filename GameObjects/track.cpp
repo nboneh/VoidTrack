@@ -343,9 +343,21 @@ bool Track::checkTraction(SpaceShip* ship){
 	}
 	for(int i = 0; i < trackPieces.size(); i++){
 		if(trackPieces.at(i)->checkTraction(ship)){
+
+			if(lap >= 1 && zoneCount1 && i > trackPieces.size()*.5){
+				lap++;
+				zoneCount1 = false;
+			}
+			if(lap >= 1 && zoneCount2 && i > trackPieces.size()*.82){
+				lap++;
+				zoneCount2 = false;
+			}
+
 			if(i < currentTrackPiece){
 				//Lap complete
 				lap++;
+				zoneCount2 = true;
+				zoneCount1 = true;
 
 			}
 			currentTrackPiece = i;
@@ -359,6 +371,8 @@ void Track::reset(){
 	counter = 0;
 	currentTrackPiece = 0;
 	lap = 0;
+	zoneCount2 = true;
+	zoneCount1 = true;
 }
 
 void Track::draw(){
@@ -452,7 +466,6 @@ void Track::addNewYawTurn(float moveRight, float moveUp, float moveFor, float wi
 	float triaddLength = sqrt(hypcenter*hypcenter + widthcenter*widthcenter - 2 *hypcenter*widthcenter*Cos(yaw));
 	lengthOfTrack += triaddLength;
 //	Log("%f",triaddLength);
-	tripiece->setLenRelToTrack(triaddLength);
 	tripiece->setShiftAngle(yaw);
 	trackPieces.push_back(tripiece);
 

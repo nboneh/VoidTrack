@@ -39,7 +39,6 @@
 #define DURATION_ARRAY  5
 
 #define SHIFTS 7
-#define LEN_REL_TO_TRACK 8
 
 #define BOT_LEFT 0
 #define BOT_RIGHT 1
@@ -47,7 +46,7 @@
 #define TOP_LEFT 3
 
 static const char* Shader_Attribs_Flame[] = {"","","","","Vel","DurationTime", NULL};
-static const char* Shader_Attribs_Track[] = { "","","","","","","","Shifts", "lenRelToTrack", NULL};
+static const char* Shader_Attribs_Track[] = { "","","","","","","","Shifts", NULL};
 
 
 

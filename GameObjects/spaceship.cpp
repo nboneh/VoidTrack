@@ -36,7 +36,7 @@ SpaceShip::SpaceShip(){
 	model = new GLfloat[16];
 
  	flame = new Flame();
- 	jumpVel = 4;
+ 	jumpVel = 4.5;
  	maxJumpVel = 9;
 	reset();
 }
@@ -123,7 +123,7 @@ void SpaceShip::updateStretch(double t){
 		if(jumpOn){
 			startJump();
 			jumpOn = false;
-			jumpVel = 4;
+			jumpVel = 4.5;
 			updateJumpRate = 0;
 		} 
 		if(stretching == 1)
@@ -375,7 +375,8 @@ void SpaceShip::setColor(float _pr, float _pg,  float _pb, float _cr, float _cg,
 void SpaceShip::setLandingY(float _y){
 	//This function will keep the ship from falling
 	//the track will call on it if there is traction
-	setStretchingForVel(fallingRate);
+	if(fabs(fallingRate) > .2)
+		setStretchingForVel(fallingRate);
 	fallingRate = 0;
 	updateFallingOn = false;
 	y = _y;
@@ -491,7 +492,7 @@ void SpaceShip::setY(float _y){
 }
 
 bool SpaceShip::fallen(){
-	return fallingRate > fallingRateInc;
+	return fallingRate > (fallingRateInc*1.5);
 }
 
 
