@@ -523,6 +523,8 @@ void special_press(int key,int x,int y)
 
 void special_key_up(int key,int x,int y)
 { 
+     if(paused)
+          return;
     // Turn ship right
    if (key == GLUT_KEY_RIGHT)
       spaceShip->stopTurnRight();
@@ -569,6 +571,8 @@ void key_press(unsigned char ch,int x,int y)
 }
 
 void key_press_up(unsigned char ch,int x,int y){
+     if(paused)
+          return;
       //Space Bar
    if(ch == 32){
         spaceShip->jump();
@@ -605,7 +609,7 @@ int main(int argc,char* argv[])
    glutInitWindowSize(600, 600);
    //  Create window
    glutCreateWindow("VoidTrack");
-   // glutFullScreen();  
+    glutFullScreen();  
 
      CLICK_ON_SOUND = loadSoundFile("sounds/clickon.wav", false);
       CLICK_OFF_SOUND = loadSoundFile("sounds/clickoff.wav", false);

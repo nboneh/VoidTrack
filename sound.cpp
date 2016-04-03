@@ -154,6 +154,7 @@ void playSound(unsigned int alSource, bool loop){
 
 void stopSound(unsigned int alSource){
 	alSourceStop(alSource);
+    alSourceRewind(alSource);
 }
 
 void pauseSound(unsigned int alSource){
@@ -162,8 +163,6 @@ void pauseSound(unsigned int alSource){
 
 int getCurrentLoundnessOfMusic(){
     int offset;
-    int offset2;
     alGetSourcei(MUSIC, AL_SAMPLE_OFFSET, &offset);
-     alGetSourcei(MUSIC, AL_SEC_OFFSET, &offset2);
     return rawPcmDataMusic[offset ];
 }

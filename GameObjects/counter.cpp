@@ -4,7 +4,6 @@ Counter::Counter(){
 	scaleRate = 1;
 	text = new char[3]; 
 	reset();
-	playSound(MUSIC, true);
 }
 void Counter::reset(){
 	currentCount = 3;
@@ -74,11 +73,11 @@ void Counter::draw(){
 }
 
 bool Counter::startShip(){
-	//return currentCount <= 0;
-	return true;
+	return currentCount <= 0;
+	//return true;
 }
 
 bool Counter::done(){
-	//return currentCount <= -1;
-	return true;
+	return currentCount <= -1;
+	//return true;
 }

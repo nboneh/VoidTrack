@@ -330,11 +330,11 @@ void Track::update(float t){
 	int loc;
 	counter += t;
 	musicCounter += t;
-	sumMusic += ((float)getCurrentLoundnessOfMusic());
+	sumMusic += ((float)getCurrentLoundnessOfMusic() * t * 50);
 	musicSampleCount++;
 	loc = glGetUniformLocation(shader, "time");
  	 if (loc>=0) glUniform1f(loc,counter);
- 	 if(musicCounter >=.07){
+ 	 if(musicCounter >=.1){
  	 	loc = glGetUniformLocation(shader, "amp");
  	 	if (loc>=0) glUniform1f(loc,sumMusic/(musicSampleCount * 3000) );
  	 	musicCounter = 0 ;
