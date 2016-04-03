@@ -85,11 +85,12 @@ void drawRightAngleTrianlgePrism(float width, float length, float height, int de
 
 void setupOpenAl();
 
-unsigned int loadSoundFile(const char *file);
+unsigned int loadSoundFile(const char *file, bool music);
 void playSound(unsigned int alSource, bool loop);
 void stopSound(unsigned int alSource);
 
 void pauseSound(unsigned int alSource);
+int getCurrentLoundnessOfMusic();
 #ifdef __cplusplus
 }
 

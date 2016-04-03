@@ -329,8 +329,18 @@ void Track::update(float t){
 	 glUseProgram(shader);
 	int loc;
 	counter += t;
+	musicCounter += t;
+	sumMusic += ((float)getCurrentLoundnessOfMusic());
+	musicSampleCount++;
 	loc = glGetUniformLocation(shader, "time");
  	 if (loc>=0) glUniform1f(loc,counter);
+ 	 if(musicCounter >=.07){
+ 	 	loc = glGetUniformLocation(shader, "amp");
+ 	 	if (loc>=0) glUniform1f(loc,sumMusic/(musicSampleCount * 3000) );
+ 	 	musicCounter = 0 ;
+ 	 	sumMusic = 0;
+ 	 	musicSampleCount = 0;
+ 	}
   	glUseProgram(0);
 }
 
@@ -373,6 +383,9 @@ void Track::reset(){
 	lap = 0;
 	zoneCount2 = true;
 	zoneCount1 = true;
+	musicCounter = 0;
+	sumMusic = 0;
+	musicSampleCount = 0;
 }
 
 void Track::draw(){

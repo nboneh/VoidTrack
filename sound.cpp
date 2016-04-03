@@ -1,5 +1,6 @@
 #include "VoidTrack.h"
 
+short int* rawPcmDataMusic;
 void setupOpenAl(){
 	ALCcontext *context;
 	ALCdevice *device;
@@ -16,7 +17,7 @@ void setupOpenAl(){
 	alGetError();
 }
 
-unsigned int loadSoundFile(const char *file){
+unsigned int loadSoundFile(const char *file, bool music){
 	//Loading wave file not using alut found on google
 FILE* fp = NULL;
     
@@ -117,10 +118,13 @@ FILE* fp = NULL;
     }
     
     unsigned int SubChunk2Size;
-    fread(&SubChunk2Size, 1, sizeof(unsigned int), fp);
-    
+    fread(&SubChunk2Size, 1, sizeof(unsigned int), fp); 
     unsigned char* Data = new unsigned char[SubChunk2Size];
+    
     fread(Data, SubChunk2Size, sizeof(unsigned char), fp);
+     if(music)
+        rawPcmDataMusic = (short int*)Data;
+
     
     delete [] ChunkID;
     delete [] Format;
@@ -154,4 +158,12 @@ void stopSound(unsigned int alSource){
 
 void pauseSound(unsigned int alSource){
 	alSourcePause(alSource);
+}
+
+int getCurrentLoundnessOfMusic(){
+    int offset;
+    int offset2;
+    alGetSourcei(MUSIC, AL_SAMPLE_OFFSET, &offset);
+     alGetSourcei(MUSIC, AL_SEC_OFFSET, &offset2);
+    return rawPcmDataMusic[offset ];
 }

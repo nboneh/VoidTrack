@@ -11,16 +11,17 @@ const float WaveThickness = .1;
 varying float LightIntensity;
 varying vec2  ModelPos;
 uniform float time;
+uniform float amp;
 
 void main()
 {
    vec3 color;
 
    //Subtracting time from x to make the wave move right and multiplying by 8 to increase the frequency
-   float sinx = (sin((ModelPos.y + time*5.0))) ;
+   float sinx = amp *(sin(ModelPos.y+ time*5.0) );
 
    //If  z is in range of the value sinx function set the color to wave color otherwise set to background color 
-   if(sinx >= (ModelPos.x - WaveThickness) ){
+   if(sinx >= (ModelPos.x - WaveThickness) && sinx <= (ModelPos.x + WaveThickness)  ){
       color = PrimeColor;
    } else {
       color = ComplimentColor;

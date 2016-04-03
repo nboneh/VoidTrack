@@ -11,6 +11,7 @@ const float WaveThickness = .1;
 varying float LightIntensity;
 varying vec2  ModelPos;
 uniform float time;
+uniform float amp;
 
 void main()
 {
@@ -22,10 +23,10 @@ void main()
       sinval = 1.0;
    else if(sinval < -1.0)
       sinval = -1.0;
-   float absx = asin(sinval);
+   float absx = amp*asin(sinval);
 
    //If  z is in range of the value sinx function set the color to wave color otherwise set to background color 
-   if(absx >= (ModelPos.x - WaveThickness) ){
+   if(absx >= (ModelPos.x - WaveThickness) && absx <= (ModelPos.x + WaveThickness)  ){
       color = PrimeColor;
    } else {
       color = ComplimentColor;

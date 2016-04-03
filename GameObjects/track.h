@@ -26,6 +26,9 @@ class Track{
 
 	GLfloat * model;
 		float currentXShift;
+		float musicCounter;
+		float sumMusic;
+		float musicSampleCount;
 
 	public: 
 		Track();

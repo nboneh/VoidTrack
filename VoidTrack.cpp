@@ -545,6 +545,8 @@ void key_press(unsigned char ch,int x,int y)
           reset();
           return;
         }
+        if(paused)
+          return;
         spaceShip->setupJump();
     } else if(ch == 'p' || ch =='P'){
    
@@ -603,15 +605,15 @@ int main(int argc,char* argv[])
    glutInitWindowSize(600, 600);
    //  Create window
    glutCreateWindow("VoidTrack");
-    glutFullScreen();  
+   // glutFullScreen();  
 
-     CLICK_ON_SOUND = loadSoundFile("sounds/clickon.wav");
-      CLICK_OFF_SOUND = loadSoundFile("sounds/clickoff.wav");
-        JUMP_SOUND = loadSoundFile("sounds/jump.wav");
-        COUNT_DOWN_SOUND= loadSoundFile("sounds/countdown.wav");
-        GAME_OVER_SOUND = loadSoundFile("sounds/gameover.wav");
-        WIN_SOUND = loadSoundFile("sounds/win.wav");
-        MUSIC = loadSoundFile("sounds/music.wav");
+     CLICK_ON_SOUND = loadSoundFile("sounds/clickon.wav", false);
+      CLICK_OFF_SOUND = loadSoundFile("sounds/clickoff.wav", false);
+        JUMP_SOUND = loadSoundFile("sounds/jump.wav", false);
+        COUNT_DOWN_SOUND= loadSoundFile("sounds/countdown.wav", false);
+        GAME_OVER_SOUND = loadSoundFile("sounds/gameover.wav", false);
+        WIN_SOUND = loadSoundFile("sounds/win.wav", false);
+        MUSIC = loadSoundFile("sounds/music.wav", true);
    SIMPLE_LIGHTING_SHADER=CreateShaderProg("shaders/lightingshader.vert","shaders/simpleshader.frag", NULL);
 BACKGROUND_TEXTURE = LoadTexBMP("textures/background.bmp");
 FLAME_SHADER = CreateShaderProg("shaders/flameshader.vert",NULL, (char **)Shader_Attribs_Flame);
