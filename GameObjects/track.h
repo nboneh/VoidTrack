@@ -28,6 +28,7 @@ class Track{
 		float currentXShift;
 		float musicCounter;
 		float sumMusic;
+		float sumMusicSign;
 		float musicSampleCount;
 
 	public: 
