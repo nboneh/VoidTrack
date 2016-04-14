@@ -1,4 +1,4 @@
-// Weird Wave 1
+// Weird Wave 2
 //  Colors
 uniform vec3 ComplimentColor;
 uniform vec3 PrimeColor;
@@ -17,7 +17,7 @@ void main()
    vec3 color;
 
    //Subtracting time from x to make the wave move right and multiplying by 8 to increase the frequency
-   float sinx = amp*sin(1.0/sin( ModelPos.y + time*5.0));
+   float sinx = amp*cos(1.0/sin( ModelPos.y + time*5.0));
 
    //If  z is in range of the value sinx function set the color to wave color otherwise set to background color 
    if(sinx >= (ModelPos.x - WaveThickness) && sinx <= (ModelPos.x + WaveThickness)  ){

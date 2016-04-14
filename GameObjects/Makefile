@@ -28,7 +28,7 @@ track.o: track.cpp
 trackpiece.o: trackpiece.cpp
 counter.o: counter.cpp
 
-GameObjects.a: background.o spaceship.o flame.o track.o trackpiece.o counter.o
+GameObjects.a: background.o spaceship.o flame.o track.o trackpiece.o counter.o 
 	ar -rcs $@ $^
 
 

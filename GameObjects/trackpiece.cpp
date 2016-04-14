@@ -118,9 +118,6 @@ void TrackPiece::draw(){
 }
 
 bool TrackPiece::checkTraction(SpaceShip* ship){
-	 if(ship->isJumping())
-	 	//Ship is jumping no need to check traction
- 		return false;
 
 	float px = ship->getX();
 	float pz = ship->getZ();
@@ -190,15 +187,19 @@ bool TrackPiece::checkTraction(SpaceShip* ship){
 		return false; 
 	}
 
-	 //Checking that ship is close enough within y rangle
-	if(ship->getY() > landingY+.5)
-		return false; 
 	if(ship->getY() < landingY-.5)
 		return false;
-
 	float shipYaw =ship->getYaw() -  yaw;
 	ship->setPitch(Cos(shipYaw) *pitch + Sin(-shipYaw) * roll);
  	ship->setRoll(Sin(shipYaw) *pitch + Cos(shipYaw) * roll);
+
+ 	 if(ship->isJumping())
+	 	//Ship is jumping no need to set y
+ 		return false;
+
+	 //Checking that ship is close enough within y rangle
+	if(ship->getY() > landingY+.5)
+		return false; 
 
 
 

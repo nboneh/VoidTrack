@@ -8,28 +8,13 @@ void drawTriangle(){
    glEnd();
 }
 
-void drawSquare()
-{
-   glBegin(GL_POLYGON);
-   glVertex2f(0,0);
-   glVertex2f(0,1);
-   glVertex2f(1,1);
-   glVertex2f(1,0);
-   glEnd();
-}
-
 
 SpaceShip::SpaceShip(){
-
 	maxAddRoll = 40;
 	rollRate = 90;
 
-	centerX = .5;
-	centerY = .15;
-	centerZ = -.75; 
-
 	updateJumpRateRate = 1200;
-	floatingHeight = .4;
+	floatingHeight = 1;
 	fallingRateInc = 20;
 
 
@@ -218,75 +203,32 @@ void SpaceShip::draw(){
 	
 	glTranslatef(x,y + floatingHeight + floatingY,z);
 
-    glTranslatef(centerX,centerY,centerZ);
     glRotatef(yaw , 0,1,0);
     glRotatef(pitch , 1,0,0);
     glRotatef(roll+addRoll, 0,0,1);
     glScalef(1+addStrecth/2,1- addStrecth,1+addStrecth/2);
-	glTranslatef(-centerX,-centerY,-centerZ);
-
-
-	glTranslatef(centerX,centerY,-centerZ);
-    glScalef(1+addStrecth/2,1- addStrecth,1+addStrecth/2);
-	glTranslatef(-centerX,-centerY,centerZ);
-
+ 
+    
 	if(accelerating){
 		glPushMatrix();
-		glTranslatef(centerX,centerY,	-.01);
+		glTranslatef(0,0,.5);
 		glRotatef(90,1,0,0);
-		glScalef(1.5,1,1.5);
+		glScalef(1.5,1,2);
   		flame->draw();
    		glPopMatrix();
     }
     
-
-	/*glColor3f(cr,cg,cb);
-	glBegin(GL_POLYGON);
-    glVertex3f(0,0, 0);
-    glVertex3f(.5,0, -1);
-    glVertex3f(1,0, 0);
-    glEnd();*/
-
-    /*glPushMatrix();
-    glRotatef(90,0,1,0);
-    glColor3f(0,1,1);
-	glBegin(GL_POLYGON);
-    glVertex3f(.5,-1, 0);
-    glVertex3f(.5,0, -1);
-    glVertex3f(.5,1, 0);
-    glEnd();
-    glPopMatrix();*/
-
     glColor3f(pr,pg,pb);
 	glPushMatrix();
-	glScalef( 1,.3,1.5);
-   drawSquare();
+	glRotatef(180,0,1,0);
+	glScalef( .2,.25,.2);
+    glCallList(SPACESHIP_OBJ);
 
-   glRotatef(60,1.0,0.0,0.0);
-   drawTriangle();
-
-   glRotatef(-60,1.0,0.0,0.0);
-   glTranslatef(0,1,0);
-   glRotatef(120,1.0,0.0,0.0);
-   drawTriangle();
-
-
-   glRotatef(-120,1.0,0.0,0.0);
-   glTranslatef(0,-1,0);
-   glRotatef(90,0.0,0.0,1.0);
-   glRotatef(120,1.0,0.0,0.0);
-   drawTriangle();
-
-   glRotatef(-120,1.0,0.0,0.0);
-   glTranslatef(0,-1,0);
-   glRotatef(60,1.0,0.0,0.0);
-   drawTriangle();
-   glPopMatrix();
-
- 
+ 	glPopMatrix();
 
 
 	glPopMatrix();
+
 
 }
 
@@ -385,7 +327,7 @@ void SpaceShip::setLandingY(float _y){
 }
 
 float SpaceShip::getX(){
-	return x + centerX;
+	return x ;
 }
 
 float SpaceShip::getY(){
@@ -393,7 +335,7 @@ float SpaceShip::getY(){
 }
 
 float SpaceShip::getZ(){
-	return z + centerZ;
+	return z ;
 }
 
 float SpaceShip::getYaw(){

@@ -35,6 +35,7 @@ unsigned int COUNT_DOWN_SOUND;
 unsigned int GAME_OVER_SOUND;
 unsigned int WIN_SOUND;
 unsigned int MUSIC;
+unsigned int SPACESHIP_OBJ;
 
 double w2h ;
 
@@ -609,47 +610,49 @@ int main(int argc,char* argv[])
    glutInitWindowSize(600, 600);
    //  Create window
    glutCreateWindow("VoidTrack");
-    glutFullScreen();  
+   glutFullScreen();  
 
-     CLICK_ON_SOUND = loadSoundFile("sounds/clickon.wav", false);
-      CLICK_OFF_SOUND = loadSoundFile("sounds/clickoff.wav", false);
-        JUMP_SOUND = loadSoundFile("sounds/jump.wav", false);
-        COUNT_DOWN_SOUND= loadSoundFile("sounds/countdown.wav", false);
-        GAME_OVER_SOUND = loadSoundFile("sounds/gameover.wav", false);
-        WIN_SOUND = loadSoundFile("sounds/win.wav", false);
-        MUSIC = loadSoundFile("sounds/music.wav", true);
-   SIMPLE_LIGHTING_SHADER=CreateShaderProg("shaders/lightingshader.vert","shaders/simpleshader.frag", NULL);
-BACKGROUND_TEXTURE = LoadTexBMP("textures/background.bmp");
-FLAME_SHADER = CreateShaderProg("shaders/flameshader.vert",NULL, (char **)Shader_Attribs_Flame);
-   TrackShaders[0] =CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader1.frag", (char **)Shader_Attribs_Track);
-   TrackShaders[1] =   CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader2.frag", (char **)Shader_Attribs_Track);
+  CLICK_ON_SOUND = loadSoundFile("sounds/clickon.wav", false);
+  CLICK_OFF_SOUND = loadSoundFile("sounds/clickoff.wav", false);
+  JUMP_SOUND = loadSoundFile("sounds/jump.wav", false);
+  COUNT_DOWN_SOUND= loadSoundFile("sounds/countdown.wav", false);
+  GAME_OVER_SOUND = loadSoundFile("sounds/gameover.wav", false);
+  WIN_SOUND = loadSoundFile("sounds/win.wav", false);
+  MUSIC = loadSoundFile("sounds/music.wav", true);
+  SIMPLE_LIGHTING_SHADER=CreateShaderProg("shaders/lightingshader.vert","shaders/simpleshader.frag", NULL);
+  BACKGROUND_TEXTURE = LoadTexBMP("textures/background.bmp");
+  FLAME_SHADER = CreateShaderProg("shaders/flameshader.vert",NULL, (char **)Shader_Attribs_Flame);
+  SPACESHIP_OBJ = LoadOBJ("spaceship.obj");
+
+  TrackShaders[0] =CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader1.frag", (char **)Shader_Attribs_Track);
+  TrackShaders[1] =   CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader2.frag", (char **)Shader_Attribs_Track);
   TrackShaders[2] =     CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader3.frag", (char **)Shader_Attribs_Track);
   TrackShaders[3] =    CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader4.frag", (char **)Shader_Attribs_Track);
-    TrackShaders[4] =    TrackShaders[0];
-      TrackShaders[5] =    TrackShaders[0];
-   background = new Background();
-   spaceShip = new SpaceShip();
-   track = new Track();
-   counter = new Counter();
-   resetColors();
-    updateLap();
+  TrackShaders[4] =   CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader5.frag", (char **)Shader_Attribs_Track);
+  TrackShaders[5] =    CreateShaderProg("shaders/lightingshader2.vert","shaders/trackshader6.frag", (char **)Shader_Attribs_Track);
+  background = new Background();
+  spaceShip = new SpaceShip();
+  track = new Track();
+  counter = new Counter();
+  resetColors();
+  updateLap();
 
-   //  Register display, reshape, and key callbacks
-   glutDisplayFunc(display);
-   glutReshapeFunc(reshape);
-   glutSpecialFunc(special_press);
-   glutSpecialUpFunc(special_key_up);
-   glutKeyboardFunc(key_press);
-    glutKeyboardUpFunc(key_press_up);
-   glutIdleFunc(idle);
+  //  Register display, reshape, and key callbacks
+  glutDisplayFunc(display);
+  glutReshapeFunc(reshape);
+  glutSpecialFunc(special_press);
+  glutSpecialUpFunc(special_key_up);
+  glutKeyboardFunc(key_press);
+  glutKeyboardUpFunc(key_press_up);
+  glutIdleFunc(idle);
 
-   //  Pass control to GLUT for events
-   glutMainLoop();
+  //  Pass control to GLUT for events
+  glutMainLoop();
 
-   free(spaceShip);
-   free(track);
-   free(background);
-   free(counter);
-   //  Return to OS
-   return 0;
+  free(spaceShip);
+  free(track);
+  free(background);
+  free(counter);
+  //  Return to OS
+  return 0;
 }

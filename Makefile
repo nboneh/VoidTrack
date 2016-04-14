@@ -38,8 +38,9 @@ sound.o: sound.cpp
 shader.o: shader.c
 calc.o: calc.c
 log.o: log.c
+object.o: object.c
 #  Create archive
-VoidTrack.a: fatal.o loadtexbmp.o print.o project.o errcheck.o drawshapes.o sound.o shader.o calc.o log.o
+VoidTrack.a: fatal.o loadtexbmp.o print.o project.o errcheck.o drawshapes.o sound.o shader.o calc.o log.o object.o
 	ar -rcs $@ $^
 
 # Compile rules

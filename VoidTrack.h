@@ -63,6 +63,7 @@ extern unsigned int JUMP_SOUND;
 extern unsigned int COUNT_DOWN_SOUND;
 extern unsigned int WIN_SOUND;
 extern unsigned int MUSIC;
+extern unsigned int SPACESHIP_OBJ;
 
 void Print(const char* format , ...);
 void Fatal(const char* format , ...);
@@ -91,6 +92,7 @@ void stopSound(unsigned int alSource);
 
 void pauseSound(unsigned int alSource);
 int getCurrentLoundnessOfMusic();
+int LoadOBJ(const char* file);
 #ifdef __cplusplus
 }
 
