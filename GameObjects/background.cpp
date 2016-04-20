@@ -2,7 +2,7 @@
 
 void Background::draw(){
  	glPushMatrix();
- 	glRotatef(90,0,0,0);
+ 	glRotatef(90,1,0,0);
  	glScaled(500,500,500);
  	glColor3f(r,g,b);
  	glEnable(GL_TEXTURE_2D);
