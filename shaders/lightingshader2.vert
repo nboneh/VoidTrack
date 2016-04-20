@@ -12,31 +12,24 @@ uniform vec3 loc;
 //  Phong lighting intensity only
 float phong()
 {
-   //  P is the vertex coordinate on body
-   vec3 P = vec3(gl_ModelViewMatrix * gl_Vertex);
-   //  N is the object normal at P
+
+
+   vec3 L = normalize(gl_LightSource[0].position.xyz ); 
    vec3 N = normalize(gl_NormalMatrix * gl_Normal);
-   //  Light Position for light 0
-   vec3 LightPos = vec3(gl_LightSource[0].position);
-   //  L is the light vector
-   vec3 L = normalize(LightPos - P);
-   //  R is the reflected light vector R = 2(L.N)N - L
-   vec3 R = reflect(-L, N);
-   //  V is the view vector (eye at the origin)
-   vec3 V = normalize(-P);
+vec3 R = normalize(-reflect(L,N)); 
 
-   //  Diffuse light intensity is cosine of light and normal vectors
-   float Id = max(dot(L,N) , 0.0);
-   //  Shininess intensity is cosine of light and reflection vectors to a power
-   float Is = (Id>0.0) ? pow(max(dot(R,V) , 0.0) , gl_FrontMaterial.shininess) : 0.0;
+//calculate Ambient Term:
+vec4 Iamb = gl_FrontLightProduct[0].ambient;
 
-   //  Vertex color (ignores emission and global ambient)
-   vec3 color = gl_FrontLightProduct[0].ambient.rgb
-           + Id*gl_FrontLightProduct[0].diffuse.rgb
-           + Is*gl_FrontLightProduct[0].specular.rgb;
-   
+//calculate Diffuse Term:
+vec4 Idiff = gl_FrontLightProduct[0].diffuse * max(dot(N,L), 0.0);
+Idiff = clamp(Idiff,0.0, 1.0);
+
+// write Total Color:
+vec4 color =  Iamb + Idiff ; 
+
    //  Vertex intensity
-   return length(color);
+   return length(color.rgba) ;
 }
 
 void main()

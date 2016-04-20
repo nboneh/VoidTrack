@@ -20,7 +20,7 @@ bool startedShip = false;
 bool won = false;
 float camdist =dim * 1.5;
 double t;
-int ambient   =  60;  // Ambient intensity (%)
+int ambient   =  20;  // Ambient intensity (%)
 int diffuse   = 100;  // Diffuse intensity (%)
 int specular  =   0;  // Specular intensity (%)
 
@@ -75,7 +75,7 @@ float transColors[] = {0,0,0,0,0,0,0,0,0,0,0,0};
    float Ambient[]   = {0.01f*ambient ,0.01f*ambient ,0.01f*ambient ,1.0};
    float Diffuse[]   = {0.01f*diffuse ,0.01f*diffuse ,0.01f*diffuse ,1.0};
    float Specular[]  = {0.01f*specular,0.01f*specular,0.01f*specular,1.0};
-   float Postion[] = {0,55,0};
+   float Postion[] = {0.5f,0.0f,0.5f};
    //  Light position
 
     //  Draw light position as ball (still no lighting here)
