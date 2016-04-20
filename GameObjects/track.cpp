@@ -351,7 +351,7 @@ bool Track::checkTraction(SpaceShip* ship){
 		ship->setZ(trackPieces.at(trackPieces.size()-1)->getZ());
 		setShip = true;
 	}
-	for(int i = 0; i < trackPieces.size(); i++){
+	for(unsigned int i = 0; i < trackPieces.size(); i++){
 		if(trackPieces.at(i)->checkTraction(ship)){
 
 			if(lap >= 1 && zoneCount1 && i > trackPieces.size()*.5){
@@ -391,7 +391,7 @@ void Track::reset(){
 void Track::draw(){
 	glUseProgram(shader);
 	//Drawing tracks
-	for(int i = 0; i<  trackPieces.size(); i++){
+	for(unsigned int i = 0; i<  trackPieces.size(); i++){
 		trackPieces.at(i)->draw();
 	}
 	glUseProgram(0);

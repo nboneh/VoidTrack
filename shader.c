@@ -96,7 +96,8 @@ int CreateShaderProg(const char* VertFile,const char* FragFile, char ** arrayAtt
    //  Create and compile fragment shader
    if (FragFile) CreateShader(prog,GL_FRAGMENT_SHADER,FragFile);
    if(arrayAttributes){
-   for (int k=0;arrayAttributes[k];k++)
+      int k;
+   for ( k=0;arrayAttributes[k];k++)
       if (arrayAttributes[k][0])
          glBindAttribLocation(prog,k,arrayAttributes[k]);
    }

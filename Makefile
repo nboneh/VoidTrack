@@ -19,8 +19,8 @@ CFLG=-O3 -Wall -Wno-deprecated-declarations
 LIBS=-framework GLUT -framework OpenGL -framework OpenAL
 #  Linux/Unix/Solaris
 else
-CFLG=-O3 -Wall
-LIBS=-lglut -lGLU -lGL -lm  -lssl -lrt -lcrypto -lpthread
+CFLG=-O3 -Wall -Wunused-result
+LIBS=-lglut -lGLU -lGL -lm  -lssl -lrt -lcrypto -lpthread -lopenal
 endif
 #  OSX/Linux/Unix/Solaris
 CLEAN=rm -f $(EXE) *.o *.a .DS_Store; cd GameObjects; make clean

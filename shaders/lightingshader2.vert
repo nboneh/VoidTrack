@@ -34,7 +34,7 @@ float phong()
    vec3 color = gl_FrontLightProduct[0].ambient.rgb
            + Id*gl_FrontLightProduct[0].diffuse.rgb
            + Is*gl_FrontLightProduct[0].specular.rgb;
-
+   
    //  Vertex intensity
    return length(color);
 }

@@ -1,9 +1,10 @@
 #include "VoidTrack.h"
 
 short int* rawPcmDataMusic;
+ALCcontext *context;
+ALCdevice *device;
+inline void ignore_result(ssize_t t){}
 void setupOpenAl(){
-	ALCcontext *context;
-	ALCdevice *device;
  	const char * devicename = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
 	device = alcOpenDevice(devicename);
 
@@ -24,68 +25,68 @@ FILE* fp = NULL;
     fp = fopen(file, "r");
     if (!fp) {
         fclose(fp);
-        return NULL;
+        return 0;
     }
         
     char* ChunkID = new char[4];
-    fread(ChunkID, 4, sizeof(char), fp);
+   ignore_result( fread(ChunkID, 4, sizeof(char), fp));
         
     if (strcmp(ChunkID, "RIFF")) {
         delete [] ChunkID;
         fclose(fp);
-        return NULL;
+        return 0;
     }
     
     fseek(fp, 8, SEEK_SET);
     char* Format = new char[4];
-    fread(Format, 4, sizeof(char), fp);
+    ignore_result(  fread(Format, 4, sizeof(char), fp));
         
     if (strcmp(Format, "WAVE")) {
         delete [] ChunkID;
         delete [] Format; 
         fclose(fp);
-        return NULL;
+        return 0;
     }
     
     char* SubChunk1ID = new char[4];
-    fread(SubChunk1ID, 4, sizeof(char), fp);
+     ignore_result( fread(SubChunk1ID, 4, sizeof(char), fp));
  
     if (strcmp(SubChunk1ID, "fmt ")) {
         delete [] ChunkID;
         delete [] Format;
         delete [] SubChunk1ID;
         fclose(fp);
-        return NULL;
+        return 0;
     }
     
     unsigned int SubChunk1Size;
-    fread(&SubChunk1Size, 1, sizeof(unsigned int), fp);
+     ignore_result( fread(&SubChunk1Size, 1, sizeof(unsigned int), fp));
     unsigned int SubChunk2Location = (unsigned int)ftell(fp) + SubChunk1Size;
  
     // -------------------------------------- THIS PART
  
     unsigned short AudioFormat;
-    fread(&AudioFormat, 1, sizeof(unsigned short), fp);
+    ignore_result(  fread(&AudioFormat, 1, sizeof(unsigned short), fp));
     
     if (AudioFormat != 1) { // AudioFormat = 85, should be 1
         delete [] ChunkID;
         delete [] Format;
         delete [] SubChunk1ID;
         fclose(fp);
-        return NULL;
+        return 0;
     }
  
     // --------------------------------------
  
     unsigned short NumChannels;
-    fread(&NumChannels, 1, sizeof(unsigned short), fp);
+     ignore_result( fread(&NumChannels, 1, sizeof(unsigned short), fp));
     unsigned int SampleRate;
-    fread(&SampleRate, 1, sizeof(unsigned int), fp);
+     ignore_result( fread(&SampleRate, 1, sizeof(unsigned int), fp));
     
     fseek(fp, 34, SEEK_SET);
     
     unsigned short BitsPerSample;
-    fread(&BitsPerSample, 1, sizeof(unsigned short), fp);
+     ignore_result( fread(&BitsPerSample, 1, sizeof(unsigned short), fp));
     
     int ALFormat;
     if (NumChannels == 1 && BitsPerSample == 8) {
@@ -101,12 +102,12 @@ FILE* fp = NULL;
         delete [] Format;
         delete [] SubChunk1ID;
         fclose(fp);
-        return NULL;
+        return 0;
     }
     
     fseek(fp, SubChunk2Location, SEEK_SET);
     char* SubChunk2ID = new char[4];
-    fread(SubChunk2ID, 4, sizeof(char), fp);
+    ignore_result(  fread(SubChunk2ID, 4, sizeof(char), fp));
     
     if (strcmp(SubChunk2ID, "data")) {
         delete [] ChunkID;
@@ -114,14 +115,14 @@ FILE* fp = NULL;
         delete [] SubChunk1ID;
         delete [] SubChunk2ID;
         fclose(fp);
-        return NULL;
+        return 0;
     }
     
     unsigned int SubChunk2Size;
-    fread(&SubChunk2Size, 1, sizeof(unsigned int), fp); 
+     ignore_result( fread(&SubChunk2Size, 1, sizeof(unsigned int), fp)); 
     unsigned char* Data = new unsigned char[SubChunk2Size];
     
-    fread(Data, SubChunk2Size, sizeof(unsigned char), fp);
+    ignore_result(  fread(Data, SubChunk2Size, sizeof(unsigned char), fp));
      if(music)
         rawPcmDataMusic = (short int*)Data;
 
@@ -165,4 +166,9 @@ int getCurrentLoundnessOfMusic(){
     int offset;
     alGetSourcei(MUSIC, AL_SAMPLE_OFFSET, &offset);
     return rawPcmDataMusic[offset ];
+}
+
+void closeOpenAL(){
+    alcDestroyContext(context);
+    alcCloseDevice(device);
 }

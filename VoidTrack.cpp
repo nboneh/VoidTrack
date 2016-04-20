@@ -5,6 +5,8 @@
 #include "GameObjects/counter.h"
 
 
+static const char* Shader_Attribs_Flame[] = {"","","","","Vel","DurationTime", NULL};
+static const char* Shader_Attribs_Track[] = { "","","","","","","","Shifts", NULL};
 
 float baseElevation = 20;
 double dim=5.0;
@@ -73,7 +75,7 @@ float transColors[] = {0,0,0,0,0,0,0,0,0,0,0,0};
    float Ambient[]   = {0.01f*ambient ,0.01f*ambient ,0.01f*ambient ,1.0};
    float Diffuse[]   = {0.01f*diffuse ,0.01f*diffuse ,0.01f*diffuse ,1.0};
    float Specular[]  = {0.01f*specular,0.01f*specular,0.01f*specular,1.0};
-   float Postion[] = {0,50,0};
+   float Postion[] = {0,55,0};
    //  Light position
 
     //  Draw light position as ball (still no lighting here)
@@ -649,6 +651,7 @@ int main(int argc,char* argv[])
   //  Pass control to GLUT for events
   glutMainLoop();
 
+  closeOpenAL();
   free(spaceShip);
   free(track);
   free(background);

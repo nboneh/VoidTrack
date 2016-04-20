@@ -45,9 +45,6 @@
 #define TOP_RIGHT 2
 #define TOP_LEFT 3
 
-static const char* Shader_Attribs_Flame[] = {"","","","","Vel","DurationTime", NULL};
-static const char* Shader_Attribs_Track[] = { "","","","","","","","Shifts", NULL};
-
 
 
 #ifdef __cplusplus
@@ -89,6 +86,7 @@ void setupOpenAl();
 unsigned int loadSoundFile(const char *file, bool music);
 void playSound(unsigned int alSource, bool loop);
 void stopSound(unsigned int alSource);
+void closeOpenAL();
 
 void pauseSound(unsigned int alSource);
 int getCurrentLoundnessOfMusic();

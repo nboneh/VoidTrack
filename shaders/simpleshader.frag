@@ -1,5 +1,4 @@
 
-varying float LightIntensity;
 varying vec2  ModelPos;
 
 void main()

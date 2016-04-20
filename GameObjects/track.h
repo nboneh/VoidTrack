@@ -10,7 +10,7 @@
 
 class Track{
 	std::vector<TrackPiece *> trackPieces;
-	int currentTrackPiece;
+	unsigned int currentTrackPiece;
 	int lap;
 	int shader;
 	float counter;
