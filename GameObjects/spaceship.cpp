@@ -217,13 +217,13 @@ void SpaceShip::draw(){
   		flame->draw();
    		glPopMatrix();
     }
-    
+    	glUseProgram(SIMPLE_LIGHTING_SHADER);
     glColor3f(pr,pg,pb);
 	glPushMatrix();
 	glRotatef(180,0,1,0);
 	glScalef( .2,.25,.2);
     glCallList(SPACESHIP_OBJ);
-
+glUseProgram(0);
  	glPopMatrix();
 
 

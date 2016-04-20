@@ -13,23 +13,23 @@ uniform vec3 loc;
 float phong()
 {
 
-
-   vec3 L = normalize(gl_LightSource[0].position.xyz ); 
+  vec3 P = vec3(gl_ModelViewMatrix * gl_Vertex); 
+   vec3 L = normalize(gl_LightSource[0].position.xyz - P); 
    vec3 N = normalize(gl_NormalMatrix * gl_Normal);
-vec3 R = normalize(-reflect(L,N)); 
-
 //calculate Ambient Term:
 vec4 Iamb = gl_FrontLightProduct[0].ambient;
+Iamb = clamp(Iamb,0.0, 1.0);
 
 //calculate Diffuse Term:
 vec4 Idiff = gl_FrontLightProduct[0].diffuse * max(dot(N,L), 0.0);
 Idiff = clamp(Idiff,0.0, 1.0);
 
+
 // write Total Color:
-vec4 color =  Iamb + Idiff ; 
+vec4 color =   Iamb + Idiff; 
 
    //  Vertex intensity
-   return length(color.rgba) ;
+   return length(color.rgb) ;
 }
 
 void main()
