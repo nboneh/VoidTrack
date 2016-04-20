@@ -20,7 +20,7 @@ bool startedShip = false;
 bool won = false;
 float camdist =dim * 1.5;
 double t;
-int ambient   =  40;  // Ambient intensity (%)
+int ambient   =  60;  // Ambient intensity (%)
 int diffuse   = 100;  // Diffuse intensity (%)
 int specular  =   0;  // Specular intensity (%)
 
