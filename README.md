@@ -5,10 +5,10 @@ Present Void Track, try to not fall off from the track as the spaceship speeds u
 Requires OpenAL (use the following to install):
 sudo apt-get install libopenal-dev
 
-Controls:
-right/left arrow keys - turn 
-space - jump (hold for big jump, tap for short hop)
-p - pause (Use arrow keys to look around) cannot be used in countdown or gameover or victory screen
-ESC - exit
+Controls: <br />
+right/left arrow keys - turn <br />
+space - jump (hold for big jump, tap for short hop) <br />
+p - pause (Use arrow keys to look around) cannot be used in countdown or gameover or victory screen <br />
+ESC - exit <br />
 
 Took 100+ hours
