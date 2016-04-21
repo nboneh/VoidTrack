@@ -3,6 +3,7 @@
 short int* rawPcmDataMusic;
 ALCcontext *context;
 ALCdevice *device;
+
 inline void ignore_result(ssize_t t){}
 void setupOpenAl(){
  	const char * devicename = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
@@ -17,28 +18,28 @@ void setupOpenAl(){
 	// Clear Error Code
 	alGetError();
 }
+   
 
 unsigned int loadSoundFile(const char *file, bool music){
 	//Loading wave file not using alut found on google
 FILE* fp = NULL;
-    
     fp = fopen(file, "r");
     if (!fp) {
         fclose(fp);
         return 0;
     }
         
-    char* ChunkID = new char[4];
+    char* ChunkID  =new char[4];
+    ChunkID[4] = '\0';
    ignore_result( fread(ChunkID, 4, sizeof(char), fp));
-        
     if (strcmp(ChunkID, "RIFF")) {
         delete [] ChunkID;
         fclose(fp);
         return 0;
     }
-    
     fseek(fp, 8, SEEK_SET);
     char* Format = new char[4];
+     Format[4] = '\0';
     ignore_result(  fread(Format, 4, sizeof(char), fp));
         
     if (strcmp(Format, "WAVE")) {
@@ -47,8 +48,9 @@ FILE* fp = NULL;
         fclose(fp);
         return 0;
     }
-    
+
     char* SubChunk1ID = new char[4];
+    SubChunk1ID[4] = '\0';
      ignore_result( fread(SubChunk1ID, 4, sizeof(char), fp));
  
     if (strcmp(SubChunk1ID, "fmt ")) {
@@ -59,13 +61,12 @@ FILE* fp = NULL;
         return 0;
     }
     
-    unsigned int SubChunk1Size;
+    unsigned int SubChunk1Size = 0;
      ignore_result( fread(&SubChunk1Size, 1, sizeof(unsigned int), fp));
     unsigned int SubChunk2Location = (unsigned int)ftell(fp) + SubChunk1Size;
- 
     // -------------------------------------- THIS PART
  
-    unsigned short AudioFormat;
+    unsigned short AudioFormat = 0;
     ignore_result(  fread(&AudioFormat, 1, sizeof(unsigned short), fp));
     
     if (AudioFormat != 1) { // AudioFormat = 85, should be 1
@@ -78,14 +79,14 @@ FILE* fp = NULL;
  
     // --------------------------------------
  
-    unsigned short NumChannels;
+    unsigned short NumChannels = 0;
      ignore_result( fread(&NumChannels, 1, sizeof(unsigned short), fp));
-    unsigned int SampleRate;
+    unsigned int SampleRate =0 ;
      ignore_result( fread(&SampleRate, 1, sizeof(unsigned int), fp));
     
     fseek(fp, 34, SEEK_SET);
     
-    unsigned short BitsPerSample;
+    unsigned short BitsPerSample = 0;
      ignore_result( fread(&BitsPerSample, 1, sizeof(unsigned short), fp));
     
     int ALFormat;
@@ -104,9 +105,9 @@ FILE* fp = NULL;
         fclose(fp);
         return 0;
     }
-    
     fseek(fp, SubChunk2Location, SEEK_SET);
     char* SubChunk2ID = new char[4];
+    SubChunk2ID[4] = '\0';
     ignore_result(  fread(SubChunk2ID, 4, sizeof(char), fp));
     
     if (strcmp(SubChunk2ID, "data")) {
@@ -117,7 +118,6 @@ FILE* fp = NULL;
         fclose(fp);
         return 0;
     }
-    
     unsigned int SubChunk2Size;
      ignore_result( fread(&SubChunk2Size, 1, sizeof(unsigned int), fp)); 
     unsigned char* Data = new unsigned char[SubChunk2Size];
@@ -143,6 +143,7 @@ alGenSources(1, &alSource);
 alGenBuffers(1, &buffer);
       alBufferData(buffer, ALFormat, Data,
                  SubChunk2Size, SampleRate);
+
       //assign the buffer to this source
 alSourcei(alSource, AL_BUFFER,  buffer);
     return alSource;
@@ -165,7 +166,7 @@ void pauseSound(unsigned int alSource){
 int getCurrentLoundnessOfMusic(){
     int offset;
     alGetSourcei(MUSIC, AL_SAMPLE_OFFSET, &offset);
-    return rawPcmDataMusic[offset ];
+return rawPcmDataMusic[offset ];
 }
 
 void closeOpenAL(){

@@ -22,6 +22,7 @@
 #include <GL/glut.h>
 #include <AL/al.h>
 #include <AL/alc.h>
+#include <AL/alut.h>
 #endif
 
 #define PI 3.1415926
