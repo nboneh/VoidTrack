@@ -12,4 +12,9 @@ space - jump (hold for big jump, tap for short hop) <br />
 p - pause (Use arrow keys to look around) cannot be used in countdown or gameover or victory screen <br />
 ESC - exit <br />
 
+ScreenShots <br />
+![Alt Text](/ScreenShots/ScreenShot.png)
+![Alt Text](/ScreenShots/ScreenShot2.png)
+![Alt Text](/ScreenShots/ScreenShot3.png)
+
 Took 100+ hours
